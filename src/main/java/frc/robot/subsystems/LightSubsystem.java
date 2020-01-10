@@ -151,7 +151,8 @@ public class LightSubsystem extends SubsystemBase {
    * Called in periodic if the lights are in shot mode
    */
   private void periodicShot() {
-    final double valueInterval = 128.0 / m_shotTrailLength;
+    final double valueInterval = 255 / m_shotTrailLength;
+    final int[] hsv = RGBToHSV(m_shotTrailColor.red, m_shotTrailColor.green, m_shotTrailColor.blue);
 
     ArrayList<Integer> shots = new ArrayList<Integer>();
     if (shots.size() == 0 || shots.get(shots.size() - 1) > m_shotTrailLength + m_shotIntervalLength) {
@@ -159,13 +160,12 @@ public class LightSubsystem extends SubsystemBase {
     }
     for (int i = 0; i < shots.size(); i++) {
       int shot = shots.get(i);
-      double colorVal = 128.0;
 
       for (int k = 0; k < m_shotTrailLength; k++) {
         int index = shot - k;
         if (index < 0) {break;}
-        int[] hsv = RGBToHSV(m_shotTrailColor.red, m_shotTrailColor.green, m_shotTrailColor.blue);
-        ledBuffer.setHSV(index, m_shotTrailColor, 128, colorVal - (valueInterval * k));
+
+        ledBuffer.setHSV(index, hsv[0], hsv[1], (int)(255 - (valueInterval * k)));
       }
     }
   }
@@ -193,10 +193,47 @@ public class LightSubsystem extends SubsystemBase {
     ledStrip.setData(ledBuffer);
   }
 
+  /**
+   * Converts RGB values into HSV values
+   * @param r The 8 bit red color
+   * @param g The 8 bit green color
+   * @param b The 8 bit blue color
+   * @return an array of hue [0-180], saturation [0-255], and value [0-255] as integers
+   */
   private int[] RGBToHSV(int r, int g, int b) {
     double red = r / 255.0;
     double green = g / 255.0;
     double blue = b / 255.0;
+
+    double hue = 0;
+    double saturation = 0;
+    double value = 0;
+
+    double max = 0.0;
+    double min = 1.0;
+
+    if (red > max) max = red;
+    if (red < min) min = red;
+    if (green > max) max = green;
+    if (green < min) min = green;
+    if (blue > max) max = blue;
+    if (blue < min) min = blue;
+
+    double delta = max - min;
+
+    if (delta != 0) {
+      if (max == red) {hue = (((green - blue)/delta) % 6) * 60;}
+      else if (max == green) {hue = (((blue - red)/delta) + 2) * 60;}
+      else if (max == blue) {hue = (((red - green)/delta) + 4) * 60;}
+    }
+    else hue = 0;
+
+    if (max != 0) saturation = delta/max;
+    else saturation = 0;
+
+    value = max;
+
+    return new int[]{(int)hue / 2, (int)saturation * 255, (int)value * 255};
 
     //FINISH CONVERSION EQUATION
   }
