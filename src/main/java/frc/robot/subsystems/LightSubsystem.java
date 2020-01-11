@@ -255,7 +255,7 @@ public class LightSubsystem extends SubsystemBase {
     final int trailLength = effect.m_shotTrailLength;
     final int intervalLength = effect.m_shotIntervalLength;
     final int[] hsv = effect.getHSV();
-    final double valueInterval = 128.0 / trailLength;
+    final double valueInterval = hsv[2] / trailLength;
 
     ArrayList<Integer> shots = new ArrayList<Integer>();
     if (shots.size() == 0 || shots.get(shots.size() - 1) > trailLength + intervalLength) {
@@ -263,7 +263,6 @@ public class LightSubsystem extends SubsystemBase {
     }
     for (int i = 0; i < shots.size(); i++) {
       int shot = shots.get(i);
-      double colorVal = 128.0;
 
       if (shot > trailLength + ledBuffer.getLength()) {
         shots.remove(0);
@@ -273,7 +272,7 @@ public class LightSubsystem extends SubsystemBase {
       for (int k = 0; k < trailLength; k++) {
         int index = shot - k;
         if (index < 0) {break;}
-        ledBuffer.setHSV(index, hsv[0], 128, (int)(colorVal - (valueInterval * k)));
+        ledBuffer.setHSV(index, hsv[0], hsv[1], (int)(hsv[2] - (valueInterval * k)));
       }
     }
     return effect;
