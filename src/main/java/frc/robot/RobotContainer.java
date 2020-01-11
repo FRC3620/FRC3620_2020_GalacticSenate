@@ -7,11 +7,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.misc.XBoxConstants;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -22,16 +26,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
+  public static WPI_TalonFX shooterSubsystemFalcon1 = new WPI_TalonFX(1);
+  public static WPI_TalonFX shooterSubsystemFalcon2 = new WPI_TalonFX(2);
 
+  //subsystems
+  public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
+  private XboxController driverJoystick;
+  private XboxController operatorJoystick;
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
+    driverJoystick = new XboxController(0);
+    operatorJoystick = new XboxController(1);
     configureButtonBindings();
   }
 
@@ -42,6 +53,9 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
+
+    shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
   }
 
 
