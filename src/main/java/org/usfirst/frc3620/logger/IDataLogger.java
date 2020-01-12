@@ -12,6 +12,8 @@ public interface IDataLogger {
 
     public void setInterval(double seconds);
 
+    public double getInterval();
+
     public void addDataProvider(String name, 
             IDataLoggerDataProvider iDataLoggerDataProvider);
 
