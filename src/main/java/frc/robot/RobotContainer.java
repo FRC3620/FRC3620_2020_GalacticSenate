@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -40,10 +42,20 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    setupMotors();
     // Configure the button bindings
     driverJoystick = new XboxController(0);
     operatorJoystick = new XboxController(1);
     configureButtonBindings();
+
+  }
+
+  void setupMotors() {
+    int kTimeoutMs = 0;
+    shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
+    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+    //shooterSubsystemFalcon1.configSelectedFeedbackSensor(FeedbackDevice.Tachometer, 0, kTimeoutMs);
   }
 
   /**
