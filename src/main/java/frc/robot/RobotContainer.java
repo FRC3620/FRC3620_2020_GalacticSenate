@@ -8,10 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.SpinControlPanel4TimesCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,18 +25,29 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  public static ArmSubsystem armSubsystem;
 
+  public static SpeedController m_armMotor;
 
+  Joystick driverJoystick;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    makeHardware();
+    makeSubsystems();
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  void makeHardware() {
+    m_armMotor = new Victor(8);
+  }
+
+  void makeSubsystems() {
+    armSubsystem = new ArmSubsystem();
   }
 
   /**
@@ -42,6 +57,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Joystick driverJoystick = new Joystick(0);
+
+    JoystickButton spin4Button = new JoystickButton(driverJoystick, 1);// TODO - use XBoxConstants
+    spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
   }
 
 
@@ -52,6 +71,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return null;
   }
 }
