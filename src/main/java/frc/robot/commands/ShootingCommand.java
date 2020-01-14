@@ -48,6 +48,7 @@ public class ShootingCommand extends CommandBase {
       dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
       dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
       dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
+      dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
     } else {
       dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
     }

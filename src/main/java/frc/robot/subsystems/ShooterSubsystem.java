@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,9 +20,26 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX Falcon1 = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX Falcon2 = RobotContainer.shooterSubsystemFalcon2;
+  private final WPI_TalonFX Falcon2 = RobotContainer.shooterSubsystemFalcon2; 
+
+  public final int kVelocitySlotIdx = 0;
+  public final int kTimeoutMs = 0;
+  public double kFVelocity = 0;
+  public double kPVelocity = 0;
+  public double kIVelocity = 0;
+  public double kDVelocity = 0;
    
   public ShooterSubsystem() {
+    Falcon1.set(ControlMode.Velocity, kVelocity);
+
+    Falcon1.configPeakOutputForward(+1.0, kTimeoutMs);
+    Falcon1.configPeakOutputReverse(-1.0, kTimeoutMs);
+
+    //set PID
+    Falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
+    Falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
+    Falcon1.config_kI(kVelocitySlotIdx, kIVelocity, kTimeoutMs);
+    Falcon1.config_kD(kVelocitySlotIdx, kDVelocity, kTimeoutMs);
 
   }
 
@@ -34,13 +53,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void Shoot(double speed){
-    Falcon1.set(speed);
+    // TODO do conversions to targetvelocity from rpm using websites/techometer
+    Falcon1.set(ControlMode.Velocity, targetVelocity);
     System.out.println("Shooting power: " + Falcon1.get());
     //Falcon2.set(speed);
   }
 
   public void ShooterOff(){
-    Falcon1.set(0);
+    Falcon1.set(ControlMode.PercentOutput, 0);
     //Falcon2.set(0);
   }
 }
