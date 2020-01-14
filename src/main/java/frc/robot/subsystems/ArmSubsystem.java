@@ -98,16 +98,16 @@ public class ArmSubsystem extends SubsystemBase {
   public TargetColor getTargetColor() {
     ColorMatchResult match = m_colorMatcher.matchClosestColor(getCurrentColor());
 
-      if (match.color == kBlueTarget) {
-        return TargetColor.BLUE;
-      } else if (match.color == kRedTarget) {
-        return TargetColor.RED;
-      } else if (match.color == kGreenTarget) {
-        return TargetColor.GREEN;
-      } else if (match.color == kYellowTarget) {
-        return TargetColor.YELLOW;
-      } else {
-        return TargetColor.UNKNOWN;
+    if (match.color == kBlueTarget) {
+      return TargetColor.BLUE;
+    } else if (match.color == kRedTarget) {
+      return TargetColor.RED;
+    } else if (match.color == kGreenTarget) {
+      return TargetColor.GREEN;
+    } else if (match.color == kYellowTarget) {
+      return TargetColor.YELLOW;
+    } else {
+      return TargetColor.UNKNOWN;
     }
   }
 }

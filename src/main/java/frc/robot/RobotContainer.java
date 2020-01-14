@@ -26,11 +26,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  public static ArmSubsystem armSubsystem;
-
+  // hardware here...
   public static SpeedController m_armMotor;
 
-  Joystick driverJoystick;
+  // subsystems here...
+  public static ArmSubsystem armSubsystem;
+
+  // joysticks here....
+  public static Joystick driverJoystick;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
