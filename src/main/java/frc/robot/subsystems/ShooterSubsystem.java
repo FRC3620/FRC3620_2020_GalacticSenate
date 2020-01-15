@@ -8,7 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,39 +24,53 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public final int kVelocitySlotIdx = 0;
   public final int kTimeoutMs = 0;
-  public double kFVelocity = 0;
+  public double kFVelocity = 0.002;
   public double kPVelocity = 0;
   public double kIVelocity = 0;
   public double kDVelocity = 0;
+  public double targetVelocity = 5000;
    
   public ShooterSubsystem() {
-    Falcon1.set(ControlMode.Velocity, kVelocity);
+    Falcon1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
-    Falcon1.configPeakOutputForward(+1.0, kTimeoutMs);
-    Falcon1.configPeakOutputReverse(-1.0, kTimeoutMs);
+    Falcon1.configNominalOutputForward(+0.7, kTimeoutMs);
+    Falcon1.configNominalOutputReverse(-0.7, kTimeoutMs);
+    Falcon1.configPeakOutputForward(+0.7, kTimeoutMs);
+    Falcon1.configPeakOutputReverse(-0.7, kTimeoutMs);
 
     //set PID
     Falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
     Falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
     Falcon1.config_kI(kVelocitySlotIdx, kIVelocity, kTimeoutMs);
     Falcon1.config_kD(kVelocitySlotIdx, kDVelocity, kTimeoutMs);
-
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("FValue", kFVelocity);
+    SmartDashboard.putNumber("PValue", kPVelocity);
+    SmartDashboard.putNumber("IValue", kIVelocity);
+    SmartDashboard.putNumber("DValue", kDVelocity);
     SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
     SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
     SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
     SmartDashboard.putNumber("Speed", Falcon1.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("targetvelocity", targetVelocity);
   }
 
-  public void Shoot(double speed){
-    // TODO do conversions to targetvelocity from rpm using websites/techometer
+  public void ShootPID(){
+    /* converting rev/min to units/rev
+    4300 rev/min from measuring with TACH
+    100ms for a min is 600ms
+    TalonFX records in 2048 units/rev
+    */
     Falcon1.set(ControlMode.Velocity, targetVelocity);
-    System.out.println("Shooting power: " + Falcon1.get());
     //Falcon2.set(speed);
+  }
+
+  public void Shoot(){
+    Falcon1.set(ControlMode.PercentOutput, 0.5);
   }
 
   public void ShooterOff(){
