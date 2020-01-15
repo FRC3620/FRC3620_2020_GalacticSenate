@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import java.util.Date;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -15,7 +17,6 @@ import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -58,6 +59,7 @@ public class LoggingTestCommand extends CommandBase {
       dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
     }
     dataLogger.setFilename("test");
+    dataLogger.setFilenameTimestamp(new Date());
     dataLogger.start();
   }
 
