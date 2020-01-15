@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
 import frc.robot.Constants;
 import frc.misc.ColorPattern;
 import frc.misc.LightEffect;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import java.util.ArrayList;
 
@@ -19,21 +22,27 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
  * @version 11 January 2020
  */
 public class LightSubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   private AddressableLED ledStrip;
   private AddressableLEDBuffer ledBuffer;
   private LightEffect currentEffect;
   private Timer effectTimer = new Timer(); //Milliseconds = 0 on ANY parameter makes the effect indefinite and auto-skippable
   private ArrayList<LightEffect> queue = new ArrayList<LightEffect>();
 
-  private boolean defaultOverride = false;
-  private int defaultMilliseconds = 3000;
-  private Color8Bit defaultColor = new Color8Bit(0, 0, 0);
+  private final boolean defaultOverride = false;
+  private final int defaultMilliseconds = 3000;
+  private final Color8Bit defaultColor = new Color8Bit(0, 0, 0);
 
-  private int shot_defaultTrailLength = 8;
-  private int shot_defaultIntervalLength = 20;
+  private final int shot_defaultTrailLength = 15;
+  private final int shot_defaultIntervalLength = 10;
 
-  private int blink_defaultBlinkRate = 200;
+  private final int blink_defaultBlinkRate = 500;
   private boolean blink_isOn = false;
+
+  private int twinkle_runCount = 0;
+
+  ArrayList<Integer> shot_locationArr = new ArrayList<Integer>();
 
   /**
    * Instantiates the light strip and buffer. Refer to {@link frc.robot.RobotContainer#lightSubsystem RobotContainer.lightSubsytem} when making calls.
@@ -45,25 +54,30 @@ public class LightSubsystem extends SubsystemBase {
     ledBuffer = new AddressableLEDBuffer(Constants.LED_STRIP_LENGTH);
 
     ledStrip.setLength(ledBuffer.getLength());
+
     ledStrip.setData(ledBuffer);
     ledStrip.start();
+    logger.info("Light Subsystem instantiated!");
+
+    effectTimer.reset();
+    effectTimer.start();
   }
 
   /**
    * Removes the current strip effect.
    */
-  public void skipEffect() {queue.remove(0);}
+  public void skipEffect() {queue.remove(0); logger.info("Effect removed!");}
 
   /**
    * Removes all effects from the current queue (Advanced users only)
    */
-  public void purgeQueue() {queue.clear();}
+  public void purgeQueue() {queue.clear(); logger.info("Queue purged!");}
 
   /**
    * Adds a {@link frc.misc.LightEffect LightEffect} effect to the queue. (Advanced users only)
    * @param effect The {@link frc.misc.LightEffect LightEffect} object to add to queue 
    */
-  public void setEffect(LightEffect effect) {queue.add(effect);}
+  public void setEffect(LightEffect effect) {queue.add(effect); logger.info("Queueing pattern: " + effect.pattern);};
 
   /**
    * Accepts a pattern and displays the preset animation if one exists for that pattern
@@ -72,18 +86,21 @@ public class LightSubsystem extends SubsystemBase {
   public void setPreset(ColorPattern pattern) {
     switch (pattern) {
       case INIT:
-        setShot(new Color8Bit(0, 255, 0), 3000, true); //Light preset for Robot Init
+        setShot(new Color8Bit(0, 255, 0), 5000, true); //Light preset for Robot Init
         break;
       case TELEOP:
         if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 3000, true);}
         else {setBlink(new Color8Bit(0, 0, 255), 3000, true);}
+        setTwinkle(new Color8Bit(0, 180, 0), 0, false);
         break;
       case AUTO:
-        setShot(new Color8Bit(0, 255, 0), 3000, true);
+        setShot(new Color8Bit(0, 255, 0), 0, true);
         break;
       case DISABLED:
-        setTwinkle(new Color8Bit(100, 0, 0), 0);
+        setTwinkle(new Color8Bit(100, 0, 0), 0, false);
         break;
+      case TEST:
+        setRainbow(0, false);
       default:
         break;
     }
@@ -145,8 +162,8 @@ public class LightSubsystem extends SubsystemBase {
    * @param color The WPILIB color reference for a specific color
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000
    * @param override (Optional) Whether or not to skip the queue. Defaults to false
-   * @param trailLength (Optional) The length, in pixels, of LEDs to light behind the shot. Defaults to 8.
-   * @param shotInterval (Optional) The length, in pixel, of LEDs between shots. Defaults to 20.
+   * @param trailLength (Optional) The length, in pixels, of LEDs to light behind the shot. Defaults to 15.
+   * @param shotInterval (Optional) The length, in pixel, of LEDs between shots. Defaults to 10.
    * @see Color8Bit
    */
   public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength, int shotInterval) {
@@ -257,22 +274,25 @@ public class LightSubsystem extends SubsystemBase {
     final int[] hsv = effect.getHSV();
     final double valueInterval = hsv[2] / trailLength;
 
-    ArrayList<Integer> shots = new ArrayList<Integer>();
-    if (shots.size() == 0 || shots.get(shots.size() - 1) > trailLength + intervalLength) {
-      shots.add(0);
+    
+    if (shot_locationArr.size() == 0 || shot_locationArr.get(shot_locationArr.size() - 1) > trailLength + intervalLength) {
+      shot_locationArr.add(0);
     }
-    for (int i = 0; i < shots.size(); i++) {
-      int shot = shots.get(i);
+    for (int i = 0; i < shot_locationArr.size(); i++) {
+      shot_locationArr.set(i, shot_locationArr.get(i) + 1);
+      int shot = shot_locationArr.get(i);
 
       if (shot > trailLength + ledBuffer.getLength()) {
-        shots.remove(0);
+        shot_locationArr.remove(0);
         break;
       }
 
-      for (int k = 0; k < trailLength; k++) {
+      for (int k = 0; k < trailLength + intervalLength; k++) {
         int index = shot - k;
-        if (index < 0) {break;}
-        ledBuffer.setHSV(index, hsv[0], hsv[1], (int)(hsv[2] - (valueInterval * k)));
+        int interval = (int)(hsv[2] - (valueInterval * k));
+        if (interval < 0) interval = 0;
+        if (index < 0 || index > ledBuffer.getLength() - 1) {break;}
+        ledBuffer.setHSV(index, hsv[0], hsv[1], interval);
       }
     }
     return effect;
@@ -290,7 +310,7 @@ public class LightSubsystem extends SubsystemBase {
       ledBuffer.setHSV(i, hue, 255, 128);
     }
 
-    firstPixel += 3;
+    firstPixel += 2;
     firstPixel %= 180; // Check bounds
     effect.m_rainbowFirstPixelHue = firstPixel; //reset object
     return effect;
@@ -315,53 +335,63 @@ public class LightSubsystem extends SubsystemBase {
   private LightEffect periodicTwinkle(LightEffect effect) {
     int[] hsv = effect.getHSV();
     final int midSat = hsv[2];
-    final int interval = 4;
+    final int interval = 100;
 
+    final double lightRate = 0.05;
     int[] saturationBuffer = new int[ledBuffer.getLength()];
+    double random = Math.random();
 
-    for (int p = 0; p < saturationBuffer.length; p++) {
-      if (saturationBuffer[p] == 0) saturationBuffer[p] = midSat; //Sets saturation to medium if the strip is off
+    if (twinkle_runCount % 15 == 0) {
+      twinkle_runCount = 0;
+      for (int p = 0; p < saturationBuffer.length; p++) {
+        if (saturationBuffer[p] == 0) saturationBuffer[p] = midSat; //Sets saturation to medium if the strip is off
+      }
+      
+      for (int i = 0; i < saturationBuffer.length; i++) {
+        if (Math.random() > lightRate) continue;
+        if (saturationBuffer[i] < midSat && random >= 1/(midSat - saturationBuffer[i])) {saturationBuffer[i] += interval;} //More likely to trend toward medium saturation the farther away it is
+        else if (saturationBuffer[i] > midSat && random >= 1/(saturationBuffer[i] - midSat)) {saturationBuffer[i] -= interval;} // ^^
+        else {
+          if (random > 0.5) {saturationBuffer[i] += interval * Math.random();}
+          else {saturationBuffer[i] -= interval * Math.random();}
+        } //Randomly move light in either direction
+        ledBuffer.setHSV(i, hsv[0], hsv[1], saturationBuffer[i]);
+      }
     }
-    
-    for (int i = 0; i < saturationBuffer.length; i++) {
-      double random = Math.random();
-      if (saturationBuffer[i] < midSat && random >= 1/(midSat - saturationBuffer[i])) {saturationBuffer[i] += interval;} //More likely to trend toward medium saturation the farther away it is
-      else if (saturationBuffer[i] > midSat && random >= 1/(saturationBuffer[i] - midSat)) {saturationBuffer[i] -= interval;} // ^^
-      else {
-        if (random > 0.5) {saturationBuffer[i] += interval;}
-        else {saturationBuffer[i] -= interval;}
-      } //Randomly move light in either direction
-      ledBuffer.setHSV(i, hsv[0], hsv[1], saturationBuffer[i]);
+    else if (twinkle_runCount % 5 == 0) {
+      for (int i = 0; i < saturationBuffer.length; i++) {
+        if (Math.random() > lightRate) continue;
+        if (saturationBuffer[i] < midSat && random >= 1/(midSat - saturationBuffer[i])) {saturationBuffer[i] += interval;} //More likely to trend toward medium saturation the farther away it is
+        else if (saturationBuffer[i] > midSat && random >= 1/(saturationBuffer[i] - midSat)) {saturationBuffer[i] -= interval;} // ^^
+        ledBuffer.setHSV(i, hsv[0], hsv[1], saturationBuffer[i]);
+      }
     }
+    twinkle_runCount++;
     return effect;
   }
 
   private LightEffect periodicBlink(LightEffect effect) {
     var color = effect.getColor();
-    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate < 30) {
+    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate < 20) {
       for (int i = 0; i < ledBuffer.getLength(); i++) {
-        if (blink_isOn) ledBuffer.setLED(i, effect.BLACK);
+        if (blink_isOn) ledBuffer.setLED(i, LightEffect.BLACK);
         else ledBuffer.setLED(i, color);
       }
       blink_isOn = !blink_isOn;
     }
+    twinkle_runCount++;
     return effect;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
 
     if (!queue.isEmpty()) {
+      if (currentEffect == null) {
       currentEffect = queue.get(0);
-      effectTimer.start();
-
-      //Checks if there is an effect waiting on an indefinite effect or if there is a timer at limit
-      if ((currentEffect.milliseconds == 0 && queue.size() != 1) || (effectTimer.get() * 1000 > currentEffect.milliseconds)) { 
-          queue.remove(0);
-          currentEffect = queue.get(0);
-          effectTimer.reset();
-          effectTimer.start();
+      logger.info("Displaying effect: " + currentEffect.pattern);
       }
 
       switch (currentEffect.pattern) {
@@ -383,6 +413,25 @@ public class LightSubsystem extends SubsystemBase {
         default:
           break;
       }
+
+
+      //Checks if there is an effect waiting on an indefinite effect or if there is a timer at limit
+      if ((currentEffect.milliseconds == 0 && queue.size() > 1) || (effectTimer.get() * 1000 > currentEffect.milliseconds && currentEffect.milliseconds != 0)) { 
+        logger.info("Ending effect: " + currentEffect.pattern);
+        queue.remove(0);
+        effectTimer.reset();
+        effectTimer.start();
+        currentEffect = null;
+      }
+
+      if (queue.size() > 1 && queue.get(queue.size() - 1).override) {
+        LightEffect priorityEffect = queue.get(queue.size() - 1);
+        purgeQueue();
+        queue.add(0, priorityEffect);
+        currentEffect = null;
+      }
+
+      if (queue.size() == 0) {effectTimer.reset();}
     }
 
     ledStrip.setData(ledBuffer);

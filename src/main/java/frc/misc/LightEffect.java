@@ -1,6 +1,5 @@
 package frc.misc;
 
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 import frc.misc.ColorPattern;
