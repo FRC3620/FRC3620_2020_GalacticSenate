@@ -12,9 +12,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.SpinControlPanel4TimesCommand;
-import frc.robot.commands.SpinControlPanelUntilColor;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -32,6 +31,10 @@ public class RobotContainer {
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
+
+  public static LightSubsystem lightSubsystem = new LightSubsystem();
+
+
 
   // joysticks here....
   public static Joystick driverJoystick;
