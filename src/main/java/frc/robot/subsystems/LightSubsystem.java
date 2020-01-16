@@ -92,7 +92,7 @@ public class LightSubsystem extends SubsystemBase {
   public void setPreset(ColorPattern.Preset pattern) {
     switch (pattern) {
       case INIT:
-        setShot(new Color8Bit(0, 255, 0), 5000, true); //Light preset for Robot Init
+        setShot(new Color8Bit(0, 255, 0), 7500, true); //Light preset for Robot Init
         break;
       case TELEOP:
         if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 3000, true);}
@@ -282,7 +282,7 @@ public class LightSubsystem extends SubsystemBase {
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
    * @param override (Optional) Whether or not to skip the queue. Defaults to false.
-   * @param blinkRate (Optional) How long, in milliseconds, the lights will be on before being turn off. For example if blinkRate is 200, The lights will be on for 0.2 seconds, off for 0.2 seconds and so on. Defaults to 200
+   * @param blinkRate (Optional) How long, in milliseconds, the lights will take for a on/off cycle. For example if blinkRate is 200, The lights will be on for 0.1 seconds, off for 0.1 seconds and so on. Defaults to 500
    * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    */
   public void setBlink(Color8Bit color, int milliseconds, boolean override, int blinkRate, boolean returnsPrevious) {
@@ -441,7 +441,7 @@ public class LightSubsystem extends SubsystemBase {
 
   private LightEffect periodicBlink(LightEffect effect) {
     var color = effect.getColor();
-    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate < 20) {
+    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate/2 < 20) {
       for (int i = 0; i < ledBuffer.getLength(); i++) {
         if (blink_isOn) ledBuffer.setLED(i, LightEffect.BLACK);
         else ledBuffer.setLED(i, color);
