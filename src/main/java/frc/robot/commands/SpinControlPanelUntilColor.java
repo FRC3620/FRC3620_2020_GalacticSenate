@@ -22,10 +22,10 @@ public class SpinControlPanelUntilColor extends CommandBase {
   private int greenCounter = 0; 
   private int yellowCounter = 0;
   private int rotationCount = 0; 
-  private String blue = "B";
-  private String red = "R";
-  private String green = "G";
-  private String yellow = "Y";
+  public String blue = "B";
+  public String red = "R";
+  public String green = "G";
+  public String yellow = "Y";
  // public String getGameSpecificMessage(){
     //return gameSpecificMessage;
     //}
@@ -57,7 +57,7 @@ public class SpinControlPanelUntilColor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
 
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
@@ -82,35 +82,25 @@ public class SpinControlPanelUntilColor extends CommandBase {
       previousColor = currentColor;
     }
 
-    gameSpecificMessage.equals(blue);
     if(gameSpecificMessage.equals(blue)) {
       if(currentColor == TargetColor.RED ) {
-        RobotContainer.m_armMotor.set(0); 
-      } else {
-        //nothing
-      }
+        RobotContainer.m_armMotor.set(0);
+      } 
    }
     if(gameSpecificMessage.equals(red)) {
       if(currentColor == TargetColor.BLUE ) {
-        RobotContainer
-        .m_armMotor.set(0);
-      } else {
-        //nothing
-      }
+        RobotContainer.m_armMotor.set(0);
+      } 
     }
     if(gameSpecificMessage.equals(green)) {
-      if(currentColor == TargetColor.YELLOW ) {
+      if(currentColor == TargetColor.YELLOW) {
         RobotContainer.m_armMotor.set(0);
-      } else {
-        //nothing
-      }
+      } 
     }
       if(gameSpecificMessage.equals(yellow)) {
       if(currentColor == TargetColor.GREEN ) {
         RobotContainer.m_armMotor.set(0);
-      } else {
-        //nothing
-      }
+      } 
     }
     
 
@@ -136,6 +126,8 @@ public class SpinControlPanelUntilColor extends CommandBase {
     }
     
     
+  
+  
 
     SmartDashboard.putString("Blue Counter", Integer.toString(blueCounter));
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
@@ -143,7 +135,9 @@ public class SpinControlPanelUntilColor extends CommandBase {
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
     SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
   
-    armSubsystem.spinControlPanelWheel();
+
+
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -155,9 +149,7 @@ public class SpinControlPanelUntilColor extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (rotationCount >= 4) {
-      return true;
-    }
     return false;
+   
   }
 }
