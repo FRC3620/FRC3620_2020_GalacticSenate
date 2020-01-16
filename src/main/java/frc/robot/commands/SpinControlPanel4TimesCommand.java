@@ -33,6 +33,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   public SpinControlPanel4TimesCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.armSubsystem);
+
   }
 
   // Called when the command is initially scheduled.
@@ -48,6 +49,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    armSubsystem.spinControlPanelWheel();
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
       String colorString;
@@ -98,7 +100,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
     SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
   
-    armSubsystem.spinControlPanelWheel();
+   
   }
 
   // Called once the command ends or is interrupted.

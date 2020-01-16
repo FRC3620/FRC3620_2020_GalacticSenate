@@ -13,7 +13,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
-public class SpinControlPanelToColor extends CommandBase {
+public class SpinControlPanelUntilColor extends CommandBase {
   ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
   TargetColor previousColor = TargetColor.UNKNOWN;
 
@@ -22,9 +22,15 @@ public class SpinControlPanelToColor extends CommandBase {
   private int greenCounter = 0; 
   private int yellowCounter = 0;
   private int rotationCount = 0; 
-  public String gameSpecificMessage = BLUE;
+  private String blue = "B";
+  private String red = "R";
+  private String green = "G";
+  private String yellow = "Y";
+ // public String getGameSpecificMessage(){
+    //return gameSpecificMessage;
+    //}
+    public String gameSpecificMessage = blue;
 
-  
   //private final int resetCount = 0;
    
 
@@ -32,7 +38,7 @@ public class SpinControlPanelToColor extends CommandBase {
   /**
    * Creates a new SpinControlPanel4TimesCommand.
    */
-  public SpinControlPanelToColor() {
+  public SpinControlPanelUntilColor() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.armSubsystem);
   }
@@ -45,11 +51,14 @@ public class SpinControlPanelToColor extends CommandBase {
     greenCounter = 0; 
     yellowCounter = 0;
     rotationCount = 0; 
+    RobotContainer.m_armMotor.set(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {e
+  public void execute() {
+    
+
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
       String colorString;
@@ -59,15 +68,12 @@ public class SpinControlPanelToColor extends CommandBase {
       } else if (currentColor == TargetColor.RED) {
         redCounter ++;
         colorString = "Red";
-  
       } else if (currentColor == TargetColor.GREEN) {
         greenCounter ++;
         colorString = "Green";
-   
       } else if (currentColor == TargetColor.YELLOW) {
         yellowCounter ++;
         colorString = "Yellow";
-      
       } else {
         colorString = "Unknown";
       }
@@ -75,6 +81,38 @@ public class SpinControlPanelToColor extends CommandBase {
 
       previousColor = currentColor;
     }
+
+    gameSpecificMessage.equals(blue);
+    if(gameSpecificMessage.equals(blue)) {
+      if(currentColor == TargetColor.RED ) {
+        RobotContainer.m_armMotor.set(0); 
+      } else {
+        //nothing
+      }
+   }
+    if(gameSpecificMessage.equals(red)) {
+      if(currentColor == TargetColor.BLUE ) {
+        RobotContainer
+        .m_armMotor.set(0);
+      } else {
+        //nothing
+      }
+    }
+    if(gameSpecificMessage.equals(green)) {
+      if(currentColor == TargetColor.YELLOW ) {
+        RobotContainer.m_armMotor.set(0);
+      } else {
+        //nothing
+      }
+    }
+      if(gameSpecificMessage.equals(yellow)) {
+      if(currentColor == TargetColor.GREEN ) {
+        RobotContainer.m_armMotor.set(0);
+      } else {
+        //nothing
+      }
+    }
+    
 
     /* 
    //this is for testing 
@@ -96,18 +134,16 @@ public class SpinControlPanelToColor extends CommandBase {
       yellowCounter = 0;
       rotationCount ++;
     }
+    
+    
 
     SmartDashboard.putString("Blue Counter", Integer.toString(blueCounter));
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
     SmartDashboard.putString("Green Counter", Integer.toString(greenCounter)); 
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
     SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
-
-    if(gameSpecificMessage = BLUE) {
-      //spin to the color a quarter of the way around blue IE: Yellow
-    }
   
-   
+    armSubsystem.spinControlPanelWheel();
   }
 
   // Called once the command ends or is interrupted.
@@ -119,9 +155,9 @@ public class SpinControlPanelToColor extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if () {
-      ;
+    if (rotationCount >= 4) {
+      return true;
     }
-    ;
+    return false;
   }
 }
