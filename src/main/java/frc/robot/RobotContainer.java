@@ -32,6 +32,8 @@ public class RobotContainer {
   // subsystems here...
   public static ArmSubsystem armSubsystem;
   public static LightSubsystem lightSubsystem;
+  public static RumbleSubsystem rumbleSubsystemDriver;
+  public static RumbleSubsystem rumbleSubsystemOperator;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -53,6 +55,8 @@ public class RobotContainer {
   void makeSubsystems() {
     armSubsystem = new ArmSubsystem();
     lightSubsystem = new LightSubsystem();
+    rumbleSubsystemDriver = new RumbleSubsystem();
+    rumbleSubsystemOperator = new RumbleSubsystem();
   }
 
   /**
