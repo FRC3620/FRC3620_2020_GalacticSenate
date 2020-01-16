@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +32,9 @@ public class LightSubsystem extends SubsystemBase {
   private ArrayList<LightEffect> queue = new ArrayList<LightEffect>();
 
   private final boolean defaultOverride = false;
+  private final double defaultBatteryLowVoltage = 12.0; //Volts that, when dipped below, alert the lights
   private final int defaultMilliseconds = 3000;
+  private final boolean defaultReturnsPrevious = false;
   private final Color8Bit defaultColor = new Color8Bit(0, 0, 0);
 
   private final int shot_defaultTrailLength = 15;
@@ -41,6 +44,9 @@ public class LightSubsystem extends SubsystemBase {
   private boolean blink_isOn = false;
 
   private int twinkle_runCount = 0;
+
+  private double battery_voltageCheckTime = 0;
+  private final int battery_voltageTimerInterval = 30; //number of seconds between low_voltage alerts
 
   ArrayList<Integer> shot_locationArr = new ArrayList<Integer>();
 
@@ -83,7 +89,7 @@ public class LightSubsystem extends SubsystemBase {
    * Accepts a pattern and displays the preset animation if one exists for that pattern
    * @param pattern A {@link ColorPattern} pattern for which a preset exists
    */
-  public void setPreset(ColorPattern pattern) {
+  public void setPreset(ColorPattern.Preset pattern) {
     switch (pattern) {
       case INIT:
         setShot(new Color8Bit(0, 255, 0), 5000, true); //Light preset for Robot Init
@@ -94,13 +100,16 @@ public class LightSubsystem extends SubsystemBase {
         setTwinkle(new Color8Bit(0, 180, 0), 0, false);
         break;
       case AUTO:
-        setShot(new Color8Bit(0, 255, 0), 0, true);
+        setShot(new Color8Bit(0, 255, 0), 0, false);
         break;
       case DISABLED:
         setTwinkle(new Color8Bit(100, 0, 0), 0, false);
         break;
       case TEST:
         setRainbow(0, false);
+        break;
+      case LOW_VOLTAGE:
+        setBlink(new Color8Bit(255,0,0), 1000, true, 200, true);
       default:
         break;
     }
@@ -113,22 +122,23 @@ public class LightSubsystem extends SubsystemBase {
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param override (Optional) Whether or not to skip the queue
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    * @see Color8Bit
    */
-  public void setSolidColor(Color8Bit color, int milliseconds, boolean override) {setEffect(new LightEffect(color, override, ColorPattern.SOLID, milliseconds));}
+  public void setSolidColor(Color8Bit color, int milliseconds, boolean override, boolean returnsPrevious) {setEffect(new LightEffect(color, override, ColorPattern.Pattern.SOLID, milliseconds, returnsPrevious));}
   /**
    * Sets a solid color throughout the entire string.
    * @param red The RGB code for red (0-255)
    * @param green The RGB code for green (0-255)
    * @param blue The RGB code for blue (0-255)
    */
-  public void setSolidColor(int red, int green, int blue) {setSolidColor(new Color8Bit(red, green, blue), defaultMilliseconds, defaultOverride);;}
+  public void setSolidColor(int red, int green, int blue) {setSolidColor(new Color8Bit(red, green, blue));}
   /**
    * Sets a solid color throughout the entire string.
    * @param color The WPILIB Color8Bit reference for a specific color
    * @see Color8Bit
    */
-  public void setSolidColor(Color8Bit color) {setSolidColor(color, defaultMilliseconds, defaultOverride);}
+  public void setSolidColor(Color8Bit color) {setSolidColor(color, defaultMilliseconds);}
   /**
    * Sets a solid color throughout the entire string.
    * @param color The WPILIB Color8Bit reference for a specific color
@@ -136,24 +146,39 @@ public class LightSubsystem extends SubsystemBase {
    * @see Color8Bit
    */
   public void setSolidColor(Color8Bit color, int milliseconds) {setSolidColor(color, milliseconds, defaultOverride);}
-  
-  
-  
-  /**
-   * Sets the current pattern to a default, Full-RGB rainbow
+   /**
+   * Sets a solid color throughout the entire string.
+   * @param color The WPILIB Color8Bit reference for a specific color
+   * @param override (Optional) Whether or not to skip the queue
+   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for
+   * @see Color8Bit
    */
-  public void setRainbow() {setRainbow(defaultMilliseconds, defaultOverride);}
+  public void setSolidColor(Color8Bit color, int milliseconds, boolean override) {setSolidColor(color, milliseconds, override, defaultReturnsPrevious);;}
+
+  
+  
   /**
    * Sets the current pattern to a default, Full-RGB rainbow
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for.
    * @param override (Optional) Whether or not to skip the queue.
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    */
-  public void setRainbow(int milliseconds, boolean override) {setEffect(new LightEffect(defaultColor, override, ColorPattern.RAINBOW, milliseconds));}
+  public void setRainbow(int milliseconds, boolean override, boolean returnsPrevious) {setEffect(new LightEffect(defaultColor, override, ColorPattern.Pattern.RAINBOW, milliseconds, returnsPrevious));}
+  /**
+   * Sets the current pattern to a default, Full-RGB rainbow
+   */
+  public void setRainbow() {setRainbow(defaultMilliseconds, defaultOverride, defaultReturnsPrevious);}
   /**
    * Sets the current pattern to a default, Full-RGB rainbow
    * @param milliseconds The time, in milliseconds, to run the effect for.
    */
   public void setRainbow(int milliseconds) {setRainbow(milliseconds, defaultOverride);}
+  /**
+   * Sets the current pattern to a default, Full-RGB rainbow
+   * @param milliseconds The time, in milliseconds, to run the effect for.
+   * @param override (Optional) Whether or not to skip the queue.
+   */
+  public void setRainbow(int milliseconds, boolean override) {setRainbow(milliseconds, override, defaultReturnsPrevious);}
 
 
 
@@ -164,10 +189,11 @@ public class LightSubsystem extends SubsystemBase {
    * @param override (Optional) Whether or not to skip the queue. Defaults to false
    * @param trailLength (Optional) The length, in pixels, of LEDs to light behind the shot. Defaults to 15.
    * @param shotInterval (Optional) The length, in pixel, of LEDs between shots. Defaults to 10.
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    * @see Color8Bit
    */
-  public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength, int shotInterval) {
-    var effect = new LightEffect(color, override, ColorPattern.SHOT, milliseconds);
+  public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength, int shotInterval, boolean returnsPrevious) {
+    var effect = new LightEffect(color, override, ColorPattern.Pattern.SHOT, milliseconds, returnsPrevious);
     effect.m_shotIntervalLength = shotInterval;
     effect.m_shotTrailLength = trailLength;
     setEffect(effect);
@@ -178,26 +204,26 @@ public class LightSubsystem extends SubsystemBase {
    * @param green The RGB code for green (0-255)
    * @param blue The RGB code for blue (0-255)
    */
-  public void setShot(int red, int green, int blue) {setShot(new Color8Bit(red, green, blue), defaultMilliseconds, defaultOverride, shot_defaultTrailLength, shot_defaultIntervalLength);}
+  public void setShot(int red, int green, int blue) {setShot(new Color8Bit(red, green, blue));}
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail
    * @param color The WPILIB Color8Bit reference for a specific color
    * @see Color8Bit
    */
-  public void setShot(Color8Bit color) {setShot(color, defaultMilliseconds, defaultOverride, shot_defaultTrailLength, shot_defaultIntervalLength);}
+  public void setShot(Color8Bit color) {setShot(color, defaultMilliseconds);}
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail.
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param milliseconds The time, in milliseconds, to run the effect for
    */
-  public void setShot(Color8Bit color, int milliseconds) {setShot(color, milliseconds, defaultOverride, shot_defaultTrailLength, shot_defaultIntervalLength);}
+  public void setShot(Color8Bit color, int milliseconds) {setShot(color, milliseconds, defaultOverride);}
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail.
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param override Whether or not to skip the queue
    * @param milliseconds The time, in milliseconds, to run the effect for
    */
-  public void setShot(Color8Bit color, int milliseconds, boolean override) {setShot(color, milliseconds, override, shot_defaultTrailLength, shot_defaultIntervalLength);}
+  public void setShot(Color8Bit color, int milliseconds, boolean override) {setShot(color, milliseconds, override, shot_defaultTrailLength);}
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail.
    * @param color The WPILIB Color8Bit reference for a specific color
@@ -206,6 +232,19 @@ public class LightSubsystem extends SubsystemBase {
    * @param trailLength The length, in pixels, of LEDs to light up as part of a shot
    */
   public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength) {setShot(color, milliseconds, override, trailLength, shot_defaultIntervalLength);}
+  /**
+   * Sets a 'shot' animation where a light runs down the strip with a trail
+   * @param color The WPILIB color reference for a specific color
+   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000
+   * @param override (Optional) Whether or not to skip the queue. Defaults to false
+   * @param trailLength (Optional) The length, in pixels, of LEDs to light behind the shot. Defaults to 15.
+   * @param shotInterval (Optional) The length, in pixel, of LEDs between shots. Defaults to 10.
+   * @see Color8Bit
+   */
+  public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength, int shotInterval) {setShot(color, milliseconds, override, trailLength, shotInterval, defaultReturnsPrevious);}
+
+
+
 
 
   /**
@@ -213,20 +252,29 @@ public class LightSubsystem extends SubsystemBase {
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
    * @param override (Optional) Whether or not to skip the queue. Defaults to false.
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    */
-  public void setTwinkle(Color8Bit color, int milliseconds, boolean override) {setEffect(new LightEffect(color, override, ColorPattern.TWINKLE, milliseconds));}
+  public void setTwinkle(Color8Bit color, int milliseconds, boolean override, boolean returnsPrevious) {setEffect(new LightEffect(color, override, ColorPattern.Pattern.TWINKLE, milliseconds, returnsPrevious));}
   /**
    * Sets a 'twinkle' animation on a solid color, where individual LEDs fluctuate brightness
    * @param color The WPILIB Color8Bit reference for a specific color
    * @param override Whether or not to skip the queue
    */
-  public void setTwinkle(Color8Bit color) {setTwinkle(color, defaultMilliseconds, defaultOverride);}
+  public void setTwinkle(Color8Bit color) {setTwinkle(color, defaultMilliseconds);}
 
   /**
    * Sets a 'twinkle' animation on a solid color, where individual LEDs fluctuate brightness
    * @param color The WPILIB Color8Bit reference for a specific color
    */
   public void setTwinkle(Color8Bit color, int milliseconds) {setTwinkle(color, milliseconds, defaultOverride);}
+  /**
+   * Sets a 'twinkle' animation on a solid color, where individual LEDs fluctuate brightness
+   * @param color The WPILIB Color8Bit reference for a specific color
+   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
+   * @param override (Optional) Whether or not to skip the queue. Defaults to false.
+   */
+  public void setTwinkle(Color8Bit color, int milliseconds, boolean override) {setEffect(new LightEffect(color, override, ColorPattern.Pattern.TWINKLE, milliseconds, defaultReturnsPrevious));}
+
 
 
   /**
@@ -235,9 +283,10 @@ public class LightSubsystem extends SubsystemBase {
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
    * @param override (Optional) Whether or not to skip the queue. Defaults to false.
    * @param blinkRate (Optional) How long, in milliseconds, the lights will be on before being turn off. For example if blinkRate is 200, The lights will be on for 0.2 seconds, off for 0.2 seconds and so on. Defaults to 200
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    */
-  public void setBlink(Color8Bit color, int milliseconds, boolean override, int blinkRate) {
-    var effect = new LightEffect(color, override, ColorPattern.BLINK, milliseconds);
+  public void setBlink(Color8Bit color, int milliseconds, boolean override, int blinkRate, boolean returnsPrevious) {
+    var effect = new LightEffect(color, override, ColorPattern.Pattern.BLINK, milliseconds, returnsPrevious);
     effect.m_blinkFlashRate = blinkRate;
     setEffect(effect);
   }
@@ -245,13 +294,13 @@ public class LightSubsystem extends SubsystemBase {
    * Sets a 'blink' animation on a solid color, where the light flashes on and off
    * @param color The WPILIB Color8Bit reference for a specific color
    */
-  public void setBlink(Color8Bit color) {setBlink(color, defaultMilliseconds, defaultOverride, blink_defaultBlinkRate);}
+  public void setBlink(Color8Bit color) {setBlink(color, defaultMilliseconds);}
  /**
    * Sets a 'blink' animation on a solid color, where the light flashes on and off
    * @param color The WPILIB Color8Bit reference for a specific color
-   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
+   * @param milliseconds The time, in milliseconds, to run the effect for. Defaults to 3000.
    */
-  public void setBlink(Color8Bit color, int milliseconds) {setBlink(color, milliseconds, defaultOverride, blink_defaultBlinkRate);}
+  public void setBlink(Color8Bit color, int milliseconds) {setBlink(color, milliseconds, defaultOverride);}
   /**
    * Sets a 'blink' animation on a solid color, where the light flashes on and off
    * @param color The WPILIB Color8Bit reference for a specific color
@@ -259,6 +308,24 @@ public class LightSubsystem extends SubsystemBase {
    * @param override Whether or not to skip the queue. Defaults to false.
    */
   public void setBlink(Color8Bit color, int milliseconds, boolean override) {setBlink(color, milliseconds, override, blink_defaultBlinkRate);}
+/**
+   * Sets a 'blink' animation on a solid color, where the light flashes on and off
+   * @param color The WPILIB Color8Bit reference for a specific color
+   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000.
+   * @param override (Optional) Whether or not to skip the queue. Defaults to false.
+   * @param blinkRate (Optional) How long, in milliseconds, the lights will be on before being turn off. For example if blinkRate is 200, The lights will be on for 0.2 seconds, off for 0.2 seconds and so on. Defaults to 200
+   */
+  public void setBlink(Color8Bit color, int milliseconds, boolean override, int blinkRate) {setBlink(color, milliseconds, override, blinkRate, defaultReturnsPrevious);}
+
+
+
+  private void checkVoltage() {
+    if (RobotController.getBatteryVoltage() < defaultBatteryLowVoltage && Timer.getFPGATimestamp() > battery_voltageCheckTime + battery_voltageTimerInterval) {
+      battery_voltageCheckTime = Timer.getFPGATimestamp();
+      setPreset(ColorPattern.Preset.LOW_VOLTAGE);
+    }
+  }
+
 
 
 
@@ -290,8 +357,10 @@ public class LightSubsystem extends SubsystemBase {
       for (int k = 0; k < trailLength + intervalLength; k++) {
         int index = shot - k;
         int interval = (int)(hsv[2] - (valueInterval * k));
+
         if (interval < 0) interval = 0;
-        if (index < 0 || index > ledBuffer.getLength() - 1) {break;}
+        if (index < 0 || index >= ledBuffer.getLength()) {continue;}
+
         ledBuffer.setHSV(index, hsv[0], hsv[1], interval);
       }
     }
@@ -387,6 +456,7 @@ public class LightSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     
+    checkVoltage();
 
     if (!queue.isEmpty()) {
       if (currentEffect == null) {
@@ -416,12 +486,15 @@ public class LightSubsystem extends SubsystemBase {
 
 
       //Checks if there is an effect waiting on an indefinite effect or if there is a timer at limit
-      if ((currentEffect.milliseconds == 0 && queue.size() > 1) || (effectTimer.get() * 1000 > currentEffect.milliseconds && currentEffect.milliseconds != 0)) { 
-        logger.info("Ending effect: " + currentEffect.pattern);
-        queue.remove(0);
-        effectTimer.reset();
-        effectTimer.start();
-        currentEffect = null;
+      if ((currentEffect.milliseconds == 0 && queue.size() > 1) || (effectTimer.get() * 1000 > currentEffect.milliseconds && currentEffect.milliseconds != 0)) {
+        if (currentEffect.milliseconds == 0 && queue.get(1).returnsPrevious) {queue.add(2, currentEffect);}
+
+          logger.info("Ending effect: " + currentEffect.pattern);
+          queue.remove(0);
+          currentEffect = null;
+
+          effectTimer.reset();
+          effectTimer.start();
       }
 
       if (queue.size() > 1 && queue.get(queue.size() - 1).override) {

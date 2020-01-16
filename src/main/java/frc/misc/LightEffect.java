@@ -13,8 +13,9 @@ public class LightEffect {
     public static final Color8Bit BLACK = new Color8Bit(0,0,0);
 
     public boolean override;
+    public boolean returnsPrevious;
     public Color8Bit color;
-    public ColorPattern pattern;
+    public ColorPattern.Pattern pattern;
     public int milliseconds;
     
     public int m_rainbowFirstPixelHue;
@@ -31,11 +32,12 @@ public class LightEffect {
      * @param pattern The {@link ColorPattern} enum of the pattern displayed
      * @param milliseconds The amount of time, in milliseconds to run the effect for
      */
-    public LightEffect(Color8Bit color, boolean override, ColorPattern pattern, int milliseconds) {
+    public LightEffect(Color8Bit color, boolean override, ColorPattern.Pattern pattern, int milliseconds, boolean returnsPrevious) {
         this.color = color;
         this.override = override;
         this.pattern = pattern;
         this.milliseconds = milliseconds;
+        this.returnsPrevious = returnsPrevious;
     }
 
     public Color8Bit getColor() {return this.color;}
