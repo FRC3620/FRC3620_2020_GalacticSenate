@@ -53,7 +53,7 @@ public class ShootingCommand extends CommandBase {
       dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
     }
     dataLogger.setFilename("test");
-    dataLogger.start();
+    //dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
