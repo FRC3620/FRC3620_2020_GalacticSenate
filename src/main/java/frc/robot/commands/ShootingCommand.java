@@ -11,6 +11,8 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
+import java.util.Date;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
@@ -43,6 +45,7 @@ public class ShootingCommand extends CommandBase {
     dataLogger.setInterval(0.001);
     dataLogger.setMaxLength(10.0);
     if (talonFX != null) {
+      dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
       dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
       dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
       dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
@@ -53,7 +56,8 @@ public class ShootingCommand extends CommandBase {
       dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
     }
     dataLogger.setFilename("test");
-    //dataLogger.start();
+    dataLogger.setFilenameTimestamp(new Date());
+    dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

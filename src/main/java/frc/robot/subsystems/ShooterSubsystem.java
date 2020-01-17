@@ -24,10 +24,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public final int kVelocitySlotIdx = 0;
   public final int kTimeoutMs = 0;
-  public double kFVelocity = 0.7 * 1023 / 14640;
-  public double kPVelocity = 0.975;
-  public double kIVelocity = 0;
-  public double kDVelocity = 0;
+  public double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
+  public double kPVelocity = 0.95; //0.95
+  public double kIVelocity = 0.0000001; //0.0000001
+  public double kDVelocity = 6.9; //6.9
   public double rpm = 2000;
    
   public ShooterSubsystem() {
@@ -35,8 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Falcon1.configNominalOutputForward(0, kTimeoutMs);
     Falcon1.configNominalOutputReverse(0, kTimeoutMs);
-    Falcon1.configPeakOutputForward(+0.85, kTimeoutMs);
-    Falcon1.configPeakOutputReverse(-0.85, kTimeoutMs);
+    Falcon1.configPeakOutputForward(+1, kTimeoutMs);
+    Falcon1.configPeakOutputReverse(-1, kTimeoutMs);
    //set P
     Falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
     Falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
     //SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
     SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
-    SmartDashboard.putNumber("Speed", Falcon1.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Velocity", Falcon1.getSelectedSensorVelocity());
     //SmartDashboard.putNumber("RPM", rpm);
     SmartDashboard.putNumber("Output%", Falcon1.getMotorOutputPercent());
     SmartDashboard.putNumber("ERROR", Falcon1.getClosedLoopError());
@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFX records in 2048 units/rev
     */
     double targetVelocity = rpm * 2048 / 600;
-    Falcon1.set(ControlMode.Velocity, 14640);
+    Falcon1.set(ControlMode.Velocity, 14640); //14640 normal 17500 for 30 foot shoot
   }
 
   public void Shoot(){
