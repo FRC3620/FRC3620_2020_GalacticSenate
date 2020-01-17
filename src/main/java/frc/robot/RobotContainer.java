@@ -31,13 +31,13 @@ public class RobotContainer {
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
-
-  public static LightSubsystem lightSubsystem = new LightSubsystem();
-
-
+  public static LightSubsystem lightSubsystem;
+  public static RumbleSubsystem rumbleSubsystemDriver;
+  public static RumbleSubsystem rumbleSubsystemOperator;
 
   // joysticks here....
   public static Joystick driverJoystick;
+  public static Joystick operatorJoystick;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -55,6 +55,9 @@ public class RobotContainer {
 
   void makeSubsystems() {
     armSubsystem = new ArmSubsystem();
+    lightSubsystem = new LightSubsystem();
+    rumbleSubsystemDriver = new RumbleSubsystem(Constants.DRIVER_JOYSTICK_PORT);
+    rumbleSubsystemOperator = new RumbleSubsystem(Constants.OPERATOR_JOYSTICK_PORT);
   }
 
   /**
@@ -64,7 +67,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Joystick driverJoystick = new Joystick(0);
+    Joystick driverJoystick = new Joystick(Constants.DRIVER_JOYSTICK_PORT);
+    Joystick operatorJoystick = new Joystick(Constants.OPERATOR_JOYSTICK_PORT);
 
     JoystickButton spin4Button = new JoystickButton(driverJoystick, 1);// TODO - use XBoxConstants
     spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
@@ -73,6 +77,8 @@ public class RobotContainer {
     stopForColor.whenPressed (new SpinControlPanelUntilColor());
     
    
+    JoystickButton rumbButton = new JoystickButton(driverJoystick, 3);
+    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
   }
 
   
