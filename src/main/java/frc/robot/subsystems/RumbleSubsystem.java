@@ -6,13 +6,17 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.RumbleCommand.Hand;
 
 /**
  * @author Nick Zimanski (SlippStream)
  * @version 15 January 2020
- * 
+ */
+
+public class RumbleSubsystem extends SubsystemBase {
+    /** 
  * READ ME:
  * 
  * To make the controller run from another file,
@@ -39,14 +43,17 @@ import frc.robot.commands.RumbleCommand.Hand;
  * 
  * P.S.: Hand.LEFT provides a choppy, visceral rumble where Hand.RIGHT provides a lighter, smooth rumble
  */
-public class RumbleSubsystem extends SubsystemBase {
+
     Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-    private Joystick controller;
+    private XboxController controller;
     private Boolean disabled = false;
 
-    //sets the controller for this instance of the subsystem
-    public void setController(Joystick controller) {this.controller = controller;} 
+    /**
+     * Sets the subsystem to work with a specific controller. Should only be called from {@link RobotContainer}
+     * @param port The port number of the controller to rumble
+     */
+    public RumbleSubsystem(int port) {this.controller = new XboxController(port);}
 
     public void setDisabled(Boolean disabled) {this.disabled = disabled;}
 
@@ -72,8 +79,7 @@ public class RumbleSubsystem extends SubsystemBase {
     public void clearRumble () {
         if (!disabled) {
             //clears the rumble
-            controller.setRumble(RumbleType.kRightRumble, 0);
-            controller.setRumble(RumbleType.kLeftRumble, 0);
+            setRumble(Hand.BOTH, 0.0);
         }
     }
 

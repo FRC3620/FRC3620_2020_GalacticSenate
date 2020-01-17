@@ -6,7 +6,6 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.RumbleSubsystem;
 
@@ -30,9 +29,9 @@ public class RumbleCommand extends CommandBase {
     private Hand hand;
     private Double duration; // In seconds
 
-    private Hand handDefault = Hand.BOTH;
-    private Double intensityDefault = 1.0;
-    private Double durationDefault = 1.0;
+    private final Hand handDefault = Hand.BOTH;
+    private final Double intensityDefault = 1.0;
+    private final Double durationDefault = 1.0;
 
     private boolean disabled, continuous, disableChange = false;
 
@@ -174,6 +173,6 @@ public class RumbleCommand extends CommandBase {
                 }
             }
 
-            subsystem.clearRumble();
+        subsystem.clearRumble();
     }
 }
