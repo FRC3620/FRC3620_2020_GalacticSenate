@@ -13,7 +13,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
-public class SpinControlPanel4TimesCommand extends CommandBase {
+public class SpinControlPanelUntilColor extends CommandBase {
   ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
   TargetColor previousColor = TargetColor.UNKNOWN;
 
@@ -22,6 +22,14 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   private int greenCounter = 0; 
   private int yellowCounter = 0;
   private int rotationCount = 0; 
+  public String blue = "B";
+  public String red = "R";
+  public String green = "G";
+  public String yellow = "Y";
+ // public String getGameSpecificMessage(){
+    //return gameSpecificMessage;
+    //}
+    public String gameSpecificMessage = blue;
 
   //private final int resetCount = 0;
    
@@ -30,10 +38,9 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   /**
    * Creates a new SpinControlPanel4TimesCommand.
    */
-  public SpinControlPanel4TimesCommand() {
+  public SpinControlPanelUntilColor() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.armSubsystem);
-
   }
 
   // Called when the command is initially scheduled.
@@ -44,12 +51,14 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     greenCounter = 0; 
     yellowCounter = 0;
     rotationCount = 0; 
+    RobotContainer.m_armMotor.set(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.spinControlPanelWheel();
+
+
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
       String colorString;
@@ -73,6 +82,28 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
       previousColor = currentColor;
     }
 
+    if(gameSpecificMessage.equals(blue)) {
+      if(currentColor == TargetColor.RED ) {
+        RobotContainer.m_armMotor.set(0);
+      } 
+   }
+    if(gameSpecificMessage.equals(red)) {
+      if(currentColor == TargetColor.BLUE ) {
+        RobotContainer.m_armMotor.set(0);
+      } 
+    }
+    if(gameSpecificMessage.equals(green)) {
+      if(currentColor == TargetColor.YELLOW) {
+        RobotContainer.m_armMotor.set(0);
+      } 
+    }
+      if(gameSpecificMessage.equals(yellow)) {
+      if(currentColor == TargetColor.GREEN ) {
+        RobotContainer.m_armMotor.set(0);
+      } 
+    }
+    
+
     /* 
    //this is for testing 
     if(redCounter > 30) {
@@ -93,6 +124,10 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
       yellowCounter = 0;
       rotationCount ++;
     }
+    
+    
+  
+  
 
     SmartDashboard.putString("Blue Counter", Integer.toString(blueCounter));
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
@@ -100,7 +135,9 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
     SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
   
-   
+
+
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -112,9 +149,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (rotationCount >= 4) {
-      return true;
-    }
     return false;
+   
   }
 }
