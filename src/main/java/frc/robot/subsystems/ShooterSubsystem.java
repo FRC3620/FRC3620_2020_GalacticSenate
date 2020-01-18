@@ -22,22 +22,26 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonFX Falcon1 = RobotContainer.shooterSubsystemFalcon1;
   private final WPI_TalonFX Falcon2 = RobotContainer.shooterSubsystemFalcon2; 
 
-  public final int kVelocitySlotIdx = 0;
-  public final int kTimeoutMs = 0;
-  public double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
-  public double kPVelocity = 0.95; //0.95
-  public double kIVelocity = 0.0000001; //0.0000001
-  public double kDVelocity = 6.9; //6.9
-  public double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
+  //sets up all values for PID
+  private final int kVelocitySlotIdx = 0;
+  private final int kTimeoutMs = 0;
+  private final double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
+  private final double kPVelocity = 0.95; //0.95
+  private final double kIVelocity = 0.0000001; //0.0000001
+  private final double kDVelocity = 6.9; //6.9
+  private final double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
    
   public ShooterSubsystem() {
+    //for PID you have to have a sensor to check on so you know the error
     Falcon1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
+    //set max and minium(nominal) speed in percentage output
     Falcon1.configNominalOutputForward(0, kTimeoutMs);
     Falcon1.configNominalOutputReverse(0, kTimeoutMs);
     Falcon1.configPeakOutputForward(+1, kTimeoutMs);
     Falcon1.configPeakOutputReverse(-1, kTimeoutMs);
-   //set P
+
+    //set up the falcon for using FPID
     Falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
     Falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
     Falcon1.config_kI(kVelocitySlotIdx, kIVelocity, kTimeoutMs);
@@ -64,20 +68,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void ShootPID(){
     /* converting rev/min to units/rev
-    4300 rev/min from measuring with TACH
     100ms for a min is 600ms
     TalonFX records in 2048 units/rev
     */
+    //set target velocity using PID
     double targetVelocity = rpm * 2048 / 600;
     Falcon1.set(ControlMode.Velocity, targetVelocity);
   }
 
   public void Shoot(){
+    //set target velocity using percent output
     Falcon1.set(ControlMode.PercentOutput, 0.7);
     //Falcon2.set();
   }
 
   public void ShooterOff(){
+    //sets target velocity to zero
     Falcon1.set(ControlMode.PercentOutput, 0);
     //Falcon2.set(0);
   }

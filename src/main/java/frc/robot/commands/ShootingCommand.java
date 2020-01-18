@@ -56,7 +56,7 @@ public class ShootingCommand extends CommandBase {
     }
     dataLogger.setFilename("test");
     dataLogger.setFilenameTimestamp(new Date());
-    dataLogger.start();
+    //dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
