@@ -10,8 +10,11 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
@@ -33,6 +36,9 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX intakeSubsystemFalcon1;
+  public static WPI_TalonFX liftSubsystemWinch;
+  public static Solenoid liftSubsystemRelease;
+  public static Compressor liftSubsystemCompressor;
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
@@ -41,6 +47,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static IntakeSubsystem intakeSubsystem;
+  public static LiftSubsystem liftSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -73,6 +80,9 @@ public class RobotContainer {
     shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     intakeSubsystemFalcon1 = new WPI_TalonFX(3);
+    liftSubsystemWinch = new WPI_TalonFX(4);
+    liftSubsystemRelease = new Solenoid(0);
+    liftSubsystemCompressor = new Compressor(0);
   }
 
   void makeSubsystems() {
@@ -82,6 +92,7 @@ public class RobotContainer {
     lightSubsystem = new LightSubsystem();
     rumbleSubsystemDriver = new RumbleSubsystem(Constants.DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(Constants.OPERATOR_JOYSTICK_PORT);
+    liftSubsystem = new LiftSubsystem();
   }
 
   /**
@@ -109,7 +120,13 @@ public class RobotContainer {
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
     JoystickButton intakeJoystickButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem));
+    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem)); 
+
+    JoystickButton liftRaiseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
+    liftRaiseButton.whileHeld(new LiftRaiseCommand(liftSubsystem));
+
+    JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
   }
 
   /**
