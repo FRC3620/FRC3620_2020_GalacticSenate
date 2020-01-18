@@ -49,6 +49,12 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    /*
+      Used to display Blue, Red, Green, and Yellow counter and the DetectedColor on the SmartDashboard. 
+      It also adds to Blue, Red, Green, and Yellow counter.
+
+      */
     armSubsystem.spinControlPanelWheel();
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
@@ -73,19 +79,10 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
       previousColor = currentColor;
     }
 
-    /* 
-   //this is for testing 
-    if(redCounter > 30) {
-      redCounter = resetCount;
-    } else if (blueCounter > 30){
-      blueCounter = resetCount;
-    }else if(greenCounter > 30){
-      greenCounter = resetCount;
-    }else if(yellowCounter > 30){
-      yellowCounter = resetCount;
-    }
-    */
-    //for testing 
+  
+
+   //this checks Blue, Red, Green, and Yellow counter to see if all of them are above 2 and then reset them if they are
+    //into 1 rotation count
     if(blueCounter >= 2 && redCounter >= 2 && greenCounter >= 2 && yellowCounter >= 2){
       blueCounter = 0; 
       redCounter = 0; 
@@ -94,6 +91,8 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
       rotationCount ++;
     }
 
+
+ //Displays how many times we've seen Blue, Red, Green, and Yellow.
     SmartDashboard.putString("Blue Counter", Integer.toString(blueCounter));
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
     SmartDashboard.putString("Green Counter", Integer.toString(greenCounter)); 
@@ -110,6 +109,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   }
 
   // Returns true when the command should end.
+  // (To return true the rotation count must be greater than or equal to 4)
   @Override
   public boolean isFinished() {
     if (rotationCount >= 4) {
