@@ -32,6 +32,7 @@ public class RobotContainer {
   public static SpeedController m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static WPI_TalonFX intakeSubsystemFalcon1;
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
@@ -39,6 +40,7 @@ public class RobotContainer {
   public static LightSubsystem lightSubsystem;
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
+  public static IntakeSubsystem intakeSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -70,11 +72,13 @@ public class RobotContainer {
     m_armMotor = new Victor(8);
     shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     shooterSubsystemFalcon2 = new WPI_TalonFX(2);
+    intakeSubsystemFalcon1 = new WPI_TalonFX(3);
   }
 
   void makeSubsystems() {
     armSubsystem = new ArmSubsystem();
     shooterSubsystem = new ShooterSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
     lightSubsystem = new LightSubsystem();
     rumbleSubsystemDriver = new RumbleSubsystem(Constants.DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(Constants.OPERATOR_JOYSTICK_PORT);
@@ -103,6 +107,9 @@ public class RobotContainer {
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
+
+    JoystickButton intakeJoystickButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem));
   }
 
   /**
