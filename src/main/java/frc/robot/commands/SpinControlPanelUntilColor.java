@@ -26,9 +26,14 @@ public class SpinControlPanelUntilColor extends CommandBase {
   public String red = "R";
   public String green = "G";
   public String yellow = "Y";
- // public String getGameSpecificMessage(){
-    //return gameSpecificMessage;
-    //}
+ /*
+  Used to get the game message and make gameSpecificMessage the string
+ 
+  public String getGameSpecificMessage(){
+    return gameSpecificMessage;
+    }
+  
+  */
     public String gameSpecificMessage = blue;
 
   //private final int resetCount = 0;
@@ -44,6 +49,7 @@ public class SpinControlPanelUntilColor extends CommandBase {
   }
 
   // Called when the command is initially scheduled.
+  //Blue, Red, Green, and Yellow counter are used to find the rotaion count for the control panel
   @Override
   public void initialize() {
     blueCounter = 0; 
@@ -58,7 +64,11 @@ public class SpinControlPanelUntilColor extends CommandBase {
   @Override
   public void execute() {
 
+      /*
+      Used to display Blue, Red, Green, and Yellow counter and the DetectedColor on the SmartDashboard. 
+      It also adds to Blue, Red, Green, and Yellow counter.
 
+      */
     TargetColor currentColor = armSubsystem.getTargetColor();
     if(previousColor != currentColor) {
       String colorString;
@@ -82,6 +92,11 @@ public class SpinControlPanelUntilColor extends CommandBase {
       previousColor = currentColor;
     }
 
+    /*
+
+    A Series of if statements that checks the game message to see what color it is, then looks for the color a 
+    quarter down the color wheel to stop spinning and scan the color for 5 seconds 
+    */
     if(gameSpecificMessage.equals(blue)) {
       if(currentColor == TargetColor.RED ) {
         RobotContainer.m_armMotor.set(0);
@@ -102,21 +117,9 @@ public class SpinControlPanelUntilColor extends CommandBase {
         RobotContainer.m_armMotor.set(0);
       } 
     }
-    
-
-    /* 
-   //this is for testing 
-    if(redCounter > 30) {
-      redCounter = resetCount;
-    } else if (blueCounter > 30){
-      blueCounter = resetCount;
-    }else if(greenCounter > 30){
-      greenCounter = resetCount;
-    }else if(yellowCounter > 30){
-      yellowCounter = resetCount;
-    }
-    */
-    //for testing 
+   
+    //this checks Blue, Red, Green, and Yellow counter to see if all of them are above 2 and then reset them if they are
+    //into 1 rotation count
     if(blueCounter >= 2 && redCounter >= 2 && greenCounter >= 2 && yellowCounter >= 2){
       blueCounter = 0; 
       redCounter = 0; 
@@ -128,7 +131,7 @@ public class SpinControlPanelUntilColor extends CommandBase {
     
   
   
-
+      //Displays how many times we've seen Blue, Red, Green, and Yellow.
     SmartDashboard.putString("Blue Counter", Integer.toString(blueCounter));
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
     SmartDashboard.putString("Green Counter", Integer.toString(greenCounter)); 
