@@ -28,7 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double kPVelocity = 0.95; //0.95
   public double kIVelocity = 0.0000001; //0.0000001
   public double kDVelocity = 6.9; //6.9
-  public double rpm = 2000;
+  public double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
    
   public ShooterSubsystem() {
     Falcon1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
@@ -46,18 +46,20 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    /* This method will be called once per scheduler run
     SmartDashboard.putNumber("FValue", kFVelocity);
     SmartDashboard.putNumber("PValue", kPVelocity);
-    //SmartDashboard.putNumber("IValue", kIVelocity);
-    //SmartDashboard.putNumber("DValue", kDVelocity);
-    SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
-    //SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
-    SmartDashboard.putNumber("Velocity", Falcon1.getSelectedSensorVelocity());
-    //SmartDashboard.putNumber("RPM", rpm);
+    SmartDashboard.putNumber("IValue", kIVelocity);
+    SmartDashboard.putNumber("DValue", kDVelocity);
+    SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
+    SmartDashboard.putNumber("RPM", rpm);
+    For testing use the values below
     SmartDashboard.putNumber("Output%", Falcon1.getMotorOutputPercent());
     SmartDashboard.putNumber("ERROR", Falcon1.getClosedLoopError());
+    SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
+    SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
+    SmartDashboard.putNumber("Velocity", Falcon1.getSelectedSensorVelocity());
+    */
   }
 
   public void ShootPID(){
@@ -67,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFX records in 2048 units/rev
     */
     double targetVelocity = rpm * 2048 / 600;
-    Falcon1.set(ControlMode.Velocity, 14640); //14640 normal 17500 for 30 foot shoot
+    Falcon1.set(ControlMode.Velocity, targetVelocity);
   }
 
   public void Shoot(){
