@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.INIT);
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.INIT);
   }
 
   /**
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.DISABLED);
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.DISABLED);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.AUTO);
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.AUTO);
   }
 
   /**
@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.TELEOP);
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TELEOP);
   }
 
   /**
@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.TEST);
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TEST);
   }
 
   /**

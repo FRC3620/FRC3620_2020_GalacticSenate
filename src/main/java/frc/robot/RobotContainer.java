@@ -7,11 +7,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.misc.XBoxConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,37 +28,56 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-
   // hardware here...
   public static SpeedController m_armMotor;
+  public static WPI_TalonFX shooterSubsystemFalcon1;
+  public static WPI_TalonFX shooterSubsystemFalcon2;
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
-
-  public static LightSubsystem lightSubsystem = new LightSubsystem();
-
-
+  public static ShooterSubsystem shooterSubsystem;
+  public static LightSubsystem lightSubsystem;
+  public static RumbleSubsystem rumbleSubsystemDriver;
+  public static RumbleSubsystem rumbleSubsystemOperator;
 
   // joysticks here....
   public static Joystick driverJoystick;
+  public static Joystick operatorJoystick;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     makeHardware();
+    setupMotors();
     makeSubsystems();
     // Configure the button bindings
     configureButtonBindings();
   }
 
+  void setupMotors() {
+    int kTimeoutMs = 0;
+    shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
+    // undocumented current measurement status frame
+    shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
+    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+    //shooterSubsystemFalcon1.configSelectedFeedbackSensor(FeedbackDevice.Tachometer, 0, kTimeoutMs);
+  }
+
   void makeHardware() {
     m_armMotor = new Victor(8);
+    shooterSubsystemFalcon1 = new WPI_TalonFX(1);
+    shooterSubsystemFalcon2 = new WPI_TalonFX(2);
   }
 
   void makeSubsystems() {
     armSubsystem = new ArmSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
+    lightSubsystem = new LightSubsystem();
+    rumbleSubsystemDriver = new RumbleSubsystem(Constants.DRIVER_JOYSTICK_PORT);
+    rumbleSubsystemOperator = new RumbleSubsystem(Constants.OPERATOR_JOYSTICK_PORT);
   }
 
   /**
@@ -64,19 +87,23 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Joystick driverJoystick = new Joystick(0);
+    Joystick driverJoystick = new Joystick(Constants.DRIVER_JOYSTICK_PORT);
+    Joystick operatorJoystick = new Joystick(Constants.OPERATOR_JOYSTICK_PORT);
 
-    JoystickButton spin4Button = new JoystickButton(driverJoystick, 1);// TODO - use XBoxConstants
+    //Driver Controller
+    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
 
-    JoystickButton stopForColor = new JoystickButton(driverJoystick, 2);
+    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
     stopForColor.whenPressed (new SpinControlPanelUntilColor());
-    
    
+    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
+
+    //Operator Controller
+    JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
+    shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
   }
-
-  
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
