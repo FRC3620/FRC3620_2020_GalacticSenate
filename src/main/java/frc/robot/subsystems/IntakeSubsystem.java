@@ -13,13 +13,18 @@ import frc.robot.RobotContainer;
  * @version 17 January 2020
  */
 public class IntakeSubsystem extends SubsystemBase {
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1;
+  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1;    //intake motor 
 
   public IntakeSubsystem(){
   }
-
-  public void intakeSet(double speed){
+  /** 
+  *Run intake: + = in, - = out 
+  *@param speed double for intake speed
+  *@author Sean Thursby (sthursbyg@gmail.com)
+  *
+  */
+  public void intakeSet(double speed){    //runs intake
     intakeFalcon1.set(speed);
   }
+
 }
