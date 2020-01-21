@@ -1,4 +1,4 @@
-package frc.misc;
+package org.usfirst.frc3620.misc;
 
 public class XBoxConstants {
 	public final static int AXIS_LEFT_X = 0;
