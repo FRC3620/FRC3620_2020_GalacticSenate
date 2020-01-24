@@ -26,9 +26,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
   private final double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
-  private final double kPVelocity = 0.95; //0.95
+  private final double kPVelocity = 0.97; //0.97
   private final double kIVelocity = 0.0000001; //0.0000001
-  private final double kDVelocity = 6.9; //6.9
+  private final double kDVelocity = 7.5; //7.5
   private final double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
    
   public ShooterSubsystem() {
@@ -59,13 +59,12 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("DValue", kDVelocity);
     SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
-    For testing use the values below
-    SmartDashboard.putNumber("Output%", Falcon1.getMotorOutputPercent());
-    SmartDashboard.putNumber("ERROR", Falcon1.getClosedLoopError());
-    SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
-    SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
-    SmartDashboard.putNumber("Velocity", Falcon1.getSelectedSensorVelocity());
-    */
+    For testing use the values below */
+    SmartDashboard.putNumber("Output%", falcon1.getMotorOutputPercent());
+    SmartDashboard.putNumber("ERROR", falcon1.getClosedLoopError());
+    SmartDashboard.putNumber("Output Current", falcon1.getStatorCurrent());
+    SmartDashboard.putNumber("Falcon Temperature", falcon1.getTemperature());
+    SmartDashboard.putNumber("Velocity", falcon1.getSelectedSensorVelocity());
   }
 
   public void ShootPID(){
