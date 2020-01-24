@@ -10,12 +10,27 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.misc.XBoxConstants;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.misc.XBoxConstants;
+import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,11 +43,20 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
+  final static int DRIVER_JOYSTICK_PORT = 0;
+  final static int OPERATOR_JOYSTICK_PORT = 1;
+
+  // need this
+  CANDeviceFinder canDeviceFinder;
+
   // hardware here...
   public static SpeedController m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX intakeSubsystemFalcon1;
+  public static WPI_TalonFX liftSubsystemWinch;
+  public static Solenoid liftSubsystemRelease;
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
@@ -41,6 +65,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static IntakeSubsystem intakeSubsystem;
+  public static LiftSubsystem liftSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -50,6 +75,9 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    canDeviceFinder = new CANDeviceFinder();
+    logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
+
     makeHardware();
     setupMotors();
     makeSubsystems();
@@ -59,20 +87,38 @@ public class RobotContainer {
 
   void setupMotors() {
     int kTimeoutMs = 0;
-    shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
-    // undocumented current measurement status frame
-    shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
-    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-    shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-    //shooterSubsystemFalcon1.configSelectedFeedbackSensor(FeedbackDevice.Tachometer, 0, kTimeoutMs);
+    if (shooterSubsystemFalcon1 != null) {
+      shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
+      // undocumented current measurement status frame
+      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      // shooterSubsystemFalcon1.configSelectedFeedbackSensor(FeedbackDevice.Tachometer,
+      // 0, kTimeoutMs);
+    }
   }
 
   void makeHardware() {
     m_armMotor = new Victor(8);
-    shooterSubsystemFalcon1 = new WPI_TalonFX(1);
-    shooterSubsystemFalcon2 = new WPI_TalonFX(2);
-    intakeSubsystemFalcon1 = new WPI_TalonFX(3);
+
+    // we don't need to use the canDeviceFinder for CAN Talons because
+    // they do not put up unreasonable amounts of SPAM
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
+      shooterSubsystemFalcon1 = new WPI_TalonFX(1);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2)) { 
+      shooterSubsystemFalcon2 = new WPI_TalonFX(2);
+      }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) {
+      intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) {
+      liftSubsystemWinch = new WPI_TalonFX(4);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
+      liftSubsystemRelease = new Solenoid(0);
+    }
   }
 
   void makeSubsystems() {
@@ -80,8 +126,9 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     lightSubsystem = new LightSubsystem();
-    rumbleSubsystemDriver = new RumbleSubsystem(Constants.DRIVER_JOYSTICK_PORT);
-    rumbleSubsystemOperator = new RumbleSubsystem(Constants.OPERATOR_JOYSTICK_PORT);
+    rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
+    rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
+    liftSubsystem = new LiftSubsystem();
   }
 
   /**
@@ -91,8 +138,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Joystick driverJoystick = new Joystick(Constants.DRIVER_JOYSTICK_PORT);
-    Joystick operatorJoystick = new Joystick(Constants.OPERATOR_JOYSTICK_PORT);
+    driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
+    operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
     //Driver Controller
     JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
@@ -109,7 +156,13 @@ public class RobotContainer {
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
     JoystickButton intakeJoystickButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem));
+    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem)); 
+
+    JoystickButton liftRaiseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
+    liftRaiseButton.whileHeld(new LiftRaiseCommand(liftSubsystem));
+
+    JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
   }
 
   /**
