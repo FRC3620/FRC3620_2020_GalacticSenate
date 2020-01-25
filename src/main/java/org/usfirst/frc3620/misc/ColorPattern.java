@@ -1,4 +1,4 @@
-package frc.misc;
+package org.usfirst.frc3620.misc;
 
 /**
  * Enum variables to control color pattern in LightSubsystem

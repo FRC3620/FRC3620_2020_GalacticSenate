@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import org.slf4j.Logger;
 import frc.robot.Constants;
-import frc.misc.ColorPattern;
-import frc.misc.LightEffect;
+import org.usfirst.frc3620.misc.ColorPattern;
+import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+
 
 /**
  * @author Nick Zimanski (SlippStream)
@@ -109,7 +110,7 @@ public class LightSubsystem extends SubsystemBase {
         setRainbow(0, false);
         break;
       case LOW_VOLTAGE:
-        setBlink(new Color8Bit(255,0,0), 1000, true, 200, true);
+        setBlink(new Color8Bit(255,0,0), 1000, true, 400, true);
       default:
         break;
     }
@@ -441,7 +442,7 @@ public class LightSubsystem extends SubsystemBase {
 
   private LightEffect periodicBlink(LightEffect effect) {
     var color = effect.getColor();
-    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate/2 < 20) {
+    if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate/2 < 10) {
       for (int i = 0; i < ledBuffer.getLength(); i++) {
         if (blink_isOn) ledBuffer.setLED(i, LightEffect.BLACK);
         else ledBuffer.setLED(i, color);
