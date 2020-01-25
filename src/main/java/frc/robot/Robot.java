@@ -7,15 +7,21 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.util.Date;
 import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import frc.robot.commands.onCommandEnd_;
-import frc.robot.commands.onCommandInitialize_;
 import org.usfirst.frc3620.misc.ColorPattern;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,23 +35,43 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private Logger logger;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    logger = EventLogging.getLogger(Robot.class, Level.INFO);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.INIT);
 
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {
+      public void accept(Command command) {
+        logger.info("initialized {}", command.getClass().getSimpleName());
 
-    Consumer<Command> onInit = new onCommandInitialize_();
-    CommandScheduler.getInstance().onCommandInitialize(onInit);
+        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+      }
+    });
 
-    Consumer<Command> onEnd = new onCommandEnd_();
-    CommandScheduler.getInstance().onCommandFinish(onEnd);
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {
+      public void accept(Command command) {
+        logger.info("Ended {}", command.getClass().getSimpleName());
+
+        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {
+      public void accept(Command command) {
+        logger.info("Interrupted {}", command.getClass().getSimpleName());
+
+        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+      }
+    });
   }
 
 
