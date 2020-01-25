@@ -57,7 +57,8 @@ public class SpinControlPanelUntilColor extends CommandBase {
     greenCounter = 0; 
     yellowCounter = 0;
     rotationCount = 0; 
-    RobotContainer.m_armMotor.set(0.5);
+    RobotContainer.armSubsystem.popArmUp();
+    RobotContainer.m_armMotor.set(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -147,12 +148,12 @@ public class SpinControlPanelUntilColor extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     armSubsystem.stopSpinningControlPanelWheel();
+    armSubsystem.popArmDown();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
-   
   }
 }

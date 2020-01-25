@@ -57,6 +57,7 @@ public class RobotContainer {
   public static WPI_TalonFX intakeSubsystemFalcon1;
   public static WPI_TalonFX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
+  public static Solenoid solenoidArmUp;
 
   // subsystems here...
   public static ArmSubsystem armSubsystem;
@@ -118,7 +119,9 @@ public class RobotContainer {
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
       liftSubsystemRelease = new Solenoid(0);
+      solenoidArmUp = new Solenoid(1);
     }
+
   }
 
   void makeSubsystems() {
