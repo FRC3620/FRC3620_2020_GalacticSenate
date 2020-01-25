@@ -12,9 +12,10 @@ import java.util.function.Consumer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.misc.ColorPattern;
+
 import frc.robot.commands.onCommandEnd_;
 import frc.robot.commands.onCommandInitialize_;
+import org.usfirst.frc3620.misc.ColorPattern;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
