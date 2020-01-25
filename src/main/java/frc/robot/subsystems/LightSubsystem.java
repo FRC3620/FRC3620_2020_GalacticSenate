@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * @author Nick Zimanski (SlippStream)
- * @version 11 January 2020
+ * @version 25 January 2020
  */
 public class LightSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
@@ -101,7 +101,7 @@ public class LightSubsystem extends SubsystemBase {
         setTwinkle(new Color8Bit(0, 180, 0), 0, false);
         break;
       case AUTO:
-        setShot(new Color8Bit(0, 255, 0), 0, false);
+        setShot(new Color8Bit(0, 255, 0), 0, false, 4, 3);
         break;
       case DISABLED:
         setTwinkle(new Color8Bit(100, 0, 0), 0, false);
@@ -197,6 +197,7 @@ public class LightSubsystem extends SubsystemBase {
     var effect = new LightEffect(color, override, ColorPattern.Pattern.SHOT, milliseconds, returnsPrevious);
     effect.m_shotIntervalLength = shotInterval;
     effect.m_shotTrailLength = trailLength;
+    shot_locationArr.clear();
     setEffect(effect);
   }
   /**
@@ -255,7 +256,8 @@ public class LightSubsystem extends SubsystemBase {
    * @param override (Optional) Whether or not to skip the queue. Defaults to false.
    * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
    */
-  public void setTwinkle(Color8Bit color, int milliseconds, boolean override, boolean returnsPrevious) {setEffect(new LightEffect(color, override, ColorPattern.Pattern.TWINKLE, milliseconds, returnsPrevious));}
+  public void setTwinkle(Color8Bit color, int milliseconds, boolean override, boolean returnsPrevious) {setEffect(new LightEffect(color, override, ColorPattern.Pattern.TWINKLE, milliseconds, returnsPrevious));
+  }
   /**
    * Sets a 'twinkle' animation on a solid color, where individual LEDs fluctuate brightness
    * @param color The WPILIB Color8Bit reference for a specific color
@@ -405,13 +407,13 @@ public class LightSubsystem extends SubsystemBase {
   private LightEffect periodicTwinkle(LightEffect effect) {
     int[] hsv = effect.getHSV();
     final int midSat = hsv[2];
-    final int interval = 100;
+    final int interval = Math.abs(128 - midSat);
 
-    final double lightRate = 0.05;
+    final double lightRate = 0.08;
     int[] saturationBuffer = new int[ledBuffer.getLength()];
     double random = Math.random();
 
-    if (twinkle_runCount % 15 == 0) {
+    if (twinkle_runCount % 12 == 0) {
       twinkle_runCount = 0;
       for (int p = 0; p < saturationBuffer.length; p++) {
         if (saturationBuffer[p] == 0) saturationBuffer[p] = midSat; //Sets saturation to medium if the strip is off
@@ -428,7 +430,7 @@ public class LightSubsystem extends SubsystemBase {
         ledBuffer.setHSV(i, hsv[0], hsv[1], saturationBuffer[i]);
       }
     }
-    else if (twinkle_runCount % 5 == 0) {
+    else if (twinkle_runCount % 4 == 0) {
       for (int i = 0; i < saturationBuffer.length; i++) {
         if (Math.random() > lightRate) continue;
         if (saturationBuffer[i] < midSat && random >= 1/(midSat - saturationBuffer[i])) {saturationBuffer[i] += interval;} //More likely to trend toward medium saturation the farther away it is
