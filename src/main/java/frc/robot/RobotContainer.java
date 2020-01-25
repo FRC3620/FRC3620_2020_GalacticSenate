@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
 
@@ -144,13 +145,18 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
+    DPad operatorDPad = new DPad(operatorJoystick, 0);
+
     //Driver Controller
-    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
 
-    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     stopForColor.whenPressed (new SpinControlPanelUntilColor());
-   
+
+    operatorDPad.up().whenPressed(new PopupArmCommand()); 
+    operatorDPad.down().whenPressed(new PopDownArmCommand());
+       
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 

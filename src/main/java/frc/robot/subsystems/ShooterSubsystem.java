@@ -52,19 +52,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /* This method will be called once per scheduler run
-    SmartDashboard.putNumber("FValue", kFVelocity);
-    SmartDashboard.putNumber("PValue", kPVelocity);
-    SmartDashboard.putNumber("IValue", kIVelocity);
-    SmartDashboard.putNumber("DValue", kDVelocity);
-    SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
-    SmartDashboard.putNumber("RPM", rpm);
-    For testing use the values below */
-    SmartDashboard.putNumber("Output%", falcon1.getMotorOutputPercent());
-    SmartDashboard.putNumber("ERROR", falcon1.getClosedLoopError());
-    SmartDashboard.putNumber("Output Current", falcon1.getStatorCurrent());
-    SmartDashboard.putNumber("Falcon Temperature", falcon1.getTemperature());
-    SmartDashboard.putNumber("Velocity", falcon1.getSelectedSensorVelocity());
+    if (falcon1 != null) {
+      /* This method will be called once per scheduler run
+      SmartDashboard.putNumber("FValue", kFVelocity);
+      SmartDashboard.putNumber("PValue", kPVelocity);
+      SmartDashboard.putNumber("IValue", kIVelocity);
+      SmartDashboard.putNumber("DValue", kDVelocity);
+      SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
+      SmartDashboard.putNumber("RPM", rpm);
+      For testing use the values below */
+      SmartDashboard.putNumber("Output%", falcon1.getMotorOutputPercent());
+      SmartDashboard.putNumber("ERROR", falcon1.getClosedLoopError());
+      SmartDashboard.putNumber("Output Current", falcon1.getStatorCurrent());
+      SmartDashboard.putNumber("Falcon Temperature", falcon1.getTemperature());
+      SmartDashboard.putNumber("Velocity", falcon1.getSelectedSensorVelocity());
+    }
   }
 
   public void ShootPID(){
