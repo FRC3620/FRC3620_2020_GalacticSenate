@@ -70,7 +70,7 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    dataLogger.done();
+    //dataLogger.done();
   }
 
   // Returns true when the command should end.
