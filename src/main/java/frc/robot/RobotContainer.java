@@ -12,9 +12,12 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -51,6 +54,30 @@ public class RobotContainer {
   CANDeviceFinder canDeviceFinder;
 
   // hardware here...
+  public static CANSparkMax driveSubsystemRightFrontDrive;
+  public static CANSparkMax driveSubsystemRightFrontAzimuth;
+  public static CANEncoder driveSubsystemRightFrontDriveEncoder;
+  public static CANEncoder driveSubsystemRightFrontAzimuthEncoder;
+  public static AnalogInput driveSubsystemRightFrontHomeEncoder;
+  
+  public static CANSparkMax driveSubsystemLeftFrontDrive;
+  public static CANSparkMax driveSubsystemLeftFrontAzimuth;
+  public static CANEncoder driveSubsystemLeftFrontDriveEncoder;
+  public static CANEncoder driveSubsystemLeftFrontAzimuthEncoder;
+  public static AnalogInput driveSubsystemLeftFrontHomeEncoder;
+  
+  public static CANSparkMax driveSubsystemLeftBackDrive;
+  public static CANSparkMax driveSubsystemLeftBackAzimuth;
+  public static CANEncoder driveSubsystemLeftBackDriveEncoder;
+  public static CANEncoder driveSubsystemLeftBackAzimuthEncoder;
+  public static AnalogInput driveSubsystemLeftBackHomeEncoder;
+  
+  public static CANSparkMax driveSubsystemRightBackDrive;
+  public static CANSparkMax driveSubsystemRightBackAzimuth;
+  public static CANEncoder driveSubsystemRightBackDriveEncoder;
+  public static CANEncoder driveSubsystemRightBackAzimuthEncoder;
+  public static AnalogInput driveSubsystemRightBackHomeEncoder;
+  
   public static SpeedController m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
@@ -59,6 +86,7 @@ public class RobotContainer {
   public static Solenoid liftSubsystemRelease;
 
   // subsystems here...
+  public static DriveSubsystem driveSubsystem;
   public static ArmSubsystem armSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static LightSubsystem lightSubsystem;
@@ -87,6 +115,31 @@ public class RobotContainer {
 
   void setupMotors() {
     int kTimeoutMs = 0;
+
+    if (driveSubsystemRightFrontDrive != null){
+
+      resetMaxToKnownState(driveSubsystemRightFrontDrive);
+      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.6);
+
+      resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
+
+      resetMaxToKnownState(driveSubsystemLeftFrontDrive);
+      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.6);
+
+      resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
+
+      resetMaxToKnownState(driveSubsystemLeftBackDrive);
+      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.6);
+
+      resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
+
+      resetMaxToKnownState(driveSubsystemRightBackDrive);
+      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.6);
+      
+      resetMaxToKnownState(driveSubsystemRightBackAzimuth);
+
+    }
+
     if (shooterSubsystemFalcon1 != null) {
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
       // undocumented current measurement status frame
@@ -104,6 +157,40 @@ public class RobotContainer {
 
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1)){
+
+      driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
+      driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
+
+      driveSubsystemRightFrontAzimuth = new CANSparkMax(2, MotorType.kBrushless);
+      driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
+
+      driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
+              
+      driveSubsystemLeftFrontDrive = new CANSparkMax(3, MotorType.kBrushless);
+      driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
+              
+      driveSubsystemLeftFrontAzimuth = new CANSparkMax(4, MotorType.kBrushless);
+      driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
+
+      driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
+      
+      driveSubsystemLeftBackDrive = new CANSparkMax(5, MotorType.kBrushless);
+      driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
+              
+      driveSubsystemLeftBackAzimuth = new CANSparkMax(6, MotorType.kBrushless);
+      driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
+
+      driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
+              
+      driveSubsystemRightBackDrive = new CANSparkMax(7, MotorType.kBrushless);
+      driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
+      
+      driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
+      driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
+
+      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+    }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
@@ -131,6 +218,16 @@ public class RobotContainer {
     liftSubsystem = new LiftSubsystem();
   }
 
+  static void resetMaxToKnownState (CANSparkMax x) {
+		x.setInverted(false);
+        x.setIdleMode(IdleMode.kCoast);
+        x.setOpenLoopRampRate(1);
+        x.setClosedLoopRampRate(1);
+        x.setSmartCurrentLimit(50);
+        //x.setSecondaryCurrentLimit(100, 0);
+    }
+
+
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -142,6 +239,7 @@ public class RobotContainer {
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
     //Driver Controller
+
     JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
 
@@ -164,6 +262,25 @@ public class RobotContainer {
     JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
   }
+
+  public static double getDriveVerticalJoystick() {
+    if(driverJoystick.getRawAxis(1) < 0.2 && driverJoystick.getRawAxis(1) > -0.2) {
+      return 0;
+    }
+    return -driverJoystick.getRawAxis(1);
+  }
+  public static double getDriveHorizontalJoystick() {
+    if(driverJoystick.getRawAxis(0) < 0.2 && driverJoystick.getRawAxis(0) > -0.2) {
+        return 0;
+    }
+    return driverJoystick.getRawAxis(0);
+  }
+  public static double getDriveSpinJoystick() {
+    if(driverJoystick.getRawAxis(4) < 0.2 && driverJoystick.getRawAxis(4) > -0.2) {
+        return 0;
+    }
+    return -driverJoystick.getRawAxis(4);
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
