@@ -24,7 +24,14 @@ public class IntakeSubsystem extends SubsystemBase {
   *
   */
   public void intakeSet(double speed){    //runs intake
-    intakeFalcon1.set(speed);
+    if (intakeFalcon1 != null) {
+      intakeFalcon1.set(speed);
+    }
+  }
+
+  @Override
+  public void periodic() {
+    //System.out.println("boo " + intakeFalcon1.get());
   }
 
 }
