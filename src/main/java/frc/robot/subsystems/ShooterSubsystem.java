@@ -19,29 +19,35 @@ public class ShooterSubsystem extends SubsystemBase {
   /**
    * Creates a new ShooterSubsystem.
    */
-  private final WPI_TalonFX Falcon1 = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX Falcon2 = RobotContainer.shooterSubsystemFalcon2; 
+  private final WPI_TalonFX falcon1 = RobotContainer.shooterSubsystemFalcon1;
+  private final WPI_TalonFX falcon2 = RobotContainer.shooterSubsystemFalcon2; 
 
-  public final int kVelocitySlotIdx = 0;
-  public final int kTimeoutMs = 0;
-  public double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
-  public double kPVelocity = 0.95; //0.95
-  public double kIVelocity = 0.0000001; //0.0000001
-  public double kDVelocity = 6.9; //6.9
-  public double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
+  //sets up all values for PID
+  private final int kVelocitySlotIdx = 0;
+  private final int kTimeoutMs = 0;
+  private final double kFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
+  private final double kPVelocity = 0.97; //0.97
+  private final double kIVelocity = 0.0000001; //0.0000001
+  private final double kDVelocity = 7.5; //7.5
+  private final double rpm = 4300; //4300 normal and 5100 for 30 foot shoot
    
   public ShooterSubsystem() {
-    Falcon1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
+    if (falcon1 != null) {
+      //for PID you have to have a sensor to check on so you know the error
+      falcon1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
-    Falcon1.configNominalOutputForward(0, kTimeoutMs);
-    Falcon1.configNominalOutputReverse(0, kTimeoutMs);
-    Falcon1.configPeakOutputForward(+1, kTimeoutMs);
-    Falcon1.configPeakOutputReverse(-1, kTimeoutMs);
-   //set P
-    Falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
-    Falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
-    Falcon1.config_kI(kVelocitySlotIdx, kIVelocity, kTimeoutMs);
-    Falcon1.config_kD(kVelocitySlotIdx, kDVelocity, kTimeoutMs);
+      //set max and minium(nominal) speed in percentage output
+      falcon1.configNominalOutputForward(0, kTimeoutMs);
+      falcon1.configNominalOutputReverse(0, kTimeoutMs);
+      falcon1.configPeakOutputForward(+1, kTimeoutMs);
+      falcon1.configPeakOutputReverse(-1, kTimeoutMs);
+
+      //set up the falcon for using FPID
+      falcon1.config_kF(kVelocitySlotIdx, kFVelocity, kTimeoutMs);
+      falcon1.config_kP(kVelocitySlotIdx, kPVelocity, kTimeoutMs);
+      falcon1.config_kI(kVelocitySlotIdx, kIVelocity, kTimeoutMs);
+      falcon1.config_kD(kVelocitySlotIdx, kDVelocity, kTimeoutMs);
+    }
   }
 
   @Override
@@ -53,32 +59,39 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("DValue", kDVelocity);
     SmartDashboard.putNumber("Output Voltage", Falcon1.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
-    For testing use the values below
-    SmartDashboard.putNumber("Output%", Falcon1.getMotorOutputPercent());
-    SmartDashboard.putNumber("ERROR", Falcon1.getClosedLoopError());
-    SmartDashboard.putNumber("Output Current", Falcon1.getStatorCurrent());
-    SmartDashboard.putNumber("Falcon Temperature", Falcon1.getTemperature());
-    SmartDashboard.putNumber("Velocity", Falcon1.getSelectedSensorVelocity());
-    */
+    For testing use the values below */
+    SmartDashboard.putNumber("Output%", falcon1.getMotorOutputPercent());
+    SmartDashboard.putNumber("ERROR", falcon1.getClosedLoopError());
+    SmartDashboard.putNumber("Output Current", falcon1.getStatorCurrent());
+    SmartDashboard.putNumber("Falcon Temperature", falcon1.getTemperature());
+    SmartDashboard.putNumber("Velocity", falcon1.getSelectedSensorVelocity());
   }
 
   public void ShootPID(){
     /* converting rev/min to units/rev
-    4300 rev/min from measuring with TACH
     100ms for a min is 600ms
     TalonFX records in 2048 units/rev
     */
+    //set target velocity using PID
     double targetVelocity = rpm * 2048 / 600;
-    Falcon1.set(ControlMode.Velocity, targetVelocity);
+    if (falcon1 != null) {
+      falcon1.set(ControlMode.Velocity, targetVelocity);
+    }
   }
 
   public void Shoot(){
-    Falcon1.set(ControlMode.PercentOutput, 0.7);
+    //set target velocity using percent output
+    if (falcon1 != null) {
+      falcon1.set(ControlMode.PercentOutput, 0.7);
+    }
     //Falcon2.set();
   }
 
   public void ShooterOff(){
-    Falcon1.set(ControlMode.PercentOutput, 0);
+    //sets target velocity to zero
+    if (falcon1 != null) {
+      falcon1.set(ControlMode.PercentOutput, 0);
+    }
     //Falcon2.set(0);
   }
 }

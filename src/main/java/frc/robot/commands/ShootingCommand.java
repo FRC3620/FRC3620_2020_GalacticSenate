@@ -56,7 +56,7 @@ public class ShootingCommand extends CommandBase {
     }
     dataLogger.setFilename("test");
     dataLogger.setFilenameTimestamp(new Date());
-    dataLogger.start();
+    //dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,7 +70,7 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    dataLogger.done();
+    //dataLogger.done();
   }
 
   // Returns true when the command should end.
