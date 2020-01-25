@@ -1,4 +1,4 @@
-package frc.misc;
+package org.usfirst.frc3620.misc;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;

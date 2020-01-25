@@ -1,8 +1,6 @@
-package frc.misc;
+package org.usfirst.frc3620.misc;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
-
-import frc.misc.ColorPattern;
 
 /**
  * @author Nick Zimanski (SlippStream)
