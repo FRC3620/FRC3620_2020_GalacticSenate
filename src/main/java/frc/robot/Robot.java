@@ -49,27 +49,21 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.INIT);
 
-    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
-        logger.info("initialized {}", command.getClass().getSimpleName());
-
-        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+        logger.info("initialized {}", command.getClass().getSimpleName());//I scream at people
       }
     });
 
-    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
       public void accept(Command command) {
-        logger.info("Ended {}", command.getClass().getSimpleName());
-
-        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
       }
     });
 
-    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
       public void accept(Command command) {
-        logger.info("Interrupted {}", command.getClass().getSimpleName());
-
-        //logger.putOnTheDangScreen("Initialize" + command.getObject.getSimpleName())
+        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
       }
     });
   }
