@@ -164,7 +164,12 @@ public class RobotContainer {
     JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
   }
-
+public static double getClimbingJoystick() {
+  if (operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y) < 0.1 && operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y) > -0.1) { 
+    return 0;
+  }
+  return -operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
+}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

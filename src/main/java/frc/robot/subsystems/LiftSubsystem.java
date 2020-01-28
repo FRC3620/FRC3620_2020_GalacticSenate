@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.XBoxConstants;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,11 +19,12 @@ public class LiftSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   private final Solenoid liftRelease = RobotContainer.liftSubsystemRelease; // solenoid fires lift upward
   private final WPI_TalonFX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
+  double getClimbingJoystick = RobotContainer.getClimbingJoystick();
 
   public LiftSubsystem() {
   }
 
-  public void raiseLift() { // fires lift upward
+  public void raiseLift() { // fires lift upward *
     if (liftRelease != null) {
       liftRelease.set(true);
     }
@@ -44,6 +46,10 @@ public class LiftSubsystem extends SubsystemBase {
     if (liftController != null) {
       liftController.set(0);
     }
+  }
+  
+  public void liftPower(double speed) {
+    liftController.set(speed);
   }
 
 }
