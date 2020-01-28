@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -111,6 +112,7 @@ public class RobotContainer {
     makeSubsystems();
     // Configure the button bindings
     configureButtonBindings();
+    setupSmartDashboardCommands();
   }
 
   void setupMotors() {
@@ -209,6 +211,7 @@ public class RobotContainer {
   }
 
   void makeSubsystems() {
+    driveSubsystem = new DriveSubsystem();
     armSubsystem = new ArmSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     intakeSubsystem = new IntakeSubsystem();
@@ -216,6 +219,13 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
+  }
+
+  void setupSmartDashboardCommands(){
+
+    SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
+    SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
+
   }
 
   static void resetMaxToKnownState (CANSparkMax x) {
@@ -226,7 +236,6 @@ public class RobotContainer {
         x.setSmartCurrentLimit(50);
         //x.setSecondaryCurrentLimit(100, 0);
     }
-
 
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
@@ -249,6 +258,8 @@ public class RobotContainer {
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
+    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
+
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
@@ -261,25 +272,26 @@ public class RobotContainer {
 
     JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
+    
   }
 
   public static double getDriveVerticalJoystick() {
-    if(driverJoystick.getRawAxis(1) < 0.2 && driverJoystick.getRawAxis(1) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) < 0.2 && driverJoystick.getRawAxis(1) > -0.2) {
       return 0;
     }
-    return -driverJoystick.getRawAxis(1);
+    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
   }
   public static double getDriveHorizontalJoystick() {
-    if(driverJoystick.getRawAxis(0) < 0.2 && driverJoystick.getRawAxis(0) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && driverJoystick.getRawAxis(0) > -0.2) {
         return 0;
     }
-    return driverJoystick.getRawAxis(0);
+    return driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
   }
   public static double getDriveSpinJoystick() {
-    if(driverJoystick.getRawAxis(4) < 0.2 && driverJoystick.getRawAxis(4) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) < 0.2 && driverJoystick.getRawAxis(4) > -0.2) {
         return 0;
     }
-    return -driverJoystick.getRawAxis(4);
+    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
     }
 
   /**
