@@ -110,66 +110,65 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     rightFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+	leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+	leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+	rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
 
-		rightFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-		leftFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-		leftBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-		rightBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+	rightFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+	leftFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+	leftBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+	rightBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
 
-		rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+	rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+	leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+	leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+	rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
 
-		rightBackDriveEncoder.setPositionConversionFactor(1);
+	rightBackDriveEncoder.setPositionConversionFactor(1);
 
-		setPositionPID(rightFrontPositionPID);
-		setPositionPID(leftFrontPositionPID);
-		setPositionPID(leftBackPositionPID);
-		setPositionPID(rightBackPositionPID);
+	setPositionPID(rightFrontPositionPID);
+	setPositionPID(leftFrontPositionPID);
+	setPositionPID(leftBackPositionPID);
+	setPositionPID(rightBackPositionPID);
 
-		setVelocityPID(rightFrontVelPID);
-		setVelocityPID(leftFrontVelPID);
-		setVelocityPID(leftBackVelPID);
-		setVelocityPID(rightBackVelPID);
+	setVelocityPID(rightFrontVelPID);
+	setVelocityPID(leftFrontVelPID);
+	setVelocityPID(leftBackVelPID);
+	setVelocityPID(rightBackVelPID);
 
-		SmartDashboard.putNumber("P Gain Position", kPositionP);
-		SmartDashboard.putNumber("I Gain Position", kPositionI);
-    	SmartDashboard.putNumber("D Gain Position", kPositionD);
-    	SmartDashboard.putNumber("I Zone Position", kPositionIz);
-		SmartDashboard.putNumber("Feed Forward Position", kPositionFF);
-		SmartDashboard.putNumber("Max Output Position", kVelocityMaxOutput);
-    	SmartDashboard.putNumber("Min Output Position", kVelocityMinOutput);
-		
-		SmartDashboard.putNumber("P Gain Velocity", kVelocityP);
-    	SmartDashboard.putNumber("I Gain Velocity", kVelocityI);
-    	SmartDashboard.putNumber("D Gain Velocity", kVelocityD);
-    	SmartDashboard.putNumber("I Zone Velocity", kVelocityIz);
-    	SmartDashboard.putNumber("Feed Forward Velocity", kVelocityFF);
-    	SmartDashboard.putNumber("Max Output Velocity", kVelocityMaxOutput);
-		SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
-		SmartDashboard.putNumber("PID Position Setpoint", 0);
+	SmartDashboard.putNumber("P Gain Position", kPositionP);
+	SmartDashboard.putNumber("I Gain Position", kPositionI);
+	SmartDashboard.putNumber("D Gain Position", kPositionD);
+	SmartDashboard.putNumber("I Zone Position", kPositionIz);
+	SmartDashboard.putNumber("Feed Forward Position", kPositionFF);
+	SmartDashboard.putNumber("Max Output Position", kVelocityMaxOutput);
+	SmartDashboard.putNumber("Min Output Position", kVelocityMinOutput);
+	
+	SmartDashboard.putNumber("P Gain Velocity", kVelocityP);
+	SmartDashboard.putNumber("I Gain Velocity", kVelocityI);
+	SmartDashboard.putNumber("D Gain Velocity", kVelocityD);
+	SmartDashboard.putNumber("I Zone Velocity", kVelocityIz);
+	SmartDashboard.putNumber("Feed Forward Velocity", kVelocityFF);
+	SmartDashboard.putNumber("Max Output Velocity", kVelocityMaxOutput);
+	SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
+	SmartDashboard.putNumber("PID Position Setpoint", 0);
 
-		SmartDashboard.putNumber("Azimuth Test Heading", 0);
-		SmartDashboard.putBoolean("Change Test Heading", false);
+	SmartDashboard.putNumber("Azimuth Test Heading", 0);
+	SmartDashboard.putBoolean("Change Test Heading", false);
 
-		rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-		leftFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-		leftBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-		rightBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+	rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+	leftFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+	leftBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+	rightBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
 
-		rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
-		leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
-		leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
+	rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
+	leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
+	leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
     rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
     
     this.setDefaultCommand(new TeleOpDriveCommand(this));
 
   }
-  
 
   @Override
   public void periodic() {
