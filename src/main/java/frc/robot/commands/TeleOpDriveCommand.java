@@ -31,8 +31,16 @@ public class TeleOpDriveCommand extends CommandBase {
   public void execute() {
     double strafeX = RobotContainer.getDriveHorizontalJoystick();
     double strafeY = RobotContainer.getDriveVerticalJoystick();
-    double spinX = RobotContainer.getDriveSpinJoystick();
-   
+    double spinXDriver = RobotContainer.getDriveSpinJoystick();
+    double spinXOperator = RobotContainer.getOperatorSpinJoystick();
+    double spinX;
+    
+    spinX = spinXDriver;
+
+    if (spinXDriver == 0){
+      spinX = spinXOperator;
+    }
+
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
 

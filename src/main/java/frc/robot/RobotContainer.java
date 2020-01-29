@@ -258,7 +258,11 @@ public class RobotContainer {
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
+    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
+
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
+    toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
 
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
@@ -276,22 +280,29 @@ public class RobotContainer {
   }
 
   public static double getDriveVerticalJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) < 0.2 && driverJoystick.getRawAxis(1) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) > -0.2) {
       return 0;
     }
     return -driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
   }
   public static double getDriveHorizontalJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && driverJoystick.getRawAxis(0) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) > -0.2) {
         return 0;
     }
     return driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
   }
   public static double getDriveSpinJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) < 0.2 && driverJoystick.getRawAxis(4) > -0.2) {
+    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) > -0.2) {
         return 0;
     }
-    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
+    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
+    }
+    
+  public static double getOperatorSpinJoystick() {
+    if(operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) > -0.2) {
+        return 0;
+    }
+    return -operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
     }
 
   /**
