@@ -27,18 +27,18 @@ public class ShooterSubsystem extends SubsystemBase {
   private final int kTimeoutMs = 0;
 
   //top FPID Values
-  private final double tFVelocity = 0.7 * 1023 / 14640; //0.7 * 1023 / 14640
-  private final double tPVelocity = 0.97; //0.97
-  private final double tIVelocity = 0.0000001; //0.0000001
-  private final double tDVelocity = 7.5; //7.5
-  private final double trpm = 4300; //4300 normal and 5100 for 30 foot shoot
+  private final double tFVelocity = 0.045; //0.045
+  private final double tPVelocity = 0.60; //0.60
+  private final double tIVelocity = 0.000003; //0.000003
+  private final double tDVelocity = 7.75; //7.75
+  private final double trpm = 5200; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0;
   private final double bPVelocity = 0;
   private final double bIVelocity = 0;
   private final double bDVelocity = 0;
-  private final double brpm = 0;
+  private final double brpm = 4300; //this isnt it but we want a 0.45 percent output using FPID
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -85,13 +85,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("DValue", kDVelocity);
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
-    For testing use the values below
+    For testing use the values below */
     SmartDashboard.putNumber("Output%", falconTop.getMotorOutputPercent());
     SmartDashboard.putNumber("ERROR", falconTop.getClosedLoopError());
-    SmartDashboard.putNumber("Output Current", falconTop.getStatorCurrent());
-    SmartDashboard.putNumber("Falcon Temperature", falconTop.getTemperature());
     SmartDashboard.putNumber("Velocity", falconTop.getSelectedSensorVelocity()); 
-    */
   }
 
   public void ShootPID(){
@@ -110,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }*/
     if (falconBottom != null) {
-      falconBottom.set(ControlMode.PercentOutput, 0.5);
+      falconBottom.set(ControlMode.PercentOutput, 0.45);
     }
   }
 

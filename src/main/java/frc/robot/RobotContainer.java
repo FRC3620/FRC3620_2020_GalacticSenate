@@ -90,30 +90,31 @@ public class RobotContainer {
   void setupMotors() {
     int kTimeoutMs = 0;
     if (shooterSubsystemFalcon1 != null) {
+      shooterSubsystemFalcon1.configFactoryDefault();
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
       // undocumented current measurement status frame
-      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+      /*shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs); */
     }
 
     if (shooterSubsystemFalcon2 != null) {
+      shooterSubsystemFalcon2.configFactoryDefault();
       shooterSubsystemFalcon2.setInverted(InvertType.InvertMotorOutput);
-      // undocumented current measurement status frame
-      shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      if (false) {
+        // undocumented current measurement status frame
+        shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      }
     }
 
     if (shooterSubsystemFalcon3 != null) {
+      shooterSubsystemFalcon3.configFactoryDefault();
+      shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
       shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
-      // undocumented current measurement status frame
-      shooterSubsystemFalcon3.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
-      shooterSubsystemFalcon3.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-      shooterSubsystemFalcon3.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon3.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
     }
   }
 
