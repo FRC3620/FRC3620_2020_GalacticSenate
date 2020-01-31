@@ -36,8 +36,8 @@ public class ShooterSubsystem extends SubsystemBase {
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
   private final double bPVelocity = 0.45;
-  private final double bIVelocity = 0;
-  private final double bDVelocity = 0;
+  private final double bIVelocity = 0.0000001;
+  private final double bDVelocity = 7.5;
   private final double brpm = 4000;
 
   public ShooterSubsystem() {
