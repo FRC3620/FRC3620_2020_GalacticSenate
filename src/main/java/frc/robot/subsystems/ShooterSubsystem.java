@@ -30,15 +30,15 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double tFVelocity = 0.045; //0.045
   private final double tPVelocity = 0.60; //0.60
   private final double tIVelocity = 0.000003; //0.000003
-  private final double tDVelocity = 7.75; //7.75
+  private final double tDVelocity = 7; //7.75
   private final double trpm = 5200; //5200
 
   //bottom FPID Values
-  private final double bFVelocity = 0;
-  private final double bPVelocity = 0;
+  private final double bFVelocity = 0.0465;
+  private final double bPVelocity = 0.45;
   private final double bIVelocity = 0;
   private final double bDVelocity = 0;
-  private final double brpm = 4300; //this isnt it but we want a 0.45 percent output using FPID
+  private final double brpm = 4000;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -86,9 +86,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
     For testing use the values below */
-    SmartDashboard.putNumber("Output%", falconTop.getMotorOutputPercent());
-    SmartDashboard.putNumber("ERROR", falconTop.getClosedLoopError());
-    SmartDashboard.putNumber("Velocity", falconTop.getSelectedSensorVelocity()); 
+    SmartDashboard.putNumber("Output%", falconBottom.getMotorOutputPercent());
+    SmartDashboard.putNumber("ERROR", falconBottom.getClosedLoopError());
+    SmartDashboard.putNumber("Velocity", falconBottom.getSelectedSensorVelocity()); 
+    SmartDashboard.putNumber("FalconTemp", falconBottom.getTemperature());
   }
 
   public void ShootPID(){
@@ -102,13 +103,14 @@ public class ShooterSubsystem extends SubsystemBase {
       falconTop.set(ControlMode.Velocity, topTargetVelocity);
     }
 
-    /*double bottomTargetVelocity = brpm * 2048 / 600;
+    double bottomTargetVelocity = brpm * 2048 / 600;
     if (falconBottom != null) {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
-    }*/
-    if (falconBottom != null) {
-      falconBottom.set(ControlMode.PercentOutput, 0.45);
     }
+    /*
+    if (falconBottom != null) {
+      falconBottom.set(ControlMode.PercentOutput, 0.60);
+    } */
   }
 
   public void Shoot(){
