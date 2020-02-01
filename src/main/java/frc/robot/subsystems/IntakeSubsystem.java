@@ -7,13 +7,16 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+
 import frc.robot.RobotContainer;
+
 /**
  * @author Noah Dressander (532377)
  * @version 17 January 2020
  */
 public class IntakeSubsystem extends SubsystemBase {
-  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1;    //intake motor 
+  private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
 
   public IntakeSubsystem(){
   }
@@ -24,8 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
   *
   */
   public void intakeSet(double speed){    //runs intake
-    if (intakeFalcon1 != null) {
-      intakeFalcon1.set(speed);
+    if (intakeSparkMax != null) {
+      intakeSparkMax.set(speed);
     }
   }
 

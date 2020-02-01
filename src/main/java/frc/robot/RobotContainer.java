@@ -85,7 +85,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
-  public static WPI_TalonFX intakeSubsystemFalcon1;
+  public static CANSparkMax intakeSubsystemSparkMax;
   public static WPI_TalonFX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
 
@@ -215,6 +215,9 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+      intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+    }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
@@ -226,10 +229,7 @@ public class RobotContainer {
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 6)) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(6);
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) {
-      intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
-    }
+    } 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) {
       liftSubsystemWinch = new WPI_TalonFX(4);
     }
@@ -291,6 +291,9 @@ public class RobotContainer {
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
