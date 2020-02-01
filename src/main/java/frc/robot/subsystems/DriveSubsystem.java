@@ -62,8 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
 	//                    MUST MAKE SURE THESE VALUES ARE RIGHT BEFORE RUNNING SWERVE CODE
 	//***********************************************************************************************************
 
-	private final double CHASIS_WIDTH = 21.375; //inches
-	private final double CHASIS_LENGTH = 21.375; //inches
+	private final double CHASIS_WIDTH = 22.25; //inches
+	private final double CHASIS_LENGTH = 24.25; //inches
 
 	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*240; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
