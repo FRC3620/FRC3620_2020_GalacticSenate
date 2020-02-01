@@ -9,12 +9,15 @@ import frc.robot.subsystems.IntakeSubsystem;
  * 
  * Finalised command -- rules in subsystem
  */
-    public class IntakeCommand extends CommandBase {
+  public class IntakeCommand extends CommandBase {
+    //<linking with subsystem>
     private IntakeSubsystem intakeSubsystem; 
-
+    
     public IntakeCommand (IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
     }
+    //</linking with subsystem>
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -35,7 +38,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() { //starts/stops as button is pushed/released. Controlled in RobotContainer
       return(false);
   }
 }

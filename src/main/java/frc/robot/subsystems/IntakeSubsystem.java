@@ -13,7 +13,7 @@ import frc.robot.RobotContainer;
  * @version 17 January 2020
  */
 public class IntakeSubsystem extends SubsystemBase {
-  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1;    //intake motor 
+  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1; //intake motor 
 
   public IntakeSubsystem(){
   }
@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
   *@author Sean Thursby (sthursbyg@gmail.com)
   *
   */
-  public void intakeSet(double speed){    //runs intake
+  public void intakeSet(double speed){ //runs intake at set velocity
     intakeFalcon1.set(speed);
   }
 
