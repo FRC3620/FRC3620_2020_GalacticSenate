@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -82,6 +83,7 @@ public class RobotContainer {
   public static SpeedController m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonFX intakeSubsystemFalcon1;
   public static WPI_TalonFX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
@@ -143,14 +145,31 @@ public class RobotContainer {
     }
 
     if (shooterSubsystemFalcon1 != null) {
+      shooterSubsystemFalcon1.configFactoryDefault();
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
       // undocumented current measurement status frame
-      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+      /*shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      // shooterSubsystemFalcon1.configSelectedFeedbackSensor(FeedbackDevice.Tachometer,
-      // 0, kTimeoutMs);
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs); */
+    }
+
+    if (shooterSubsystemFalcon2 != null) {
+      shooterSubsystemFalcon2.configFactoryDefault();
+      shooterSubsystemFalcon2.setInverted(InvertType.InvertMotorOutput);
+      if (false) {
+        // undocumented current measurement status frame
+        shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      }
+    }
+
+    if (shooterSubsystemFalcon3 != null) {
+      shooterSubsystemFalcon3.configFactoryDefault();
+      shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
+      shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
     }
   }
 
@@ -198,7 +217,10 @@ public class RobotContainer {
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2)) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
-      }
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) { 
+      shooterSubsystemFalcon3 = new WPI_TalonFX(5);
+    }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) {
       intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
     }
