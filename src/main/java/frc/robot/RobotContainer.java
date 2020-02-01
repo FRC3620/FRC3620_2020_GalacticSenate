@@ -84,6 +84,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
+  public static WPI_TalonSRX shooterSubsystemBallFeeder; 
   public static WPI_TalonFX intakeSubsystemFalcon1;
   public static WPI_TalonFX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
@@ -171,6 +172,8 @@ public class RobotContainer {
       shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
       shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
     }
+
+
   }
 
   void makeHardware() {
@@ -220,6 +223,9 @@ public class RobotContainer {
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(5);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 6)) { 
+      shooterSubsystemBallFeeder = new WPI_TalonSRX(6);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) {
       intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
