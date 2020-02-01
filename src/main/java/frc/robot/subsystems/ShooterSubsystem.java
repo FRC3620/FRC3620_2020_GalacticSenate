@@ -115,7 +115,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     if(feeder != null) {
-      feeder.set(0.2); //load next ball into shooter
+      feeder.set(0.5); //load next ball into shooter
     }
     /*
     if (falconBottom != null) {

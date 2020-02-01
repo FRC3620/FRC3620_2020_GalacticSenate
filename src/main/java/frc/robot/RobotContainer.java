@@ -173,7 +173,9 @@ public class RobotContainer {
       shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
     }
 
-
+    if(shooterSubsystemBallFeeder != null) {
+      shooterSubsystemBallFeeder.setInverted(InvertType.InvertMotorOutput);
+    }
   }
 
   void makeHardware() {
@@ -217,6 +219,9 @@ public class RobotContainer {
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
+      intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
+      intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
@@ -224,14 +229,14 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2)) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) { 
-      shooterSubsystemFalcon3 = new WPI_TalonFX(5);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) { 
+      shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 6)) { 
-      shooterSubsystemBallFeeder = new WPI_TalonSRX(6);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) { 
+      shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) {
-      liftSubsystemWinch = new WPI_TalonFX(4);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) {
+      liftSubsystemWinch = new WPI_TalonFX(5);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
       liftSubsystemRelease = new Solenoid(0);
