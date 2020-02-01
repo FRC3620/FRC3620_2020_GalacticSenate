@@ -95,6 +95,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -219,6 +220,7 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
+    visionSubsystem = new VisionSubsystem();
   }
 
   void setupSmartDashboardCommands(){
@@ -261,8 +263,11 @@ public class RobotContainer {
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
-    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
+    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+
+    JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
