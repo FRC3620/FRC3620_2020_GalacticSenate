@@ -7,9 +7,21 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.util.Date;
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import org.usfirst.frc3620.misc.ColorPattern;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,9 +30,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private Logger logger;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,10 +43,31 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    logger = EventLogging.getLogger(Robot.class, Level.INFO);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.INIT);
+
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("initialized {}", command.getClass().getSimpleName());//I scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
+      }
+    });
   }
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -47,13 +83,16 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-  }
+
+}
+  
 
   /**
    * This function is called once each time the robot enters Disabled mode.
    */
   @Override
   public void disabledInit() {
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.DISABLED);
   }
 
   @Override
@@ -71,6 +110,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.AUTO);
   }
 
   /**
@@ -89,6 +130,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TELEOP);
   }
 
   /**
@@ -102,6 +145,8 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TEST);
   }
 
   /**

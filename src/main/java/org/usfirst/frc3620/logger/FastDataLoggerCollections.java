@@ -9,6 +9,15 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
     List<Double> timestamps = new ArrayList<>();
 
     @Override
+    public String start() {
+        int initialSize = (int) (maxLengthInSeconds * ( 1.0 / getInterval() ));
+        data = new ArrayList<>(initialSize);
+        timestamps = new ArrayList<>(initialSize);
+
+        return super.start();
+    }
+
+    @Override
     void logData(double timestamp, Object[] d) {
         timestamps.add(timestamp);
         data.add(d);
