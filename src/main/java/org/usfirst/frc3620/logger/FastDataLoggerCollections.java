@@ -26,6 +26,8 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
     @Override
     void writeData(PrintWriter w) {
         for (int i = 0; i < data.size(); i++) {
+            w.print(timestamps.get(i));
+            w.print(",");            
             w.format("%.6f", timestamps.get(i));
             Object[] row = data.get(i);
             for (int c = 0; c < row.length; c++) {
