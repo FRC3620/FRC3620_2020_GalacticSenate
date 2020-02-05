@@ -24,7 +24,7 @@ import frc.robot.subsystems.IntakeSubsystem;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      intakeSubsystem.intakeSet(0.6); //runs intake INWARD
+      intakeSubsystem.intakeSet(1); //runs intake INWARD
   }
 
   // Called once the command ends or is interrupted.
