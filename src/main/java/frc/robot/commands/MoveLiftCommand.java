@@ -52,7 +52,7 @@ public class MoveLiftCommand extends CommandBase {
   }
 
   public void rainbow() {
-    RobotContainer.lightSubsystem.setRainbow(5000, false, true);
+    RobotContainer.lightSubsystem.setRainbow(5000, false, true); //would have passed through rainbowtimer + 1 but it wouldnt work
   }
 
   // Called once the command ends or is interrupted.
