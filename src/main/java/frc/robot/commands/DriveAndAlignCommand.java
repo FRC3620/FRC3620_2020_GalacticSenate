@@ -42,7 +42,7 @@ public class DriveAndAlignCommand extends CommandBase {
 
     if (visionSubsystem.getShootingTargetPresent()){
       double yaw = visionSubsystem.getShootingTargetYaw();
-      spinX = 0.3*yaw;
+      spinX = -0.03*yaw;
     }
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
