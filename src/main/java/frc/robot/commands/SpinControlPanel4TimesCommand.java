@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.Logger;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -39,11 +41,13 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+// System.out.println("Worked");
     blueCounter = 0; 
     redCounter = 0; 
     greenCounter = 0; 
     yellowCounter = 0;
-    rotationCount = 0; 
+    rotationCount = 0;
+    RobotContainer.armSubsystem.popArmUp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -106,6 +110,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     armSubsystem.stopSpinningControlPanelWheel();
+    RobotContainer.armSubsystem.popArmDown();
   }
 
   // Returns true when the command should end.

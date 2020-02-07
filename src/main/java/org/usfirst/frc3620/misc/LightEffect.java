@@ -1,8 +1,6 @@
-package frc.misc;
+package org.usfirst.frc3620.misc;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
-
-import frc.misc.ColorPattern;
 
 /**
  * @author Nick Zimanski (SlippStream)
@@ -22,6 +20,7 @@ public class LightEffect {
 
     public int m_shotTrailLength;
     public int m_shotIntervalLength;
+    public Color8Bit[] m_shotColors;
 
     public int m_blinkFlashRate;
 
@@ -47,6 +46,32 @@ public class LightEffect {
     public void setRGB(int[] rgb) {}
 
     public int[] getHSV() {
+        double r = color.red / 255.0;
+        double g = color.green / 255.0;
+        double b = color.blue / 255.0;
+    
+        double cmax = Math.max(r, Math.max(g, b)); // maximum of r, g, b 
+        double cmin = Math.min(r, Math.min(g, b)); // minimum of r, g, b 
+        double diff = cmax - cmin; // diff of cmax and cmin. 
+        double h = -1, s = -1; 
+          
+        if (cmax == cmin) h = 0; 
+    
+        else if (cmax == r) h = (60 * ((g - b) / diff) + 360) % 360; 
+        else if (cmax == g) h = (60 * ((b - r) / diff) + 120) % 360; 
+        else if (cmax == b) h = (60 * ((r - g) / diff) + 240) % 360; 
+    
+        if (cmax == 0) s = 0; 
+        else
+            s = (diff / cmax) * 255; 
+    
+        // compute v 
+        double v = cmax * 255; 
+    
+        return new int[]{(int)h/2, (int)s, (int)v};
+      }
+
+      public static int[] getHSV(Color8Bit color) {
         double r = color.red / 255.0;
         double g = color.green / 255.0;
         double b = color.blue / 255.0;
