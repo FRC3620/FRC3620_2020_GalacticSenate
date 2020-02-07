@@ -73,7 +73,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void spinControlPanelWheel() {
-    armMotor.set(1);
+    armMotor.set(0.5);
+  }
+
+  public void spinControlPanelWheelSlow() {
+    armMotor.set(0.35);
   }
 
   public void stopSpinningControlPanelWheel() {
