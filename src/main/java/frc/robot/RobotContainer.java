@@ -122,22 +122,22 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
 
