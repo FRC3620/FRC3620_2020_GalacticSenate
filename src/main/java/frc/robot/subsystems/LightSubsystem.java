@@ -40,6 +40,7 @@ public class LightSubsystem extends SubsystemBase {
 
   private final int shot_defaultTrailLength = 15;
   private final int shot_defaultIntervalLength = 10;
+  private int shot_iter = 0;
 
   private final int blink_defaultBlinkRate = 500;
   private boolean blink_isOn = false;
@@ -93,7 +94,7 @@ public class LightSubsystem extends SubsystemBase {
   public void setPreset(ColorPattern.Preset pattern) {
     switch (pattern) {
       case INIT:
-        setShot(new Color8Bit(0, 255, 0), 7500, true); //Light preset for Robot Init
+        setShot(new Color8Bit[] {new Color8Bit(255,0,0), new Color8Bit(255,255,255), new Color8Bit(0,0,255)}, 7500, true, 15, 10, false);
         break;
       case TELEOP:
         if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 3000, true);}
@@ -104,7 +105,7 @@ public class LightSubsystem extends SubsystemBase {
         setShot(new Color8Bit(0, 255, 0), 0, false, 4, 3);
         break;
       case DISABLED:
-        setTwinkle(new Color8Bit(100, 0, 0), 0, false);
+        setTwinkle(new Color8Bit(100,0,0), 0, false);
         break;
       case TEST:
         setRainbow(0, false);
@@ -185,6 +186,25 @@ public class LightSubsystem extends SubsystemBase {
 
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail
+   * @param colors An array of each color to be shot, in order
+   * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000
+   * @param override (Optional) Whether or not to skip the queue. Defaults to false
+   * @param trailLength (Optional) The length, in pixels, of LEDs to light behind the shot. Defaults to 15.
+   * @param shotInterval (Optional) The length, in pixel, of LEDs between shots. Defaults to 10.
+   * @param returnsPrevious (Optional) Whether or not to requeue the effect this overrides. Defaults to false
+   * @see Color8Bit
+   */
+  public void setShot(Color8Bit[] colors, int milliseconds, boolean override, int trailLength, int shotInterval, boolean returnsPrevious) {
+    var effect = new LightEffect(colors[0], override, ColorPattern.Pattern.SHOT, milliseconds, returnsPrevious);
+    effect.m_shotIntervalLength = shotInterval;
+    effect.m_shotTrailLength = trailLength;
+    effect.m_shotColors = colors;
+    shot_locationArr.clear();
+    shot_iter = 0;
+    setEffect(effect);
+  }
+  /**
+   * Sets a 'shot' animation where a light runs down the strip with a trail
    * @param color The WPILIB color reference for a specific color
    * @param milliseconds (Optional) The time, in milliseconds, to run the effect for. Defaults to 3000
    * @param override (Optional) Whether or not to skip the queue. Defaults to false
@@ -194,11 +214,8 @@ public class LightSubsystem extends SubsystemBase {
    * @see Color8Bit
    */
   public void setShot(Color8Bit color, int milliseconds, boolean override, int trailLength, int shotInterval, boolean returnsPrevious) {
-    var effect = new LightEffect(color, override, ColorPattern.Pattern.SHOT, milliseconds, returnsPrevious);
-    effect.m_shotIntervalLength = shotInterval;
-    effect.m_shotTrailLength = trailLength;
-    shot_locationArr.clear();
-    setEffect(effect);
+    Color8Bit[] c = {color};
+    setShot(c, milliseconds, override, trailLength, shotInterval, returnsPrevious);
   }
   /**
    * Sets a 'shot' animation where a light runs down the strip with a trail
@@ -341,31 +358,39 @@ public class LightSubsystem extends SubsystemBase {
   private LightEffect periodicShot(LightEffect effect) {
     final int trailLength = effect.m_shotTrailLength;
     final int intervalLength = effect.m_shotIntervalLength;
-    final int[] hsv = effect.getHSV();
-    final double valueInterval = hsv[2] / trailLength;
+    final Color8Bit[] colors = effect.m_shotColors;
 
+    final int[][] HSV = new int[colors.length][];
+    for (int c = 0; c < colors.length; c++) {HSV[c] = LightEffect.getHSV(colors[c]);}
+
+    final double[] valueIntervals = new double[colors.length];
+    for (int d = 0; d < colors.length; d++) {valueIntervals[d] = HSV[d][2]/trailLength;}
     
     if (shot_locationArr.size() == 0 || shot_locationArr.get(shot_locationArr.size() - 1) > trailLength + intervalLength) {
       shot_locationArr.add(0);
     }
+
+
     for (int i = 0; i < shot_locationArr.size(); i++) {
       shot_locationArr.set(i, shot_locationArr.get(i) + 1);
       int shot = shot_locationArr.get(i);
+      int alt = (i+shot_iter)%effect.m_shotColors.length;
 
       if (shot > trailLength + ledBuffer.getLength()) {
         shot_locationArr.remove(0);
+        shot_iter++;
         break;
       }
 
-      for (int k = 0; k < trailLength + intervalLength; k++) {
-        int index = shot - k;
-        int interval = (int)(hsv[2] - (valueInterval * k));
+        for (int k = 0; k < trailLength + intervalLength; k++) {
+          int index = shot - k;
+          int interval = (int)(HSV[alt][2] - (valueIntervals[alt] * k));
 
-        if (interval < 0) interval = 0;
-        if (index < 0 || index >= ledBuffer.getLength()) {continue;}
+          if (interval < 0) interval = 0;
+          if (index < 0 || index >= ledBuffer.getLength()) {continue;}
 
-        ledBuffer.setHSV(index, hsv[0], hsv[1], interval);
-      }
+          ledBuffer.setHSV(index, HSV[alt][0], HSV[alt][1], interval);
+        }
     }
     return effect;
   }
