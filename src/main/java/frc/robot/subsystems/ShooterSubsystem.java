@@ -88,13 +88,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
     For testing use the values below */
-    if (falconBottom != null){
-      SmartDashboard.putNumber("Output%", falconBottom.getMotorOutputPercent());
-    SmartDashboard.putNumber("ERROR", falconBottom.getClosedLoopError());
-    SmartDashboard.putNumber("Output Current", falconBottom.getStatorCurrent());
-    SmartDashboard.putNumber("Falcon Temperature", falconBottom.getTemperature());
-    SmartDashboard.putNumber("Velocity", falconBottom.getSelectedSensorVelocity());
-    }
 
   }
 

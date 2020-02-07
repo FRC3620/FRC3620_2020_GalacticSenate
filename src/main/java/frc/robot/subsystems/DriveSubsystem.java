@@ -29,32 +29,32 @@ public class DriveSubsystem extends SubsystemBase {
 	public final CANEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final CANEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
 	public final AnalogInput rightFrontHomeEncoder = RobotContainer.driveSubsystemRightFrontHomeEncoder;
-	public final CANPIDController rightFrontVelPID = rightFrontDriveMaster.getPIDController();
-	public final CANPIDController rightFrontPositionPID = rightFrontAzimuth.getPIDController();
+	public CANPIDController rightFrontVelPID; // don't assign unless we have the motor controller
+	public CANPIDController rightFrontPositionPID;
 
 	public final CANSparkMax leftFrontDriveMaster = RobotContainer.driveSubsystemLeftFrontDrive;
 	public final CANSparkMax leftFrontAzimuth = RobotContainer.driveSubsystemLeftFrontAzimuth;
 	public final CANEncoder leftFrontDriveEncoder = RobotContainer.driveSubsystemLeftFrontDriveEncoder;
 	public final CANEncoder leftFrontAzimuthEncoder = RobotContainer.driveSubsystemLeftFrontAzimuthEncoder;
 	public final AnalogInput leftFrontHomeEncoder = RobotContainer.driveSubsystemLeftFrontHomeEncoder;
-	public final CANPIDController leftFrontVelPID = leftFrontDriveMaster.getPIDController();
-	public final CANPIDController leftFrontPositionPID = leftFrontAzimuth.getPIDController();
+	public CANPIDController leftFrontVelPID;
+	public CANPIDController leftFrontPositionPID;
 
 	public final CANSparkMax leftBackDriveMaster = RobotContainer.driveSubsystemLeftBackDrive;
 	public final CANSparkMax leftBackAzimuth = RobotContainer.driveSubsystemLeftBackAzimuth;
 	public final CANEncoder leftBackDriveEncoder = RobotContainer.driveSubsystemLeftBackDriveEncoder;
 	public final CANEncoder leftBackAzimuthEncoder = RobotContainer.driveSubsystemLeftBackAzimuthEncoder;
 	public final AnalogInput leftBackHomeEncoder = RobotContainer.driveSubsystemLeftBackHomeEncoder;
-	public final CANPIDController leftBackVelPID = leftBackDriveMaster.getPIDController();
-	public final CANPIDController leftBackPositionPID = leftBackAzimuth.getPIDController();
+	public CANPIDController leftBackVelPID;
+	public CANPIDController leftBackPositionPID;
 
 	public final CANSparkMax rightBackDriveMaster = RobotContainer.driveSubsystemRightBackDrive;
 	public final CANSparkMax rightBackAzimuth = RobotContainer.driveSubsystemRightBackAzimuth;
 	public final CANEncoder rightBackDriveEncoder = RobotContainer.driveSubsystemRightBackDriveEncoder;
 	public final CANEncoder rightBackAzimuthEncoder = RobotContainer.driveSubsystemRightBackAzimuthEncoder;
 	public final AnalogInput rightBackHomeEncoder = RobotContainer.driveSubsystemRightBackHomeEncoder;
-	public final CANPIDController rightBackVelPID = rightBackDriveMaster.getPIDController();
-	public final CANPIDController rightBackPositionPID = rightBackAzimuth.getPIDController();
+	public CANPIDController rightBackVelPID;
+	public CANPIDController rightBackPositionPID;
 
 	public AHRS ahrs = new AHRS(edu.wpi.first.wpilibj.SPI.Port.kMXP);
 
@@ -109,32 +109,57 @@ public class DriveSubsystem extends SubsystemBase {
 
   public DriveSubsystem() {
 
-    rightFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-	leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-	leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-	rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+	if (rightFrontDriveMaster != null) {
+		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
+		rightFrontPositionPID = rightFrontAzimuth.getPIDController();
+		leftFrontVelPID = leftFrontDriveMaster.getPIDController();
+		leftFrontPositionPID = leftFrontAzimuth.getPIDController();
+		rightBackVelPID = rightBackDriveMaster.getPIDController();
+		rightBackPositionPID = rightBackAzimuth.getPIDController();
+		leftBackVelPID = leftBackDriveMaster.getPIDController();
+		leftBackPositionPID = leftBackAzimuth.getPIDController();
 
-	rightFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-	leftFrontDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-	leftBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
-	rightBackDriveEncoder.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+		rightFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+		leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+		leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+		rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
 
-	rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-	leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-	leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-	rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+		rightFrontDriveEncoder
+				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+		leftFrontDriveEncoder
+				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+		leftBackDriveEncoder
+				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+		rightBackDriveEncoder
+				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
 
-	rightBackDriveEncoder.setPositionConversionFactor(1);
+		rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+		leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+		leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+		rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
 
-	setPositionPID(rightFrontPositionPID);
-	setPositionPID(leftFrontPositionPID);
-	setPositionPID(leftBackPositionPID);
-	setPositionPID(rightBackPositionPID);
+		rightBackDriveEncoder.setPositionConversionFactor(1);
 
-	setVelocityPID(rightFrontVelPID);
-	setVelocityPID(leftFrontVelPID);
-	setVelocityPID(leftBackVelPID);
-	setVelocityPID(rightBackVelPID);
+		setPositionPID(rightFrontPositionPID);
+		setPositionPID(leftFrontPositionPID);
+		setPositionPID(leftBackPositionPID);
+		setPositionPID(rightBackPositionPID);
+
+		setVelocityPID(rightFrontVelPID);
+		setVelocityPID(leftFrontVelPID);
+		setVelocityPID(leftBackVelPID);
+		setVelocityPID(rightBackVelPID);
+
+		rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+		leftFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+		leftBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+		rightBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+
+		rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
+		leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
+		leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
+		rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
+	}
 
 	SmartDashboard.putNumber("P Gain Position", kPositionP);
 	SmartDashboard.putNumber("I Gain Position", kPositionI);
@@ -156,18 +181,7 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
-	rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-	leftFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-	leftBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-	rightBackPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-
-	rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
-	leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
-	leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
-    rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
-    
     this.setDefaultCommand(new TeleOpDriveCommand(this));
-
   }
 
   @Override
@@ -205,10 +219,12 @@ public class DriveSubsystem extends SubsystemBase {
 		
 		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
 
-		updateVelocityPID(rightFrontVelPID);
-		updateVelocityPID(leftFrontVelPID);
-		updateVelocityPID(leftBackVelPID);
-		updateVelocityPID(rightBackVelPID);
+		if (rightFrontDriveMaster  != null) {
+			updateVelocityPID(rightFrontVelPID);
+			updateVelocityPID(leftFrontVelPID);
+			updateVelocityPID(leftBackVelPID);
+			updateVelocityPID(rightBackVelPID);
+		}
   }
 
   public double getStrafeXValue() {
@@ -227,27 +243,31 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void testDrive(double x, double y){
-		rightFrontDriveMaster.set(y);
-		leftFrontDriveMaster.set(y);
-		rightBackDriveMaster.set(y);
-		leftBackDriveMaster.set(y);
+		if (rightFrontDriveMaster != null) {
+			rightFrontDriveMaster.set(y);
+			leftFrontDriveMaster.set(y);
+			rightBackDriveMaster.set(y);
+			leftBackDriveMaster.set(y);
 
-		rightFrontAzimuth.set(x);
-		leftFrontAzimuth.set(x);
-		rightBackAzimuth.set(x);
-		leftBackAzimuth.set(x);
+			rightFrontAzimuth.set(x);
+			leftFrontAzimuth.set(x);
+			rightBackAzimuth.set(x);
+			leftBackAzimuth.set(x);
+		}
 	}
 
 	public void stopDrive(){
-		rightFrontDriveMaster.set(0);
-		leftFrontDriveMaster.set(0);
-		rightBackDriveMaster.set(0);
-		leftBackDriveMaster.set(0);
+		if (rightFrontDriveMaster != null) {
+			rightFrontDriveMaster.set(0);
+			leftFrontDriveMaster.set(0);
+			rightBackDriveMaster.set(0);
+			leftBackDriveMaster.set(0);
 
-		rightFrontAzimuth.set(0);
-		leftFrontAzimuth.set(0);
-		rightBackAzimuth.set(0);
-		leftBackAzimuth.set(0);
+			rightFrontAzimuth.set(0);
+			leftFrontAzimuth.set(0);
+			rightBackAzimuth.set(0);
+			leftBackAzimuth.set(0);
+		}
 	}
 
 	public void azimuthTest(double heading){
@@ -262,10 +282,12 @@ public class DriveSubsystem extends SubsystemBase {
 
 		newVectors = sc.fixVectors(newVectors, currentDirections);
 
-		rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
-    	leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
-    	leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
-		rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+		}
 		SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
 			//SmartDashboard.putBoolean("Change Test Heading", false);
 		
@@ -282,27 +304,30 @@ public class DriveSubsystem extends SubsystemBase {
 		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
 
 		SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
-		System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
+		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
 
 		DriveVectors currentDirections = getCurrentVectors();
 
 		SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
-		System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
+		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
 
 		newVectors = sc.fixVectors(newVectors, currentDirections);
 
-		rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
-    	leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
-    	leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
-		rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 
-		
-		rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
-		leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
-		leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
-		rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
+			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
+			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+		}
 		
 		SmartDashboard.putNumber("Left Front Commanded Vectors", newVectors.leftBack.getDirection());
+		//System.out.println("Left Front Commanded Vectors: " + newVectors.leftBack.getDirection());
+
 		//SET DRIVE AND AZIMUTH CONTROLERS HERE
 	}
 
@@ -318,76 +343,80 @@ public class DriveSubsystem extends SubsystemBase {
 
 		newVectors = sc.fixVectors(newVectors, currentDirections);
 
-		rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
-    	leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
-    	leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
-		rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
-		
-		rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
-		leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
-		leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
-		rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
-
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
+			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
+			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+		}
 
 	}
 
 	public void setPositionPID(CANPIDController pidController) {
-		pidController.setP(kPositionP);	
-		pidController.setI(kPositionI);
-		pidController.setD(kPositionD);
-		pidController.setIZone(kPositionIz);
-		pidController.setFF(kPositionFF);
-		pidController.setOutputRange(kVelocityMinOutput, kVelocityMaxOutput);
-
+		if (pidController != null) {
+			pidController.setP(kPositionP);	
+			pidController.setI(kPositionI);
+			pidController.setD(kPositionD);
+			pidController.setIZone(kPositionIz);
+			pidController.setFF(kPositionFF);
+			pidController.setOutputRange(kVelocityMinOutput, kVelocityMaxOutput);
+		}
 	}
 
 	public void setVelocityPID(CANPIDController pidController) {
-		pidController.setP(kVelocityP);	
-		pidController.setI(kVelocityI);
-		pidController.setD(kVelocityD);
-		pidController.setIZone(kVelocityIz);
-		pidController.setFF(kVelocityFF);
-		pidController.setOutputRange(kVelocityMinOutput, kVelocityMaxOutput);
+		if (pidController != null) {
+			pidController.setP(kVelocityP);	
+			pidController.setI(kVelocityI);
+			pidController.setD(kVelocityD);
+			pidController.setIZone(kVelocityIz);
+			pidController.setFF(kVelocityFF);
+			pidController.setOutputRange(kVelocityMinOutput, kVelocityMaxOutput);
+		}
 	}
 
 	public void updateVelocityPID(CANPIDController pidController) {
+		if (pidController != null) {
+			double p = SmartDashboard.getNumber("P Gain Velocity", 0);
+			double i = SmartDashboard.getNumber("I Gain Velocity", 0);
+			double d = SmartDashboard.getNumber("D Gain Velocity", 0);
+			double iz = SmartDashboard.getNumber("I Zone Velocity", 0);
+			double ff = SmartDashboard.getNumber("Feed Forward Velocity", 0);
+			double max = SmartDashboard.getNumber("Max Output Velocity", 0);
+			double min = SmartDashboard.getNumber("Min Output Velocity", 0);
 
-		double p = SmartDashboard.getNumber("P Gain Velocity", 0);
-    	double i = SmartDashboard.getNumber("I Gain Velocity", 0);
-    	double d = SmartDashboard.getNumber("D Gain Velocity", 0);
-    	double iz = SmartDashboard.getNumber("I Zone Velocity", 0);
-    	double ff = SmartDashboard.getNumber("Feed Forward Velocity", 0);
-    	double max = SmartDashboard.getNumber("Max Output Velocity", 0);
-    	double min = SmartDashboard.getNumber("Min Output Velocity", 0);
-
-		if((p != kVelocityP)) {
-			pidController.setP(p);
-			kVelocityP = p;	
-			System.out.println("Updated P value");
-			System.out.println(pidController.getP());
+			if((p != kVelocityP)) {
+				pidController.setP(p);
+				kVelocityP = p;	
+				//System.out.println("Updated P value");
+				//System.out.println(pidController.getP());
+			}
+			if((i != kVelocityI)) {
+				pidController.setI(i);
+				kVelocityI = i;	
+			}
+			if((d != kVelocityD)) {
+				pidController.setD(d);
+				kVelocityD = d;	
+			}
+			if((iz != kVelocityIz)) {
+				pidController.setIZone(iz);
+				kVelocityIz = iz;	
+			}
+			if((ff != kVelocityFF)) {
+				pidController.setFF(ff);
+				kVelocityFF = ff;	
+			}
+			if((max != kVelocityMaxOutput) || (min != kVelocityMinOutput)) {
+				pidController.setOutputRange(min, max);
+				kVelocityMaxOutput = max;	
+				kVelocityMinOutput = min;	
+			}
 		}
-		if((i != kVelocityI)) {
-			pidController.setI(i);
-			kVelocityI = i;	
-		}
-		if((d != kVelocityD)) {
-			pidController.setD(d);
-			kVelocityD = d;	
-		}
-		if((iz != kVelocityIz)) {
-			pidController.setIZone(iz);
-			kVelocityIz = iz;	
-		}
-		if((ff != kVelocityFF)) {
-			pidController.setFF(ff);
-			kVelocityFF = ff;	
-		}
-		if((max != kVelocityMaxOutput) || (min != kVelocityMinOutput)) {
-			pidController.setOutputRange(min, max);
-			kVelocityMaxOutput = max;	
-			kVelocityMinOutput = min;	
-		}
-	
 	}
 
 	public void updatePositionPID(CANPIDController pidController) {
@@ -454,19 +483,21 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void zeroRelativeEncoders(){
-
-		rightFrontAzimuthEncoder.setPosition(0);
-		leftFrontAzimuthEncoder.setPosition(0);
-		leftBackAzimuthEncoder.setPosition(0);
-		rightBackAzimuthEncoder.setPosition(0);
-
+		if (rightFrontAzimuthEncoder != null) {
+			rightFrontAzimuthEncoder.setPosition(0);
+			leftFrontAzimuthEncoder.setPosition(0);
+			leftBackAzimuthEncoder.setPosition(0);
+			rightBackAzimuthEncoder.setPosition(0);
+		}
 	}
 
 	public void fixRelativeEncoders(){
-		rightFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(rightFrontHomeEncoder) - RIGHT_FRONT_ABSOLUTE_OFFSET);
-		leftFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(leftFrontHomeEncoder) - LEFT_FRONT_ABSOLUTE_OFFSET);
-		leftBackAzimuthEncoder.setPosition(getHomeEncoderHeading(leftBackHomeEncoder) - LEFT_BACK_ABSOLUTE_OFFSET);
-		rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - RIGHT_BACK_ABSOLUTE_OFFSET);
+		if (rightFrontAzimuthEncoder != null) {
+			rightFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(rightFrontHomeEncoder) - RIGHT_FRONT_ABSOLUTE_OFFSET);
+			leftFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(leftFrontHomeEncoder) - LEFT_FRONT_ABSOLUTE_OFFSET);
+			leftBackAzimuthEncoder.setPosition(getHomeEncoderHeading(leftBackHomeEncoder) - LEFT_BACK_ABSOLUTE_OFFSET);
+			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - RIGHT_BACK_ABSOLUTE_OFFSET);
+		}
 	}
 	public double getFixedPosition(CANEncoder encoder){
 		double azimuth = encoder.getPosition();
