@@ -248,6 +248,7 @@ public class RobotContainer {
 
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
+    SmartDashboard.putData(new LoggingTestCommand(null));
 
   }
 
