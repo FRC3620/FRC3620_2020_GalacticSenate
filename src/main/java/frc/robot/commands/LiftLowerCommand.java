@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 
@@ -25,7 +26,9 @@ import frc.robot.subsystems.LiftSubsystem;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    liftSubsystem.lowerLift(); //run winch motor 
+    double liftPower = RobotContainer.getClimbingJoystick();
+    liftSubsystem.liftPower(liftPower);
+
   }
 
   // Called once the command ends or is interrupted.
