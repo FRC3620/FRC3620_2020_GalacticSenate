@@ -7,14 +7,24 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
  * @version 11 January 2020
  */
 public class LightEffect {
-    public static final Color8Bit WHITE = new Color8Bit(255,255,255);
-    public static final Color8Bit BLACK = new Color8Bit(0,0,0);
+    public enum Color {
+        WHITE(new Color8Bit(255,255,255)),
+        BLACK(new Color8Bit(0,0,0)),
+        RED(new Color8Bit(255,0,0)),
+        BLUE(new Color8Bit(0,0,255)),
+        GREEN(new Color8Bit(0,255,0)),
+        GRAY(new Color8Bit(128,128,128));
+
+        public Color8Bit color;
+        private Color(Color8Bit color) {this.color = color;}
+    }
 
     public boolean override;
     public boolean returnsPrevious;
     public Color8Bit color;
     public ColorPattern.Pattern pattern;
     public int milliseconds;
+    public String password = null;
     
     public int m_rainbowFirstPixelHue;
 
@@ -30,14 +40,19 @@ public class LightEffect {
      * @param override Whether or not this effect should skip the queue
      * @param pattern The {@link ColorPattern} enum of the pattern displayed
      * @param milliseconds The amount of time, in milliseconds to run the effect for
+     * @param returnsPrevious Whether or not to requeue the interrupted effect
+     * @param password the lock (or key) to attach to this effect
      */
-    public LightEffect(Color8Bit color, boolean override, ColorPattern.Pattern pattern, int milliseconds, boolean returnsPrevious) {
+    public LightEffect(Color8Bit color, boolean override, ColorPattern.Pattern pattern, int milliseconds, boolean returnsPrevious, String password) {
         this.color = color;
         this.override = override;
         this.pattern = pattern;
         this.milliseconds = milliseconds;
         this.returnsPrevious = returnsPrevious;
+        this.password = password;
     }
+
+    public String getPassword() {return this.password;}
 
     public Color8Bit getColor() {return this.color;}
     public void setColor(Color8Bit color) {this.color = color;}

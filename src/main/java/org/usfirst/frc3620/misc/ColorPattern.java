@@ -12,7 +12,8 @@ public class ColorPattern {
         RAINBOW,
         BLINK,
         TWINKLE,
-        SHOT
+        SHOT,
+        KEY
     }
 
     public enum Preset {
