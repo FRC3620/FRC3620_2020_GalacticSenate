@@ -85,7 +85,8 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
-  public static WPI_TalonFX intakeSubsystemFalcon1;
+  public static WPI_TalonSRX shooterSubsystemBallFeeder; 
+  public static CANSparkMax intakeSubsystemSparkMax;
   public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
 
@@ -172,6 +173,10 @@ public class RobotContainer {
       shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
       shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
     }
+
+    if(shooterSubsystemBallFeeder != null) {
+      shooterSubsystemBallFeeder.setInverted(InvertType.InvertMotorOutput);
+    }
   }
 
   void makeHardware() {
@@ -213,20 +218,26 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+      intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
+      intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
+      intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+    }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2)) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) { 
-      shooterSubsystemFalcon3 = new WPI_TalonFX(5);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) { 
+      shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) {
-      intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) {
-      liftSubsystemWinch = new WPI_TalonSRX(4);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) { 
+      shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
+    } 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) {
+      liftSubsystemWinch = new WPI_TalonSRX(5);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
       liftSubsystemRelease = new Solenoid(0);
@@ -287,6 +298,9 @@ public class RobotContainer {
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);

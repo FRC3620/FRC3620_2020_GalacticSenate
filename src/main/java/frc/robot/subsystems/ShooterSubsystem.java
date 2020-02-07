@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
   private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon2; 
+  private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -104,6 +106,10 @@ public class ShooterSubsystem extends SubsystemBase {
     if (falconBottom != null) {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }
+    
+    if(feeder != null) {
+      feeder.set(0.5); //load next ball into shooter
+    }
     /*
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0.60);
@@ -119,6 +125,10 @@ public class ShooterSubsystem extends SubsystemBase {
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0.35);
     }
+
+    if(feeder != null) {
+      feeder.set(0.2); //load next ball into shooter
+    }
   }
 
   public void ShooterOff(){
@@ -130,5 +140,11 @@ public class ShooterSubsystem extends SubsystemBase {
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0);
     }
+
+    if(feeder != null) {
+      feeder.set(0.0); //stop loading balls into shooter
+    }
   }
+
 }
+
