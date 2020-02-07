@@ -542,6 +542,15 @@ public class DriveSubsystem extends SubsystemBase {
 		return angle;
 		
 	}
+
+
+	public double getNavXAbsoluteAngle(){
+
+		double angle =ahrs.getAngle();
+
+		return angle;
+		
+	}
 	
 	public double convertVelocity(double velocity) { //took this out to make it testable
 

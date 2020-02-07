@@ -13,6 +13,14 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class TeleOpDriveCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
+
+  double strafeX;
+  double strafeY;
+  double spinXDriver;
+  double spinXOperator; 
+  double spinX;
+  double desiredHeading;
+  double currentHeading;
   /**
    * Creates a new TeleOpDriveCommand.
    */
@@ -24,21 +32,27 @@ public class TeleOpDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double strafeX = RobotContainer.getDriveHorizontalJoystick();
-    double strafeY = RobotContainer.getDriveVerticalJoystick();
-    double spinXDriver = RobotContainer.getDriveSpinJoystick();
-    double spinXOperator = RobotContainer.getOperatorSpinJoystick();
-    double spinX;
+    strafeX = RobotContainer.getDriveHorizontalJoystick();
+    strafeY = RobotContainer.getDriveVerticalJoystick();
+    spinXDriver = RobotContainer.getDriveSpinJoystick();
+    spinXOperator = RobotContainer.getOperatorSpinJoystick();
+    currentHeading = driveSubsystem.getNavXAbsoluteAngle();
+
+    if (spinXDriver != 0){
+      desiredHeading = currentHeading;
+    }
+    
     
     spinX = spinXDriver;
 
     if (spinXDriver == 0){
-      spinX = spinXOperator;
+      spinX = (desiredHeading-currentHeading)*-0.03;
     }
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
