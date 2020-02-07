@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonFX intakeSubsystemFalcon1;
-  public static WPI_TalonFX liftSubsystemWinch;
+  public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
 
   // subsystems here...
@@ -225,7 +226,7 @@ public class RobotContainer {
       intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) {
-      liftSubsystemWinch = new WPI_TalonFX(4);
+      liftSubsystemWinch = new WPI_TalonSRX(4);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
       liftSubsystemRelease = new Solenoid(0);
@@ -247,6 +248,7 @@ public class RobotContainer {
 
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
+    SmartDashboard.putData(new LoggingTestCommand(null));
 
   }
 
@@ -327,6 +329,13 @@ public class RobotContainer {
     return -operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
     }
 
+  public static double getClimbingJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
+    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+      return 0;
+    } 
+    return -axisValue;
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
