@@ -526,7 +526,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getNavXFixedAngle(){
 
-		double angle =ahrs.getAngle();
+		double angle =180 + ahrs.getAngle();
 
 		angle = angle % 360;
 		
@@ -542,7 +542,6 @@ public class DriveSubsystem extends SubsystemBase {
 		return angle;
 		
 	}
-
 
 	public double getNavXAbsoluteAngle(){
 
