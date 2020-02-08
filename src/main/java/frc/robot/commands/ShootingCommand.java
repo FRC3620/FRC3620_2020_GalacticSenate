@@ -64,12 +64,14 @@ public class ShootingCommand extends CommandBase {
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
     //RobotContainer.shooterSubsystem.Shoot();
+    //RobotContainer.shooterSubsystem.BeltOn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
+    //RobotContainer.shooterSubsystem.BeltOff();
     //dataLogger.done();
   }
 

@@ -146,6 +146,18 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public void BeltOn(){
+    if(feeder != null) {
+      feeder.set(0.5); 
+    }
+  }
+
+  public void BeltOff(){
+    if(feeder != null) {
+      feeder.set(0.0);
+    }
+  }
+
   public void PutNetUp() {
     RobotContainer.netSolenoid.set(true);
   }
@@ -161,8 +173,4 @@ public class ShooterSubsystem extends SubsystemBase {
   public void UnReleasetheBalls() {
     RobotContainer.ballReleaseSolenoid.set(false);
   }
-
-
-
 }
-

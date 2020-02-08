@@ -293,11 +293,11 @@ public class RobotContainer {
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
-    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
+    //JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    //spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
 
-    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    stopForColor.whenPressed (new SpinControlPanelUntilColor());
+    //JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    //stopForColor.whenPressed (new SpinControlPanelUntilColor());
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
     operatorDPad.down().whenPressed(new PopDownArmCommand());
