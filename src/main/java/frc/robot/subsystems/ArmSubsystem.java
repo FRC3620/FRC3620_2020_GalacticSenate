@@ -76,8 +76,20 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.set(0.5);
   }
 
+  public void spinControlPanelWheelSlow() {
+    armMotor.set(0.35);
+  }
+
   public void stopSpinningControlPanelWheel() {
     armMotor.set(0.0);
+  }
+
+  public void popArmUp() {
+    RobotContainer.solenoidArmUp.set(true);
+  }
+
+  public void popArmDown() {
+    RobotContainer.solenoidArmUp.set(false);
   }
 
   public Color getCurrentColor() {
