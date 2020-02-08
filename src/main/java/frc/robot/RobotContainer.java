@@ -91,6 +91,8 @@ public class RobotContainer {
   public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
   public static Solenoid solenoidArmUp;
+  public static Solenoid intakeSubsystemHold;
+  public static Solenoid intakeSubsystemOut;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -245,6 +247,10 @@ public class RobotContainer {
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
     }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 1)) {
+      intakeSubsystemHold = new Solenoid(2);
+      intakeSubsystemOut = new Solenoid(3);
+    }
 
   }
 
@@ -297,7 +303,7 @@ public class RobotContainer {
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
     operatorDPad.down().whenPressed(new PopDownArmCommand());
-       
+
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
@@ -322,6 +328,9 @@ public class RobotContainer {
 
     JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
+
+    JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
     
   }
 

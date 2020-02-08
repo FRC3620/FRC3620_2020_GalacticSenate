@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -17,6 +18,8 @@ import frc.robot.RobotContainer;
  */
 public class IntakeSubsystem extends SubsystemBase {
   private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
+  private final Solenoid holder = RobotContainer.intakeSubsystemHold;
+  private final Solenoid outtake = RobotContainer.intakeSubsystemOut;
 
   public IntakeSubsystem(){
   }
@@ -35,6 +38,14 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println("boo " + intakeFalcon1.get());
+  }
+
+  public void armDown() {
+    outtake.set(true);
+  }
+
+  public void armUp() {
+    outtake.set(false);
   }
 
 }
