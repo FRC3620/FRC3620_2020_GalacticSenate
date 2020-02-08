@@ -88,7 +88,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
     For testing use the values below */
-
   }
 
   public void ShootPID(){
@@ -170,7 +169,7 @@ public class ShooterSubsystem extends SubsystemBase {
     RobotContainer.ballReleaseSolenoid.set(true);
   }
   
-  public void UnReleasetheBalls() {
+  public void HoldBalls() {
     RobotContainer.ballReleaseSolenoid.set(false);
   }
 }

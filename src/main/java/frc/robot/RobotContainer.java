@@ -93,8 +93,9 @@ public class RobotContainer {
   public static Solenoid solenoidArmUp;
   public static Solenoid ballReleaseSolenoid;
   public static Solenoid netSolenoid;
-  public static Solenoid intakeSubsystemHold;
-  public static Solenoid intakeSubsystemOut;
+  public static Solenoid intakeSubsystemArmDown;
+  public static Solenoid intakeSubsystemHolder1;
+  public static Solenoid intakeSubsystemHolder2;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -249,9 +250,10 @@ public class RobotContainer {
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
       ballReleaseSolenoid = new Solenoid(2);
-      netSolenoid = new Solenoid(3);
-      intakeSubsystemHold = new Solenoid(4);
-      intakeSubsystemOut = new Solenoid(5);
+      intakeSubsystemArmDown = new Solenoid(3);
+      intakeSubsystemHolder1 = new Solenoid(4);
+      intakeSubsystemHolder2 = new Solenoid(5);
+      netSolenoid = new Solenoid(6);
     }
   }
 
@@ -296,43 +298,37 @@ public class RobotContainer {
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
-    //JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    //spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
 
-    //JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    //stopForColor.whenPressed (new SpinControlPanelUntilColor());
-
-    operatorDPad.up().whenPressed(new PopupArmCommand()); 
-    operatorDPad.down().whenPressed(new PopDownArmCommand());
-
-    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
-
-    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
 
-    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
-
     //Operator Controller
+
+    operatorDPad.up().whenPressed(new PopupArmCommand()); 
+    operatorDPad.down().whenPressed(new PopDownArmCommand());
+    operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
+    operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
+
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton intakeJoystickButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem)); 
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
 
-    JoystickButton liftRaiseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    liftRaiseButton.whileHeld(new LiftRaiseCommand(liftSubsystem));
-
-    JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
-    liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
-
-    JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
-    
+
+    JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
+
+    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    liftReleaseButton.whenPressed(new LiftReleaseCommand(liftSubsystem));
+
+    JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {

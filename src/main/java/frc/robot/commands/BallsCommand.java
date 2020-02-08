@@ -49,7 +49,7 @@ public class BallsCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.UnReleasetheBalls();
+    RobotContainer.shooterSubsystem.HoldBalls();
 
   }
 
