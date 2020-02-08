@@ -146,5 +146,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public void PutNetUp() {
+    RobotContainer.netSolenoid.set(true);
+  }
+
+  public void PutNetDown() {
+    RobotContainer.netSolenoid.set(false);
+  }
+
+  public void ReleaseTheBalls() {
+    RobotContainer.ballReleaseSolenoid.set(true);
+  }
+  
+  public void UnReleasetheBalls() {
+    RobotContainer.ballReleaseSolenoid.set(false);
+  }
+
+
+
 }
 

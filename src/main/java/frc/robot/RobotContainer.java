@@ -91,6 +91,8 @@ public class RobotContainer {
   public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
   public static Solenoid solenoidArmUp;
+  public static Solenoid ballReleaseSolenoid;
+  public static Solenoid netSolenoid;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -244,6 +246,8 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
+      ballReleaseSolenoid = new Solenoid(2);
+      netSolenoid = new Solenoid(3);
     }
 
   }
