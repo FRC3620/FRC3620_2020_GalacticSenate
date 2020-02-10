@@ -27,12 +27,17 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
     void writeData(PrintWriter w) {
         for (int i = 0; i < data.size(); i++) {
             w.print(timestamps.get(i));
-            w.print(",");
+            w.print(",");            
             w.format("%.6f", timestamps.get(i));
             Object[] row = data.get(i);
             for (int c = 0; c < row.length; c++) {
                 w.print(",");
-                w.print(row[c]);
+                Object o = row[c];
+                if (o instanceof Number) {
+                    w.format("%.6f", o);
+                } else {
+                    w.print(o);
+                }
             }
             w.println();
         }
