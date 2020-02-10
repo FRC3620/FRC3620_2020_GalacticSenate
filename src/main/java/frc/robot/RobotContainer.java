@@ -165,7 +165,7 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon2 != null) {
       shooterSubsystemFalcon2.configFactoryDefault();
-      shooterSubsystemFalcon2.setInverted(InvertType.InvertMotorOutput);
+      shooterSubsystemFalcon2.setInverted(InvertType.None);
       if (false) {
         // undocumented current measurement status frame
         shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
@@ -182,7 +182,7 @@ public class RobotContainer {
     }
 
     if(shooterSubsystemBallFeeder != null) {
-      shooterSubsystemBallFeeder.setInverted(InvertType.InvertMotorOutput);
+      shooterSubsystemBallFeeder.setInverted(InvertType.None);
     }
   }
 
@@ -315,16 +315,19 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
+    JoystickButton beltDriver = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
 
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
+
     JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
 
-    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
     liftReleaseButton.whenPressed(new LiftReleaseCommand(liftSubsystem));
 
     JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);

@@ -106,9 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }
     
-    if(feeder != null) {
+    /*if(feeder != null) {
       feeder.set(0.5); //load next ball into shooter
-    }
+    }*/
     /*
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0.60);
@@ -140,14 +140,14 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.set(ControlMode.PercentOutput, 0);
     }
 
-    if(feeder != null) {
+    /*if(feeder != null) {
       feeder.set(0.0); //stop loading balls into shooter
-    }
+    }*/
   }
 
   public void BeltOn(){
     if(feeder != null) {
-      feeder.set(0.5); 
+      feeder.set(0.3); 
     }
   }
 
