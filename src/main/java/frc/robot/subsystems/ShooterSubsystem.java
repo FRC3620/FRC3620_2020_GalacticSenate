@@ -88,7 +88,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
     For testing use the values below */
-
   }
 
   public void ShootPID(){
@@ -107,9 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }
     
-    if(feeder != null) {
+    /*if(feeder != null) {
       feeder.set(0.5); //load next ball into shooter
-    }
+    }*/
     /*
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0.60);
@@ -141,10 +140,36 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.set(ControlMode.PercentOutput, 0);
     }
 
-    if(feeder != null) {
+    /*if(feeder != null) {
       feeder.set(0.0); //stop loading balls into shooter
+    }*/
+  }
+
+  public void BeltOn(){
+    if(feeder != null) {
+      feeder.set(0.3); 
     }
   }
 
-}
+  public void BeltOff(){
+    if(feeder != null) {
+      feeder.set(0.0);
+    }
+  }
 
+  public void PutNetUp() {
+    RobotContainer.netSolenoid.set(true);
+  }
+
+  public void PutNetDown() {
+    RobotContainer.netSolenoid.set(false);
+  }
+
+  public void ReleaseTheBalls() {
+    RobotContainer.ballReleaseSolenoid.set(true);
+  }
+  
+  public void HoldBalls() {
+    RobotContainer.ballReleaseSolenoid.set(false);
+  }
+}

@@ -23,14 +23,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /**
  * An example command that uses an example subsystem.
  */
-public class ShootingCommand extends CommandBase {
+public class BeltDriverCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   IFastDataLogger dataLogger;
 
   TalonFX talonFX;
   
-  public ShootingCommand(ShooterSubsystem subsystem) {
+  public BeltDriverCommand(ShooterSubsystem subsystem) {
     shooterSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     talonFX = RobotContainer.shooterSubsystemFalcon1;
@@ -39,39 +39,19 @@ public class ShootingCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    dataLogger = new FastDataLoggerCollections();
-    dataLogger.setInterval(0.001);
-    dataLogger.setMaxLength(10.0);
-    if (talonFX != null) {
-      dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
-      dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
-      dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
-      dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
-      dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
-      dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
-      dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
-    } else {
-      dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
-    }
-    dataLogger.setFilename("test");
-    dataLogger.setFilenameTimestamp(new Date());
-    //dataLogger.start();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.shooterSubsystem.ShootPID();
-    //RobotContainer.shooterSubsystem.Shoot();
-    //RobotContainer.shooterSubsystem.BeltOn();
+    RobotContainer.shooterSubsystem.BeltOn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.ShooterOff();
-    //RobotContainer.shooterSubsystem.BeltOff();
-    //dataLogger.done();
+    RobotContainer.shooterSubsystem.BeltOff();
   }
 
   // Returns true when the command should end.
