@@ -110,6 +110,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -136,22 +137,22 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
 
@@ -279,6 +280,7 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
+    visionSubsystem = new VisionSubsystem();
   }
 
   void setupSmartDashboardCommands() {
@@ -310,11 +312,17 @@ public class RobotContainer {
 
     //Driver Controller
 
-    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
-    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
+    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+
+    JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 
     //Operator Controller
 
@@ -330,10 +338,7 @@ public class RobotContainer {
     beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
-
-    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem)); 
 
     JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
