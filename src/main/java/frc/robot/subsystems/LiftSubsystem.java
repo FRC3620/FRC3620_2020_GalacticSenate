@@ -7,9 +7,10 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import frc.robot.RobotContainer;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.RobotContainer;
+import frc.robot.commands.MoveLiftCommand;
 /**
  * @author Sean Thursby
  * @version 18 January 2020
@@ -17,32 +18,34 @@ import frc.robot.RobotContainer;
 public class LiftSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   private final Solenoid liftRelease = RobotContainer.liftSubsystemRelease; // solenoid fires lift upward
-  private final WPI_TalonFX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
+  private final WPI_TalonSRX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
 
   public LiftSubsystem() {
+    this.setDefaultCommand(new MoveLiftCommand(this));
   }
 
-  public void raiseLift() { // fires lift upward
+  public void releaseLift() { // releases lift
     if (liftRelease != null) {
       liftRelease.set(true);
     }
   }
 
-  public void allowLiftLower() { // stops solenoid; allows lift to be lowered
+  public void liftReleaseOff() { // turns off release
     if (liftRelease != null) {
       liftRelease.set(false);
     }
   }
 
-  public void lowerLift() { // runs motor with winch
-    if (liftController != null) {
-      liftController.set(0.5);
-    }
-  }
-
-  public void liftoff() { // runs motor with winch backward
+  public void liftoff() { // turns off lift
     if (liftController != null) {
       liftController.set(0);
+    }
+  }
+  
+  
+  public void liftPower(double speed) { // Runs lift controller based on joystick pos.
+    if (liftController != null) {
+      liftController.set(speed); //speed = speed passes through by moveliftcommand
     }
   }
 
