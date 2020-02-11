@@ -8,6 +8,10 @@ public class TriggerButton extends Button {
 	boolean isLeft;
 	double deadZone;
 
+	public TriggerButton(Joystick joystick, boolean isLeft) {
+		this(joystick, isLeft, 0.1);
+	}
+
 	public TriggerButton(Joystick joystick, boolean isLeft, double deadZone) {
 		this.isLeft = isLeft;
 		stick = joystick;
