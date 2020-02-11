@@ -20,6 +20,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
 
@@ -86,9 +88,18 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
-  public static WPI_TalonFX intakeSubsystemFalcon1;
+  public static WPI_TalonSRX shooterSubsystemBallFeeder; 
+  public static CANSparkMax intakeSubsystemSparkMax;
   public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
+  public static Solenoid solenoidArmUp;
+  public static Solenoid ballReleaseSolenoid;
+  public static Solenoid netSolenoid;
+  public static Solenoid intakeSubsystemArmDown;
+  public static Solenoid intakeSubsystemHolder1;
+  public static Solenoid intakeSubsystemHolder2;
+
+  private static DigitalInput practiceBotJumper;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -160,20 +171,24 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon2 != null) {
       shooterSubsystemFalcon2.configFactoryDefault();
-      shooterSubsystemFalcon2.setInverted(InvertType.InvertMotorOutput);
-
-      /*
-      shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs); // undocumented current measurement status frame
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      */
+      shooterSubsystemFalcon2.setInverted(InvertType.None);
+      if (false) {
+        // undocumented current measurement status frame
+        shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
+        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      }
     }
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
       shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
+    }
+
+    if(shooterSubsystemBallFeeder != null) {
+      shooterSubsystemBallFeeder.setInverted(InvertType.None);
     }
   }
 
@@ -182,6 +197,8 @@ public class RobotContainer {
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
     }
+
+    practiceBotJumper = new DigitalInput(0);
 
     m_armMotor = new Victor(8);
 
@@ -221,23 +238,36 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+    
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+      intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
+      intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
+      intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+    }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1) || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2) || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5) || iAmACompetitionRobot) { 
-      shooterSubsystemFalcon3 = new WPI_TalonFX(5);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3) || iAmACompetitionRobot) { 
+      shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3) || iAmACompetitionRobot) {
-      intakeSubsystemFalcon1 = new WPI_TalonFX(3); 
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4) || iAmACompetitionRobot) {
-      liftSubsystemWinch = new WPI_TalonSRX(4);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4) || iAmACompetitionRobot) { 
+      shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
+    } 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5) || iAmACompetitionRobot) {
+      liftSubsystemWinch = new WPI_TalonSRX(5);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       liftSubsystemRelease = new Solenoid(0);
+      solenoidArmUp = new Solenoid(1);
+      ballReleaseSolenoid = new Solenoid(2);
+      intakeSubsystemArmDown = new Solenoid(3);
+      intakeSubsystemHolder1 = new Solenoid(4);
+      intakeSubsystemHolder2 = new Solenoid(5);
+      netSolenoid = new Solenoid(6);
     }
   }
 
@@ -277,36 +307,43 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
+    DPad operatorDPad = new DPad(operatorJoystick, 0);
+
     //Driver Controller
 
-    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
-
-    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    stopForColor.whenPressed (new SpinControlPanelUntilColor());
-   
-    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
-
-    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
 
     //Operator Controller
+
+    operatorDPad.up().whenPressed(new PopupArmCommand()); 
+    operatorDPad.down().whenPressed(new PopDownArmCommand());
+    operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
+    operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
+
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton intakeJoystickButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem)); 
+    JoystickButton beltDriver = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
-    JoystickButton liftRaiseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    liftRaiseButton.whileHeld(new LiftRaiseCommand(liftSubsystem));
+    JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
 
-    JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
-    liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 
-    
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
+
+    JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
+
+    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
+    liftReleaseButton.whenPressed(new LiftReleaseCommand(liftSubsystem));
+
+    JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
@@ -372,6 +409,11 @@ public class RobotContainer {
     if (DriverStation.getInstance().isFMSAttached()) {
       return true;
     }
+
+    if(practiceBotJumper.get() == true){
+      return true;
+    }
+
     return false;
   }
 }

@@ -46,7 +46,8 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     redCounter = 0; 
     greenCounter = 0; 
     yellowCounter = 0;
-    rotationCount = 0; 
+    rotationCount = 0;
+    RobotContainer.armSubsystem.popArmUp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -109,6 +110,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     armSubsystem.stopSpinningControlPanelWheel();
+    RobotContainer.armSubsystem.popArmDown();
   }
 
   // Returns true when the command should end.
