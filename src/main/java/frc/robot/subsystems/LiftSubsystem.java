@@ -21,7 +21,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final WPI_TalonFX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
 
   public LiftSubsystem() {
-    RobotContainer.lightSubsystem.setSolidColor(LightEffect.Color.RED.color, 0, false, false, "POGGERS");
+    
   }
 
   public void raiseLift() { // fires lift upward

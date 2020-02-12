@@ -37,6 +37,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
+ * 
+ * @version 11 February 2020
+ * 
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
@@ -147,9 +150,6 @@ public class RobotContainer {
 
     JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
     stopForColor.whenPressed (new SpinControlPanelUntilColor());
-   
-    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
     //Operator Controller
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
@@ -159,7 +159,7 @@ public class RobotContainer {
     intakeJoystickButton.whileHeld(new IntakeCommand(intakeSubsystem)); 
 
     JoystickButton liftRaiseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    liftRaiseButton.whileHeld(new LiftRaiseCommand(liftSubsystem));
+    liftRaiseButton.toggleWhenPressed(new LiftRaiseCommand(liftSubsystem));
 
     JoystickButton liftLowerButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     liftLowerButton.toggleWhenPressed(new LiftLowerCommand(liftSubsystem)); 

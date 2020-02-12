@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * @author Nick Zimanski (SlippStream)
- * @version 11 January 2020
+ * @version 11 February 2020
  */
 public class LightEffect {
-    public enum Color {
+    public static enum Color {
         WHITE(new Color8Bit(255,255,255)),
         BLACK(new Color8Bit(0,0,0)),
         RED(new Color8Bit(255,0,0)),
@@ -19,12 +19,12 @@ public class LightEffect {
         private Color(Color8Bit color) {this.color = color;}
     }
 
-    public boolean override;
-    public boolean returnsPrevious;
-    public Color8Bit color;
-    public ColorPattern.Pattern pattern;
-    public int milliseconds;
-    public String password = null;
+    private boolean override;
+    private boolean returnsPrevious;
+    private Color8Bit color;
+    private ColorPattern.Pattern pattern;
+    private int milliseconds;
+    private String password = null;
     
     public int m_rainbowFirstPixelHue;
 
@@ -33,6 +33,8 @@ public class LightEffect {
     public Color8Bit[] m_shotColors;
 
     public int m_blinkFlashRate;
+
+    public boolean m_presetEffect;
 
     /**
      * Creates a new lighting effect. Mainly for use in {@link frc.robot.subsystems.LightSubsystem LightSubsystem}, advanced users only.
@@ -53,12 +55,25 @@ public class LightEffect {
     }
 
     public String getPassword() {return this.password;}
+    public void setPassword(String password) {this.password = password;}
+
+    public int getMilliseconds() {return this.milliseconds;}
+    public void setMilliseconds(int milliseconds) {this.milliseconds = milliseconds;}
+
+    public boolean getReturnsPrevious() {return this.returnsPrevious;}
+    public void setReturnsPrevious(boolean returnsPrevious) {this.returnsPrevious = returnsPrevious;}
 
     public Color8Bit getColor() {return this.color;}
     public void setColor(Color8Bit color) {this.color = color;}
 
     public int[] getRGB() {return new int[]{this.color.red, this.color.green, this.color.blue};}
     public void setRGB(int[] rgb) {}
+
+    public ColorPattern.Pattern getPattern() {return this.pattern;}
+    public void setPattern(ColorPattern.Pattern pattern) {this.pattern = pattern;}
+
+    public boolean getOverride() {return this.override;}
+    public void setOverride(boolean override) {this.override = override;}
 
     public int[] getHSV() {
         double r = color.red / 255.0;
