@@ -20,6 +20,8 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
+import frc.robot.miscellaneous.SwerveSettings;
+import frc.robot.miscellaneous.SwerveSettingsContainer;
 import frc.robot.miscellaneous.Vector;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -107,7 +109,16 @@ public class DriveSubsystem extends SubsystemBase {
 	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC, this);
 	DriveVectors oldVectors;
 
+	SwerveSettings analogEncoderSettings;
+
   public DriveSubsystem() {
+	analogEncoderSettings = new SwerveSettings("analogEncoder");
+	SwerveSettingsContainer analogEncoderSettingsContainer = new SwerveSettingsContainer();
+	analogEncoderSettingsContainer.leftFront = 1;
+	analogEncoderSettingsContainer.rightFront = 2;
+	analogEncoderSettingsContainer.leftBack = 3;
+	analogEncoderSettingsContainer.rightBack = 4;
+	analogEncoderSettings.set(analogEncoderSettingsContainer);
 
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
