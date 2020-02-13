@@ -101,6 +101,8 @@ public class RobotContainer {
 
   private static DigitalInput practiceBotJumper;
 
+  public static Compressor theCompressor;
+
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static ArmSubsystem armSubsystem;
@@ -261,13 +263,14 @@ public class RobotContainer {
       liftSubsystemWinch = new WPI_TalonSRX(5);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
+      theCompressor = new Compressor(0);
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
       ballReleaseSolenoid = new Solenoid(2);
       intakeSubsystemArmDown = new Solenoid(3);
       intakeSubsystemHolder1 = new Solenoid(4);
-      intakeSubsystemHolder2 = new Solenoid(5);
-      netSolenoid = new Solenoid(6);
+      //intakeSubsystemHolder2 = new Solenoid(5);
+      //netSolenoid = new Solenoid(6);
     }
   }
 
