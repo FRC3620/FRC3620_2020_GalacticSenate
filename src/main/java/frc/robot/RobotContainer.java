@@ -194,12 +194,11 @@ public class RobotContainer {
   }
 
   void makeHardware() {
+    practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
     }
-
-    practiceBotJumper = new DigitalInput(0);
 
     m_armMotor = new Victor(8);
 
