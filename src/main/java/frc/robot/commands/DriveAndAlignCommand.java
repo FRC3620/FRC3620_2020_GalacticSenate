@@ -10,49 +10,39 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class TeleOpDriveCommand extends CommandBase {
+public class DriveAndAlignCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
-
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
+  private VisionSubsystem visionSubsystem;
   /**
    * Creates a new TeleOpDriveCommand.
    */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
+  public DriveAndAlignCommand(DriveSubsystem m_driveSubsystem, VisionSubsystem m_visionSubsystem) {
     this.driveSubsystem = m_driveSubsystem;
+    this.visionSubsystem = m_visionSubsystem;
     addRequirements(m_driveSubsystem);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinXDriver = RobotContainer.getDriveSpinJoystick();
-    spinXOperator = RobotContainer.getOperatorSpinJoystick();
-    currentHeading = driveSubsystem.getNavXAbsoluteAngle();
-
-    if (spinXDriver != 0){
-      desiredHeading = currentHeading;
-    }
-    
+    double strafeX = RobotContainer.getDriveHorizontalJoystick();
+    double strafeY = RobotContainer.getDriveVerticalJoystick();
+    double spinXDriver = RobotContainer.getDriveSpinJoystick();
+    double spinX;
     
     spinX = spinXDriver;
 
-    if (spinXDriver == 0){
-      spinX = (desiredHeading-currentHeading)*-0.03;
+    if (visionSubsystem.getShootingTargetPresent()){
+      double yaw = visionSubsystem.getShootingTargetYaw();
+      spinX = -0.03*yaw;
     }
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);

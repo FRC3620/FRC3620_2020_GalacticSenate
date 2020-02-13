@@ -20,6 +20,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -97,6 +99,8 @@ public class RobotContainer {
   public static Solenoid intakeSubsystemHolder1;
   public static Solenoid intakeSubsystemHolder2;
 
+  private static DigitalInput practiceBotJumper;
+
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static ArmSubsystem armSubsystem;
@@ -106,6 +110,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -132,22 +137,22 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.6);
+      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
 
@@ -156,11 +161,13 @@ public class RobotContainer {
     if (shooterSubsystemFalcon1 != null) {
       shooterSubsystemFalcon1.configFactoryDefault();
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
-      // undocumented current measurement status frame
-      /*shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
+
+      /*
+      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs); // undocumented current measurement status frame
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
       shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs); */
+      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
+      */
     }
 
     if (shooterSubsystemFalcon2 != null) {
@@ -187,11 +194,17 @@ public class RobotContainer {
   }
 
   void makeHardware() {
+    practiceBotJumper = new DigitalInput(0);
+    boolean iAmACompetitionRobot = amIACompBot();
+    if (!iAmACompetitionRobot) {
+      logger.warn ("this is a test chassis, will try to deal with missing hardware!");
+    }
+
     m_armMotor = new Victor(8);
 
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1) || iAmACompetitionRobot){
 
       driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
@@ -225,28 +238,29 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+    
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1) || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2)) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2) || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3)) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3) || iAmACompetitionRobot) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4)) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4) || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5) || iAmACompetitionRobot) {
       liftSubsystemWinch = new WPI_TalonSRX(5);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
       ballReleaseSolenoid = new Solenoid(2);
@@ -266,24 +280,23 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
+    visionSubsystem = new VisionSubsystem();
   }
 
-  void setupSmartDashboardCommands(){
-
+  void setupSmartDashboardCommands() {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
-
   }
 
-  static void resetMaxToKnownState (CANSparkMax x) {
-		x.setInverted(false);
-        x.setIdleMode(IdleMode.kCoast);
-        x.setOpenLoopRampRate(1);
-        x.setClosedLoopRampRate(1);
-        x.setSmartCurrentLimit(50);
-        //x.setSecondaryCurrentLimit(100, 0);
-    }
+  static void resetMaxToKnownState(CANSparkMax x) {
+    x.setInverted(false);
+    x.setIdleMode(IdleMode.kCoast);
+    x.setOpenLoopRampRate(1);
+    x.setClosedLoopRampRate(1);
+    x.setSmartCurrentLimit(50);
+    // x.setSecondaryCurrentLimit(100, 0);
+  }
 
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
@@ -299,11 +312,17 @@ public class RobotContainer {
 
     //Driver Controller
 
-    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
-    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER); 
+    JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+
+    JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 
     //Operator Controller
 
@@ -319,10 +338,7 @@ public class RobotContainer {
     beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
-
-    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem)); 
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem)); 
 
     JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
@@ -335,30 +351,36 @@ public class RobotContainer {
   }
 
   public static double getDriveVerticalJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y) > -0.2) {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
+    if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
+    return -axisValue;
   }
+
   public static double getDriveHorizontalJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) > -0.2) {
-        return 0;
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
+    if (axisValue < 0.2 && axisValue > -0.2) {
+      return 0;
     }
-    return driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
+    return axisValue;
   }
+
   public static double getDriveSpinJoystick() {
-    if(driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) < 0.2 && driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X) > -0.2) {
-        return 0;
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
+    if (axisValue < 0.2 && axisValue > -0.2) {
+      return 0;
     }
-    return -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
-    }
+    return -axisValue;
+  }
     
   public static double getOperatorSpinJoystick() {
-    if(operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) < 0.2 && operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X) > -0.2) {
-        return 0;
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
+    if (axisValue < 0.2 && axisValue > -0.2) {
+      return 0;
     }
-    return -operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    }
+    return -axisValue;
+  }
 
   public static double getClimbingJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
@@ -367,6 +389,7 @@ public class RobotContainer {
     } 
     return -axisValue;
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -375,5 +398,26 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;
+  }
+
+  /**
+   * Determine if this robot is a completition robot. It is if
+   * it's connected to an FMS.
+   * 
+   * We should probably also check for an "I am a test" file or jumper
+   * and return true if those are missing.
+   * 
+   * @return true if this robot is a competition robot.
+   */
+  public static boolean amIACompBot() {
+    if (DriverStation.getInstance().isFMSAttached()) {
+      return true;
+    }
+
+    if(practiceBotJumper.get() == true){
+      return true;
+    }
+
+    return false;
   }
 }

@@ -29,9 +29,15 @@ public class CANDeviceFinder {
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
+        boolean rv = false;
         Set<Integer> deviceTypeSet = byDeviceType.get(deviceType);
-        if (deviceTypeSet == null) return false;
-        return deviceTypeSet.contains(id);
+        if (deviceTypeSet != null) {
+            rv = deviceTypeSet.contains(id);
+        }
+        if (!rv) {
+            logger.warn("{} {} is missing from the CAN bus!!!", deviceType, id);
+        }
+        return rv;
     }
 
     /**

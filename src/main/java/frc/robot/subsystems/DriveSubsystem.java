@@ -553,9 +553,9 @@ public class DriveSubsystem extends SubsystemBase {
 		return azimuth;
 	}
 
-	public double getNavXFixedAngle(){
+	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
 
-		double angle =ahrs.getAngle();
+		double angle =180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
@@ -567,6 +567,14 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 		
 		if(angle == -0) {angle = 0;}
+
+		return angle;
+		
+	}
+
+	public double getNavXAbsoluteAngle(){ //returns raw degrees, can accumulate past 360 or -360 degrees 
+
+		double angle =ahrs.getAngle();
 
 		return angle;
 		
