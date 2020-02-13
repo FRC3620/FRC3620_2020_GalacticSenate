@@ -36,7 +36,7 @@ public class LightSubsystem extends SubsystemBase {
   private boolean presetEnRoute = false;
 
   private final boolean defaultOverride = false;
-  private final double defaultBatteryLowVoltage = 12.5; //Volts that, when dipped below, alert the lights
+  private final double defaultBatteryLowVoltage = 12.0; //Volts that, when dipped below, alert the lights
   private final int defaultMilliseconds = 3000;
   private final boolean defaultReturnsPrevious = false;
   private final Color8Bit defaultColor = new Color8Bit(0, 0, 0);
