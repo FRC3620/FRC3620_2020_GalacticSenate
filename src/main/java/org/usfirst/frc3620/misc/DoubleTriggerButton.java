@@ -7,6 +7,10 @@ public class DoubleTriggerButton extends Button {
 	Joystick stick;
 	double deadZone;
 
+	public DoubleTriggerButton(Joystick joystick) {
+		this(joystick, 0.1);
+	}
+
 	public DoubleTriggerButton(Joystick joystick, double deadZone) {
 		stick = joystick;
 		this.deadZone = deadZone;
