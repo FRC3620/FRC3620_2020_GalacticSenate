@@ -62,7 +62,7 @@ public class LightSubsystem extends SubsystemBase {
    * For example, {@code LightSubsystem lights = RobotContainer.lightSubsystem;}
    */
   public LightSubsystem() {
-    ledStrip = new AddressableLED(Constants.PWM_LIGHT);
+    ledStrip = new AddressableLED(Constants.PWM.LIGHTS);
     ledBuffer = new AddressableLEDBuffer(Constants.LED_STRIP_LENGTH);
 
     ledStrip.setLength(ledBuffer.getLength());
