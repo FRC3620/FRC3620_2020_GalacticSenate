@@ -7,49 +7,33 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class TeleOpDriveCommand extends CommandBase {
-  private DriveSubsystem driveSubsystem;
-
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
-  /**
-   * Creates a new TeleOpDriveCommand.
-   */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    addRequirements(m_driveSubsystem);
+public class TestTargetHeadingCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
+  public TestTargetHeadingCommand(DriveSubsystem m_driveSubsystem) {
+    driveSubsystem = m_driveSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
-    driveSubsystem.setTargetHeading(desiredHeading);
+    
+    SmartDashboard.putNumber("Target Heading Set", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
-
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
+    double targetHeading = SmartDashboard.getNumber("Target Heading Set", 0);
+    driveSubsystem.setTargetHeading(targetHeading);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.teleOpDrive(0,0,0);
   }
 
   // Returns true when the command should end.

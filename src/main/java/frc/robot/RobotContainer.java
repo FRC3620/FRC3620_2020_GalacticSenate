@@ -287,6 +287,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
+    SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -371,7 +372,7 @@ public class RobotContainer {
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return -axisValue;
+    return axisValue;
   }
     
   public static double getOperatorSpinJoystick() {
