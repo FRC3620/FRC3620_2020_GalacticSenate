@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println("boo " + intakeFalcon1.get());
-    SmartDashboard.putBoolean("intakeSolenoid", armDown.get());
+    //SmartDashboard.putBoolean("intakeSolenoid", armDown.get());
   }
 
   public void moveArmDown() {

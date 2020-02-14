@@ -174,20 +174,13 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon2 != null) {
       shooterSubsystemFalcon2.configFactoryDefault();
-      shooterSubsystemFalcon2.setInverted(InvertType.None);
-      if (false) {
-        // undocumented current measurement status frame
-        shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      }
+      shooterSubsystemFalcon2.follow(shooterSubsystemFalcon1);
+      shooterSubsystemFalcon2.setInverted(InvertType.OpposeMaster);
     }
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
-      shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
+      shooterSubsystemFalcon3.setInverted(InvertType.None);
     }
 
     if(shooterSubsystemBallFeeder != null) {

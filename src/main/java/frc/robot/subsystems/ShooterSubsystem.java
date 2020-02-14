@@ -21,7 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon2; 
+  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
   private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
 
   //sets up all values for PID
@@ -33,18 +33,18 @@ public class ShooterSubsystem extends SubsystemBase {
   https://docs.google.com/spreadsheets/d/1Ap6Y6N5QLvBdPORXFwbMu-nDgwLP74CkY4iBRznK5PU/edit?usp=sharing
   */
   //top FPID Values
-  private final double tFVelocity = 0.049; //0.045
+  private final double tFVelocity = 0.045; //0.045
   private final double tPVelocity = 0.6; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
-  private final double trpm = 4000; //5200
+  private final double trpm = 4100; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private final double brpm = 2000;
+  private final double brpm = 4000;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -85,9 +85,12 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
+    //SmartDashboard.putNumber("Bottom Velocity", falconBottom.getSelectedSensorVelocity());
+
     //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
-    //SmartDashboard.putNumber("ERROR", falconBottom.getClosedLoopError());
-    //SmartDashboard.putNumber("Velocity", falconBottom.getSelectedSensorVelocity());
+    //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+    //SmartDashboard.putNumber("Top Velocity", falconTop.getSelectedSensorVelocity());
   }
 
   public void ShootPID(){
@@ -147,7 +150,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void BeltOn(){
     if(feeder != null) {
-      feeder.set(0.5); 
+      feeder.set(0.6); 
     }
   }
 
