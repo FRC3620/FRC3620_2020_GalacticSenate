@@ -46,6 +46,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
+ * 
+ * @version 11 February 2020
+ * 
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
@@ -283,6 +286,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
+    SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -304,9 +308,15 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
+    DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
+
+    driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
+    driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
+    driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
+    driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
 
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
@@ -367,7 +377,7 @@ public class RobotContainer {
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return -axisValue;
+    return axisValue;
   }
     
   public static double getOperatorSpinJoystick() {
