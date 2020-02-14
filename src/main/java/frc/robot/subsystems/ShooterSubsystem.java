@@ -37,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double tPVelocity = 0.6; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
-  private final double trpm = 4100; //5200
+  private final double trpm = 5200; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
@@ -150,7 +150,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void BeltOn(){
     if(feeder != null) {
-      feeder.set(0.6); 
+      feeder.set(1); 
     }
   }
 

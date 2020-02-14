@@ -183,7 +183,7 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.setInverted(InvertType.None);
+      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
     }
 
     if(shooterSubsystemBallFeeder != null) {
