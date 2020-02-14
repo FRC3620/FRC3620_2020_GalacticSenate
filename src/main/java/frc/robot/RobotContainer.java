@@ -309,9 +309,15 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
+    DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
+
+    driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
+    driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
+    driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
+    driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
 
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
