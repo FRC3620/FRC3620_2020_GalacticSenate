@@ -1,19 +1,20 @@
 package frc.robot.subsystems;
 
-import org.slf4j.Logger;
-
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+
 import frc.robot.RobotContainer;
+
 /**
  * @author Noah Dressander (532377)
  * @version 17 January 2020
  */
 public class IntakeSubsystem extends SubsystemBase {
-  private final WPI_TalonFX intakeFalcon1 = RobotContainer.intakeSubsystemFalcon1;    //intake motor 
+  private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
+  private final Solenoid holder1 = RobotContainer.intakeSubsystemHolder1;
+  private final Solenoid holder2 = RobotContainer.intakeSubsystemHolder2;
+  private final Solenoid armDown = RobotContainer.intakeSubsystemArmDown;
 
   public IntakeSubsystem(){
   }
@@ -24,8 +25,8 @@ public class IntakeSubsystem extends SubsystemBase {
   *
   */
   public void intakeSet(double speed){    //runs intake
-    if (intakeFalcon1 != null) {
-      intakeFalcon1.set(speed);
+    if (intakeSparkMax != null) {
+      intakeSparkMax.set(speed);
     }
   }
 
@@ -34,4 +35,21 @@ public class IntakeSubsystem extends SubsystemBase {
     //System.out.println("boo " + intakeFalcon1.get());
   }
 
+  public void moveArmDown() {
+    armDown.set(true);
+  }
+
+  public void moveArmUp() {
+    armDown.set(false);
+  }
+
+  public void ballHolderOn() {
+    holder1.set(true);
+    holder2.set(true);
+  }
+
+  public void ballHolderOff() {
+    holder1.set(false);
+    holder2.set(false);
+  }
 }
