@@ -33,6 +33,7 @@ public class TeleOpDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
+    driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,20 +41,7 @@ public class TeleOpDriveCommand extends CommandBase {
   public void execute() {
     strafeX = RobotContainer.getDriveHorizontalJoystick();
     strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinXDriver = RobotContainer.getDriveSpinJoystick();
-    spinXOperator = RobotContainer.getOperatorSpinJoystick();
-    currentHeading = driveSubsystem.getNavXAbsoluteAngle();
-
-    if (spinXDriver != 0){
-      desiredHeading = currentHeading;
-    }
-    
-    
-    spinX = spinXDriver;
-
-    if (spinXDriver == 0){
-      spinX = (desiredHeading-currentHeading)*-0.03;
-    }
+    spinX = -driveSubsystem.getSpinPower();
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
