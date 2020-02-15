@@ -7,6 +7,7 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.LightEffect;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -47,6 +48,7 @@ public class LiftSubsystem extends SubsystemBase {
   public void liftPower(double speed) { // Runs lift controller based on joystick pos.
     if (liftController != null) {
       liftController.set(speed); //speed = speed passes through by moveliftcommand
+      SmartDashboard.putNumber("Speed", speed);
     }
   }
 
