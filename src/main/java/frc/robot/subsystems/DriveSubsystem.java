@@ -83,10 +83,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 176;//119; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = -50;//140;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 170;//94;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 165;//50; 
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 176;//PRACTICE: 119. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = -50;//PRACTICE: 140. COMP: -50;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 170;//PRACTICE: 90. COMP 170;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 165;//PRACTICE: 43. COMP 165; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -108,11 +108,11 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean drivePIDTuning = false;
 
 	private boolean changeAzimuthTestHeading = false;
-	private boolean fieldRelative = false;
+	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
 	private double kSpinP = 0.023;
-	private double kSpinI = 0.000001;
+	private double kSpinI = 0.00000;
 	private double kSpinD = 0.005;
 	private boolean autoSpinMode;
 	private double currentHeading;
