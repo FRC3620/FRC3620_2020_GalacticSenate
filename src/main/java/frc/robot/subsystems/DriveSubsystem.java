@@ -97,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	private double kPositionMinOutput = -1;
 	
-	private double kVelocityP = 0.007;
+	private double kVelocityP = 0.01;
 	private double kVelocityI = 0.000000;
 	private double kVelocityD = 0.1;
 	private double kVelocityFF = .006;
@@ -105,14 +105,15 @@ public class DriveSubsystem extends SubsystemBase {
 	private double kVelocityMaxOutput = 1;
 	private double kVelocityMinOutput = -1;
 
+	private boolean drivePIDTuning = false;
+
 	private boolean changeAzimuthTestHeading = false;
 	private boolean fieldRelative = false;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.025;
-	private double kSpinI = 0;
-	private double kSpinD = 0.003;
-	private boolean doingPID;
+	private double kSpinP = 0.023;
+	private double kSpinI = 0.000001;
+	private double kSpinD = 0.005;
 	private boolean autoSpinMode;
 	private double currentHeading;
 	private double targetHeading;
@@ -195,6 +196,8 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
 	SmartDashboard.putNumber("PID Position Setpoint", 0);
 
+	SmartDashboard.putBoolean("Are We Tuning Drive PID?", drivePIDTuning);
+
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
@@ -250,6 +253,7 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
+		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
 		currentHeading = getNavXFixedAngle();
 
@@ -381,10 +385,56 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
 		}
 		
-		SmartDashboard.putNumber("Left Front Commanded Vectors", newVectors.leftBack.getDirection());
-		//System.out.println("Left Front Commanded Vectors: " + newVectors.leftBack.getDirection());
+		if (drivePIDTuning){
 
-		//SET DRIVE AND AZIMUTH CONTROLERS HERE
+			double lbCommandedVel = newVectors.leftBack.getMagnitude();
+			double lbCurrentVel = currentDirections.leftBack.getMagnitude();
+			double lbVelError = lbCommandedVel - lbCurrentVel;
+			SmartDashboard.putNumber("Left Back Commanded Vel" , lbCommandedVel);
+			SmartDashboard.putNumber("Left Back Vel Error", lbVelError);
+
+			double lbCommandedAzimuth = newVectors.leftBack.getDirection();
+			double lbCurrentAzimuth = currentDirections.leftBack.getDirection();
+			double lbAzimuthError = lbCommandedAzimuth - lbCurrentAzimuth;
+			SmartDashboard.putNumber("Left Back Commanded Azimuth" , lbCommandedAzimuth);
+			SmartDashboard.putNumber("Left Back Azimuth Error", lbAzimuthError);
+
+			double lfCommandedVel = newVectors.leftFront.getMagnitude();
+			double lfCurrentVel = currentDirections.leftFront.getMagnitude();
+			double lfVelError = lfCommandedVel - lfCurrentVel;
+			SmartDashboard.putNumber("Left Front Commanded Vel" , lfCommandedVel);
+			SmartDashboard.putNumber("Left Front Vel Error", lfVelError);
+
+			double lfCommandedAzimuth = newVectors.leftFront.getDirection();
+			double lfCurrentAzimuth = currentDirections.leftFront.getDirection();
+			double lfAzimuthError = lfCommandedAzimuth - lfCurrentAzimuth;
+			SmartDashboard.putNumber("Left Front Commanded Azimuth" , lfCommandedAzimuth);
+			SmartDashboard.putNumber("Left Front Azimuth Error", lfAzimuthError);
+
+			double rbCommandedVel = newVectors.rightBack.getMagnitude();
+			double rbCurrentVel = currentDirections.rightBack.getMagnitude();
+			double rbVelError = rbCommandedVel - rbCurrentVel;
+			SmartDashboard.putNumber("Right Back Commanded Vel" , rbCommandedVel);
+			SmartDashboard.putNumber("Right Back Vel Error", rbVelError);
+
+			double rbCommandedAzimuth = newVectors.rightBack.getDirection();
+			double rbCurrentAzimuth = currentDirections.rightBack.getDirection();
+			double rbAzimuthError = rbCommandedAzimuth - rbCurrentAzimuth;
+			SmartDashboard.putNumber("Right Back Commanded Azimuth" , rbCommandedAzimuth);
+			SmartDashboard.putNumber("Right Back Azimuth Error", rbAzimuthError);
+
+			double rfCommandedVel = newVectors.rightFront.getMagnitude();
+			double rfCurrentVel = currentDirections.rightFront.getMagnitude();
+			double rfVelError = rfCommandedVel - rfCurrentVel;
+			SmartDashboard.putNumber("Right Front Commanded Vel" , rfCommandedVel);
+			SmartDashboard.putNumber("Right Front Vel Error", rfVelError);
+
+			double rfCommandedAzimuth = newVectors.rightFront.getDirection();
+			double rfCurrentAzimuth = currentDirections.rightFront.getDirection();
+			double rfAzimuthError = rfCommandedAzimuth - rfCurrentAzimuth;
+			SmartDashboard.putNumber("Right Front Commanded Azimuth" , rfCommandedAzimuth);
+			SmartDashboard.putNumber("Right Front Azimuth Error", rfAzimuthError);
+		}
 	}
 
 	public void timedDrive(double heading, double speed, double spin){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
@@ -720,7 +770,6 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
-		doingPID = false;
 	}
 	public double getTargetHeading(){
 		return targetHeading;
@@ -733,10 +782,5 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
-		doingPID = true;
 	}
-	public void setDoingSpinPID(boolean toPIDOrNotToPID){
-        doingPID = toPIDOrNotToPID;
-    }
-	
 }
