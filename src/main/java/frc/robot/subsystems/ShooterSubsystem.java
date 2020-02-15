@@ -37,14 +37,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double tPVelocity = 0.6; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
-  private final double trpm = 4100; //5200
+  private double trpm = 4100; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private final double brpm = 4000;
+  private double brpm = 4000;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -80,10 +80,15 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
+    SmartDashboard.putNumber("Top Velocity", trpm);
+    SmartDashboard.putNumber("Bottom Velocity", brpm);
   }
 
   @Override
   public void periodic() {
+    trpm = SmartDashboard.getNumber("Top Velocity", 4100);
+    brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+
     //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
     //SmartDashboard.putNumber("Bottom Velocity", falconBottom.getSelectedSensorVelocity());
