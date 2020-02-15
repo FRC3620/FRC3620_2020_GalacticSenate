@@ -150,7 +150,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void BeltOn(){
     if(feeder != null) {
-      feeder.set(1); 
+      feeder.set(0.5); 
+    }
+  }
+
+  public void BeltOnReverse(){
+    if(feeder != null) {
+      feeder.set(-0.35); 
     }
   }
 
