@@ -242,6 +242,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+      intakeSubsystemSparkMax.setInverted(true);
     }
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1) || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
@@ -354,6 +355,9 @@ public class RobotContainer {
 
     JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
+
+    JoystickButton reverseBeltDriver = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
+    reverseBeltDriver.toggleWhenPressed(new ReverseBeltDriverCommand(shooterSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
