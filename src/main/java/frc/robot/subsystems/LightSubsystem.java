@@ -427,6 +427,9 @@ public class LightSubsystem extends SubsystemBase {
    * @param effect The effect from the queue to act on
    */
   private LightEffect periodicShot(LightEffect effect) {
+
+    if (firstTime) blankBuffer();
+
     final int trailLength = effect.m_shotTrailLength;
     final int intervalLength = effect.m_shotIntervalLength;
     final Color8Bit[] colors = effect.m_shotColors;
@@ -502,7 +505,7 @@ public class LightSubsystem extends SubsystemBase {
    */
   private LightEffect periodicTwinkle(LightEffect effect) {
 
-    if (firstTime) {blankBuffer();}
+    if (firstTime) {setBuffer(effect.getColor());}
 
     int[] hsv = effect.getHSV();
     final int midSat = hsv[2];
@@ -638,11 +641,19 @@ public class LightSubsystem extends SubsystemBase {
     ledStrip.setData(ledBuffer);
   }
 
-  private void blankBuffer() {
+  /**
+   * Sets the entire strip one color instantly
+   */
+  private void setBuffer(Color8Bit color) {
     for (int i = 0; i < ledBuffer.getLength(); i++) {
-      ledBuffer.setRGB(i, 0, 0, 0);
+      ledBuffer.setLED(i, color);
     }
   }
+
+  /**
+   * Sets the strip to black instantly
+   */
+  private void blankBuffer() {setBuffer(new Color8Bit(0,0,0));}
 
   /**
    * Checks the size of the queue
