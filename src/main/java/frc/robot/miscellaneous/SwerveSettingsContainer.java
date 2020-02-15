@@ -14,8 +14,8 @@ public class SwerveSettingsContainer {
 	
 	public SwerveSettingsContainer (double leftFront, double rightFront, double leftBack, double rightBack) {
 		super();
-		this.leftFront = leftFront;
 		this.rightFront = rightFront;
+		this.leftFront = leftFront;
 		this.leftBack = leftBack;
 		this.rightBack = rightBack;
 	}
@@ -26,8 +26,8 @@ public class SwerveSettingsContainer {
 				+ ", rightBack=" + rightBack + "]";
 	}
 
-	public double leftFront;
 	public double rightFront;
+	public double leftFront;
 	public double leftBack;
 	public double rightBack;
 }

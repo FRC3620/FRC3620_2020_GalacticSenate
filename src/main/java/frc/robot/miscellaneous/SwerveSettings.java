@@ -25,16 +25,16 @@ import edu.wpi.first.networktables.NetworkTableType;
  */
 public class SwerveSettings {
     NetworkTable networkTable;
-    NetworkTableEntry leftFrontEntry;
     NetworkTableEntry rightFrontEntry;
+    NetworkTableEntry leftFrontEntry;
     NetworkTableEntry leftBackEntry;
     NetworkTableEntry rightBackEntry;
     Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
     public SwerveSettings(String name) {
         networkTable = NetworkTableInstance.getDefault().getTable(name);
-        leftFrontEntry = networkTable.getEntry("leftFront");
         rightFrontEntry = networkTable.getEntry("rightFront");
+        leftFrontEntry = networkTable.getEntry("leftFront");
         leftBackEntry = networkTable.getEntry("leftBack");
         rightBackEntry = networkTable.getEntry("rightBack");
     }
@@ -52,8 +52,8 @@ public class SwerveSettings {
     public SwerveSettingsContainer get(SwerveSettingsContainer defaultValues) {
         defaulted.clear();
         SwerveSettingsContainer returnValue = new SwerveSettingsContainer();
-        returnValue.leftFront = getOneSetting(leftFrontEntry, defaultValues.leftFront);
         returnValue.rightFront = getOneSetting(rightFrontEntry, defaultValues.rightFront);
+        returnValue.leftFront = getOneSetting(leftFrontEntry, defaultValues.leftFront);
         returnValue.leftBack = getOneSetting(leftBackEntry, defaultValues.leftBack);
         returnValue.rightBack = getOneSetting(rightBackEntry, defaultValues.rightBack);
         if (defaulted.size() == 4) {
@@ -67,12 +67,12 @@ public class SwerveSettings {
 
     public void set(SwerveSettingsContainer settings) {
         logger.info("SwerveSettings {} is saving {}", networkTable.getPath(), settings);
-        leftFrontEntry.setDouble(settings.leftFront);
         rightFrontEntry.setDouble(settings.rightFront);
+        leftFrontEntry.setDouble(settings.leftFront);
         leftBackEntry.setDouble(settings.leftBack);
         rightBackEntry.setDouble(settings.rightBack);
-        leftFrontEntry.setPersistent();
         rightFrontEntry.setPersistent();
+        leftFrontEntry.setPersistent();
         leftBackEntry.setPersistent();
         rightBackEntry.setPersistent();
 

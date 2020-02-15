@@ -78,10 +78,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	SwerveSettingsContainer competitionDefaultAbsoluteEncoderOffset = new SwerveSettingsContainer (
+	SwerveSettingsContainer competitionDefaultAbsoluteEncoderOffsets = new SwerveSettingsContainer (
 		140, 119, 88, -90
 	);
-	SwerveSettingsContainer practiceDefaultAbsoluteEncoderOffset = new SwerveSettingsContainer (
+	SwerveSettingsContainer practiceDefaultAbsoluteEncoderOffsets = new SwerveSettingsContainer (
 		140, 119, 94, 50
 	);
 	// reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
@@ -122,7 +122,11 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 	absoluteEncoderSettings = new SwerveSettings("analogEncoderOffset");
 
-	absoluteEncoderOffsets = absoluteEncoderSettings.get(competitionDefaultAbsoluteEncoderOffset);
+	absoluteEncoderOffsets = absoluteEncoderSettings.get(RobotContainer.amIACompBot() ?
+	  competitionDefaultAbsoluteEncoderOffsets : practiceDefaultAbsoluteEncoderOffsets);
+
+	// use the default ones until we are sure this all works
+	absoluteEncoderOffsets = competitionDefaultAbsoluteEncoderOffsets;
 
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
@@ -243,7 +247,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void saveCurrentAbsoluteEncoderOffsets() {
-	  absoluteEncoderSettings.set(absoluteEncoderOffsets);
+	  SwerveSettingsContainer currentHeadings = new SwerveSettingsContainer();
+	  currentHeadings.rightFront = getHomeEncoderHeading(rightFrontHomeEncoder);
+	  currentHeadings.leftFront = getHomeEncoderHeading(leftFrontHomeEncoder);
+	  currentHeadings.leftBack = getHomeEncoderHeading(leftBackHomeEncoder);
+	  currentHeadings.rightBack = getHomeEncoderHeading(rightBackHomeEncoder);
+	  absoluteEncoderSettings.set(currentHeadings);
+	  // TODO I think we need to do this
+	  absoluteEncoderOffsets = currentHeadings;
   }
 
   public double getStrafeXValue() {
@@ -518,6 +529,7 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - absoluteEncoderOffsets.rightBack);
 		}
 	}
+
 	public double getFixedPosition(CANEncoder encoder){
 		double azimuth = encoder.getPosition();
 		if(azimuth > 180){

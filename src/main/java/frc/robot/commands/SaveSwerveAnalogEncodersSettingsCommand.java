@@ -25,7 +25,6 @@ public class SaveSwerveAnalogEncodersSettingsCommand extends CommandBase {
   @Override
   public void initialize() {
     m_subsystem.saveCurrentAbsoluteEncoderOffsets();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

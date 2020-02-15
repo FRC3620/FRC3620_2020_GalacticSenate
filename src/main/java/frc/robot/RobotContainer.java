@@ -8,28 +8,23 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
@@ -202,6 +197,11 @@ public class RobotContainer {
 
     m_armMotor = new Victor(8);
 
+    driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
+    driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
+    driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
+    driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+              
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1) || iAmACompetitionRobot){
@@ -212,31 +212,23 @@ public class RobotContainer {
       driveSubsystemRightFrontAzimuth = new CANSparkMax(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
-      driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
-              
       driveSubsystemLeftFrontDrive = new CANSparkMax(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
               
       driveSubsystemLeftFrontAzimuth = new CANSparkMax(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
-      driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
-      
       driveSubsystemLeftBackDrive = new CANSparkMax(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
               
       driveSubsystemLeftBackAzimuth = new CANSparkMax(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
-      driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
-              
       driveSubsystemRightBackDrive = new CANSparkMax(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
       
       driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
-
-      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
