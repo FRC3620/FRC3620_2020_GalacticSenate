@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * @author Nick Zimanski (SlippStream)
- * @version 14 February 2020
+ * @version 15 February 2020
  */
 public class LightSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
@@ -110,7 +110,7 @@ public class LightSubsystem extends SubsystemBase {
     presetEnRoute = true;
     switch (pattern) {
       case INIT:
-        setShot(new Color8Bit[] {new Color8Bit(5,0,200), new Color8Bit(255,210,0)}, 7500, true, 10, 2, false);
+        setShot(new Color8Bit[] {LightEffect.Color.BLUE.value, LightEffect.Color.MAIZE.value}, 7500, true, 10, 2, false);
         break;
       case TELEOP:
         if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 3000, true);}
@@ -408,7 +408,7 @@ public class LightSubsystem extends SubsystemBase {
    * Takes the current effect out if it shares this method's password
    * @param password The string passed to the original passworded effect
    */
-  public void removeEffectByPassword(String password) {passwordQueue.add(password);}
+  public void removeEffectByPassword(String password) {if(!passwordQueue.contains(password)) passwordQueue.add(password);}
 
   private void checkVoltage() {
     if (RobotController.getBatteryVoltage() < defaultBatteryLowVoltage && Timer.getFPGATimestamp() > battery_voltageCheckTime + battery_voltageTimerInterval) {
@@ -548,7 +548,7 @@ public class LightSubsystem extends SubsystemBase {
     var color = effect.getColor();
     if ((Timer.getFPGATimestamp() * 1000) % effect.m_blinkFlashRate/2 < 10) {
       for (int i = 0; i < ledBuffer.getLength(); i++) {
-        if (blink_isOn) ledBuffer.setLED(i, LightEffect.Color.BLACK.color);
+        if (blink_isOn) ledBuffer.setLED(i, LightEffect.Color.BLACK.value);
         else ledBuffer.setLED(i, color);
       }
       blink_isOn = !blink_isOn;
@@ -569,6 +569,9 @@ public class LightSubsystem extends SubsystemBase {
         logger.info(Integer.toString(queue.size()));
         logger.info("Displaying effect: " + currentEffect.getPattern());
         firstTime = true;
+
+        effectTimer.reset();
+        effectTimer.start();
       }
 
       switch (currentEffect.getPattern()) {
@@ -593,38 +596,40 @@ public class LightSubsystem extends SubsystemBase {
       firstTime = false;
 
       if (passwordQueue.size() != 0) {
+        String passToRemove = "";
         for (int i = 0; i < passwordQueue.size(); i++) {
+          String pass = passwordQueue.get(i);
           for (int k = 0; k < queue.size(); k ++) {
-            if (queue.get(k).getPassword() == passwordQueue.get(i)) {
-              //Killing the effect and key
-              logger.info("Removing effect: " + queue.get(k).getPattern() + " with password: " + passwordQueue.get(i));
-              passwordQueue.remove(i);
+            if (queue.get(k).getPassword().equals(pass)) {
+              //Killing the effect
+              logger.info("Removing effect: " + queue.get(k).getPattern() + " with password: " + pass);
               
-              if (k == 0) currentEffect = null;
+              if (k == 0) currentEffect = null; //Sets the current effect to null, bringing in the next effect
 
-              queue.remove(k);
-              effectTimer.reset();
-              effectTimer.start();
+              queue.remove(k); //removes the effect
+
+              if(passToRemove.equals("")) passToRemove = pass; //Sets password to be removed after all fx are checked
+              
+              k--;
             }
-          }
-        }
+          } //end for k
+          if (!passToRemove.equals("")) {passwordQueue.remove(passToRemove); i--;} //killing the key
+
+        } //end for i
       }
 
       //Checks if there is an effect waiting on an indefinite effect or if there is a timer at limit
       if (currentEffect != null) {
         if ((currentEffect.getMilliseconds() == 0 && queue.size() > 1 && currentEffect.getPassword() == null) || (effectTimer.get() * 1000 > currentEffect.getMilliseconds() && currentEffect.getMilliseconds() != 0)) {
-          if (currentEffect.getMilliseconds() == 0 && queue.get(1).getReturnsPrevious()) {queue.add(currentEffect);}
+          if (currentEffect.getMilliseconds() == 0 && queue.get(1).getReturnsPrevious()) {queue.add(currentEffect);} //returns previous if applicable
 
             //Killing the effect
             logger.info("Ending effect: " + currentEffect.getPattern());
             queue.remove(0);
             currentEffect = null;
-
-            effectTimer.reset();
-            effectTimer.start();
         }
 
-        if (queue.size() > 1 && queue.get(queue.size() - 1).getOverride()) {
+        if (queue.size() > 1 && queue.get(queue.size() - 1).getOverride()) { //overrides if applicable
           if (queue.size() == 2 || queue.get(queue.size() - 1).getReturnsPrevious()) {queue.add(2, currentEffect);}
           LightEffect priorityEffect = queue.get(queue.size() - 1);
           queue.remove(0);
@@ -632,11 +637,9 @@ public class LightSubsystem extends SubsystemBase {
           currentEffect = null;
         }
       }
-
-
       if (queue.size() == 0) {effectTimer.reset();}
     }
-    else setSolidColor(LightEffect.Color.BLACK.color, 0, false, false);
+    else setSolidColor(LightEffect.Color.BLACK.value, 0, false, false); //blanks the strip if nothing is active
 
     ledStrip.setData(ledBuffer);
   }
