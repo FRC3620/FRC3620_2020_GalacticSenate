@@ -7,54 +7,57 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.Logger;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
-public class TeleOpDriveCommand extends CommandBase {
-  private DriveSubsystem driveSubsystem;
+public class BallsCommand extends CommandBase {
+  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
+  TargetColor previousColor = TargetColor.UNKNOWN;
 
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
+
+   
+
+
   /**
-   * Creates a new TeleOpDriveCommand.
+   * Creates a new SpinControlPanel4TimesCommand.
    */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    addRequirements(m_driveSubsystem);
+  public BallsCommand() {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(RobotContainer.armSubsystem);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
-    driveSubsystem.setTargetHeading(desiredHeading);
+// System.out.println("Worked");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
+    
+    RobotContainer.shooterSubsystem.ReleaseTheBalls();
 
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.teleOpDrive(0,0,0);
+    RobotContainer.shooterSubsystem.HoldBalls();
+
   }
 
   // Returns true when the command should end.
+  // (To return true the rotation count must be greater than or equal to 4)
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }

@@ -8,53 +8,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class TeleOpDriveCommand extends CommandBase {
-  private DriveSubsystem driveSubsystem;
-
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
+public class SnapToHeadingCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
+  double targetHeading;
   /**
-   * Creates a new TeleOpDriveCommand.
+   * Creates a new SnapToHeadingCommand.
    */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    addRequirements(m_driveSubsystem);
+  public SnapToHeadingCommand(double heading, DriveSubsystem m_driveSubsystem) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    targetHeading = heading;
+    driveSubsystem = m_driveSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
-    driveSubsystem.setTargetHeading(desiredHeading);
+    driveSubsystem.setTargetHeading(targetHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
-
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.teleOpDrive(0,0,0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

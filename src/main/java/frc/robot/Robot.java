@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.io.File;
-import java.util.Date;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -16,11 +14,13 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import org.usfirst.frc3620.misc.ColorPattern;
+import org.usfirst.frc3620.misc.RobotMode;
 
 
 /**
@@ -36,6 +36,9 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private Logger logger;
+  static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
+  DriverStation driverStation;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -44,6 +47,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
+
+    driverStation = DriverStation.getInstance();
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -51,7 +57,7 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
-        logger.info("initialized {}", command.getClass().getSimpleName());//I scream at people
+        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
       }
     });
 
@@ -83,8 +89,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-}
+  }
   
 
   /**
@@ -92,6 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    processRobotModeChange(RobotMode.DISABLED);
     RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.DISABLED);
   }
 
@@ -104,6 +110,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    processRobotModeChange(RobotMode.AUTONOMOUS);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -131,6 +138,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    processRobotModeChange(RobotMode.TELEOP);
+    logMatchInfo();
+
     RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TELEOP);
   }
 
@@ -146,6 +156,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
+    processRobotModeChange(RobotMode.TEST);
     RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TEST);
   }
 
@@ -154,5 +165,35 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  /*
+	 * this routine gets called whenever we change modes
+	 */
+	void processRobotModeChange(RobotMode newMode) {
+		logger.info("Switching from {} to {}", currentRobotMode, newMode);
+		
+		previousRobotMode = currentRobotMode;
+		currentRobotMode = newMode;
+
+		// if any subsystems need to know about mode changes, let
+		// them know here.
+		// exampleSubsystem.processRobotModeChange(newMode);
+		
+  }
+  
+  public static RobotMode getCurrentRobotMode(){
+    return currentRobotMode;
+  }
+
+  void logMatchInfo() {
+    if (driverStation.isFMSAttached()) {
+      logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
+        driverStation.getEventName(),
+        driverStation.getMatchType(),
+        driverStation.getMatchNumber(),
+        driverStation.getReplayNumber());
+    }
+    logger.info("Alliance {}, position {}", driverStation.getAlliance(), driverStation.getLocation());
   }
 }
