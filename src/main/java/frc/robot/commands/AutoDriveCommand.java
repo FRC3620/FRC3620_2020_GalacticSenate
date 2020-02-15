@@ -18,13 +18,15 @@ public class AutoDriveCommand extends CommandBase {
   private double distanceTravelled;
   private double desiredDistance;
   private double desiredAngle;
+  private double desiredHeading;
 
-  public AutoDriveCommand(double distance, double strafeAngle, double speed, DriveSubsystem driveSubsystem) {
+  public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem);
 
     desiredDistance = distance;
     desiredAngle = strafeAngle;
+    desiredHeading = heading;
 
   }
 
@@ -32,6 +34,7 @@ public class AutoDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
+    driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +45,7 @@ public class AutoDriveCommand extends CommandBase {
     double heading = driveSubsystem.getNavXFixedAngle(); 
 
     double currentPosition = driveSubsystem.getDriveMotorPosition();
-    driveSubsystem.timedDrive(desiredAngle, 0.5, spinConstant*heading);
+    driveSubsystem.timedDrive(desiredAngle, 0.5, );
 
     distanceTravelled = Math.abs(currentPosition - initialPosition);
   }
