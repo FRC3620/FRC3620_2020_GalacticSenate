@@ -287,6 +287,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
+    SmartDashboard.putData(new SaveSwerveAnalogEncodersSettingsCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {

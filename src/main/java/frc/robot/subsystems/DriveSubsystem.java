@@ -78,10 +78,17 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 119;//119; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//140;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 88;//94;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = -90;//50; 
+	SwerveSettingsContainer competitionDefaultAbsoluteEncoderOffset = new SwerveSettingsContainer (
+		140, 119, 88, -90
+	);
+	SwerveSettingsContainer practiceDefaultAbsoluteEncoderOffset = new SwerveSettingsContainer (
+		140, 119, 94, 50
+	);
+	// reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	//private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//140;
+	//private double RIGHT_FRONT_ABSOLUTE_OFFSET = 119;//119;
+	//private double LEFT_BACK_ABSOLUTE_OFFSET = 88;//94;
+	//private double RIGHT_BACK_ABSOLUTE_OFFSET = -90;//50; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -109,16 +116,13 @@ public class DriveSubsystem extends SubsystemBase {
 	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC, this);
 	DriveVectors oldVectors;
 
-	SwerveSettings analogEncoderSettings;
+	SwerveSettings absoluteEncoderSettings;
+	SwerveSettingsContainer absoluteEncoderOffsets;
 
   public DriveSubsystem() {
-	analogEncoderSettings = new SwerveSettings("analogEncoder");
-	SwerveSettingsContainer analogEncoderSettingsContainer = new SwerveSettingsContainer();
-	analogEncoderSettingsContainer.leftFront = 1;
-	analogEncoderSettingsContainer.rightFront = 2;
-	analogEncoderSettingsContainer.leftBack = 3;
-	analogEncoderSettingsContainer.rightBack = 4;
-	analogEncoderSettings.set(analogEncoderSettingsContainer);
+	absoluteEncoderSettings = new SwerveSettings("analogEncoderOffset");
+
+	absoluteEncoderOffsets = absoluteEncoderSettings.get(competitionDefaultAbsoluteEncoderOffset);
 
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
@@ -236,6 +240,10 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(leftBackVelPID);
 			updateVelocityPID(rightBackVelPID);
 		}
+  }
+
+  public void saveCurrentAbsoluteEncoderOffsets() {
+	  absoluteEncoderSettings.set(absoluteEncoderOffsets);
   }
 
   public double getStrafeXValue() {
@@ -504,10 +512,10 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void fixRelativeEncoders(){
 		if (rightFrontAzimuthEncoder != null) {
-			rightFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(rightFrontHomeEncoder) - RIGHT_FRONT_ABSOLUTE_OFFSET);
-			leftFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(leftFrontHomeEncoder) - LEFT_FRONT_ABSOLUTE_OFFSET);
-			leftBackAzimuthEncoder.setPosition(getHomeEncoderHeading(leftBackHomeEncoder) - LEFT_BACK_ABSOLUTE_OFFSET);
-			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - RIGHT_BACK_ABSOLUTE_OFFSET);
+			rightFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(rightFrontHomeEncoder) - absoluteEncoderOffsets.rightFront);
+			leftFrontAzimuthEncoder.setPosition(getHomeEncoderHeading(leftFrontHomeEncoder) - absoluteEncoderOffsets.leftFront);
+			leftBackAzimuthEncoder.setPosition(getHomeEncoderHeading(leftBackHomeEncoder) - absoluteEncoderOffsets.leftBack);
+			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - absoluteEncoderOffsets.rightBack);
 		}
 	}
 	public double getFixedPosition(CANEncoder encoder){

@@ -8,6 +8,18 @@
 package frc.robot.miscellaneous;
 
 public class SwerveSettingsContainer {
+	public SwerveSettingsContainer () {
+		super();
+	}
+	
+	public SwerveSettingsContainer (double leftFront, double rightFront, double leftBack, double rightBack) {
+		super();
+		this.leftFront = leftFront;
+		this.rightFront = rightFront;
+		this.leftBack = leftBack;
+		this.rightBack = rightBack;
+	}
+
     @Override
 	public String toString() {
 		return "SwerveSettingsContainer [leftFront=" + leftFront + ", rightFront=" + rightFront + ", leftBack=" + leftBack
