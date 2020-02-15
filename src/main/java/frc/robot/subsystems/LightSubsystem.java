@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * @author Nick Zimanski (SlippStream)
- * @version 11 February 2020
+ * @version 14 February 2020
  */
 public class LightSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
@@ -34,6 +34,7 @@ public class LightSubsystem extends SubsystemBase {
   private ArrayList<String> passwordQueue = new ArrayList<String>();
 
   private boolean presetEnRoute = false;
+  private boolean firstTime = false; //Tracks whether a light effect is displaying for the first cycle.
 
   private final boolean defaultOverride = false;
   private final double defaultBatteryLowVoltage = 12.0; //Volts that, when dipped below, alert the lights
@@ -500,6 +501,9 @@ public class LightSubsystem extends SubsystemBase {
    * @param effect The effect from the queue to act on
    */
   private LightEffect periodicTwinkle(LightEffect effect) {
+
+    if (firstTime) {blankBuffer();}
+
     int[] hsv = effect.getHSV();
     final int midSat = hsv[2];
     final int interval = Math.abs(128 - midSat);
@@ -558,9 +562,10 @@ public class LightSubsystem extends SubsystemBase {
 
     if (!queue.isEmpty()) {
       if (currentEffect == null) {
-      currentEffect = queue.get(0);
-      logger.info(Integer.toString(queue.size()));
-      logger.info("Displaying effect: " + currentEffect.getPattern());
+        currentEffect = queue.get(0);
+        logger.info(Integer.toString(queue.size()));
+        logger.info("Displaying effect: " + currentEffect.getPattern());
+        firstTime = true;
       }
 
       switch (currentEffect.getPattern()) {
@@ -582,6 +587,7 @@ public class LightSubsystem extends SubsystemBase {
         default:
           break;
       }
+      firstTime = false;
 
       if (passwordQueue.size() != 0) {
         for (int i = 0; i < passwordQueue.size(); i++) {
@@ -630,5 +636,32 @@ public class LightSubsystem extends SubsystemBase {
     else setSolidColor(LightEffect.Color.BLACK.color, 0, false, false);
 
     ledStrip.setData(ledBuffer);
+  }
+
+  private void blankBuffer() {
+    for (int i = 0; i < ledBuffer.getLength(); i++) {
+      ledBuffer.setRGB(i, 0, 0, 0);
+    }
+  }
+
+  /**
+   * Checks the size of the queue
+   * @return The size of the current effect queue
+   */
+  public int getQueueSize() {return this.queue.size();}
+
+  /**
+   * Checks whether or not an effect is present in the queue
+   * @param password The password to check for
+   * @return Whether or not an effect with the given password is present
+   */
+  public boolean isEffectPresent(String password) {
+    boolean present = false;
+    for (int i = 0; i < this.queue.size(); i++) {
+      if (this.queue.get(i).getPassword().equals(password)) {
+        present = true;
+      }
+    }
+    return present;
   }
 }
