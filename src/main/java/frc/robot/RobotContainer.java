@@ -204,7 +204,7 @@ public class RobotContainer {
 
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1) || iAmACompetitionRobot){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
 
       driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
@@ -245,21 +245,27 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1) || iAmACompetitionRobot) {
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2) || iAmACompetitionRobot) { 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Pre Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3) || iAmACompetitionRobot) { 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Right Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4) || iAmACompetitionRobot) { 
+    
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4, "Ball Feeder") || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5) || iAmACompetitionRobot) {
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Lift Winch") || iAmACompetitionRobot) {
       liftSubsystemWinch = new WPI_TalonSRX(5);
     }
+    
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       liftSubsystemRelease = new Solenoid(0);
       solenoidArmUp = new Solenoid(1);
