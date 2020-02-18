@@ -316,6 +316,10 @@ public class RobotContainer {
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
+   
+   
+    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
     driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
     driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
@@ -400,6 +404,13 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  public static double getColorJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
+    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+      return 0;
+    } 
+    return -axisValue;
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
