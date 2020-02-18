@@ -661,7 +661,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
 
-		double angle =180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		double angle = ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
