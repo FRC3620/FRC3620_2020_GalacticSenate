@@ -4,6 +4,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriverStationLoggingHandler extends Handler {
@@ -18,13 +19,18 @@ public class DriverStationLoggingHandler extends Handler {
     public void publish(LogRecord record) {
 		String s = formatter.format(record);
 		int level = record.getLevel().intValue();
+		StringBuilder sb = new StringBuilder();
+		sb.append(sequence++);
+		sb.append(" ");
+		sb.append(s);
 		if (level >= Level.SEVERE.intValue()) {
-			DriverStation.reportError(s, false);
+			//DriverStation.reportError(sb.toString(), false);
+			HAL.sendError(true, 2, false, sb.toString(), "", "", false);
 		} else if (level >= Level.WARNING.intValue()) {
-			DriverStation.reportWarning(s, false);
+			//DriverStation.reportWarning(sb.toString(), false);
+			HAL.sendError(false, 2, false, sb.toString(), "", "", false);
 		} else {
-			System.out.print("" + sequence + " " + s); // NOPMD
-			sequence++;
+			System.out.print(sb.toString()); // NOPMD
 		}
     }
 

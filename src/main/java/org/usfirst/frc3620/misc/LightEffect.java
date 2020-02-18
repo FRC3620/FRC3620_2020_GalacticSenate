@@ -13,10 +13,12 @@ public class LightEffect {
         RED(new Color8Bit(255,0,0)),
         BLUE(new Color8Bit(0,0,255)),
         GREEN(new Color8Bit(0,255,0)),
-        GRAY(new Color8Bit(128,128,128));
+        GRAY(new Color8Bit(128,128,128)),
+        PURPLE(new Color8Bit(132,56,214)),
+        MAIZE(new Color8Bit(255,210,0));
 
-        public Color8Bit color;
-        private Color(Color8Bit color) {this.color = color;}
+        public Color8Bit value;
+        private Color(Color8Bit color) {this.value = color;}
     }
 
     private boolean override;
@@ -75,55 +77,31 @@ public class LightEffect {
     public boolean getOverride() {return this.override;}
     public void setOverride(boolean override) {this.override = override;}
 
-    public int[] getHSV() {
-        double r = color.red / 255.0;
-        double g = color.green / 255.0;
-        double b = color.blue / 255.0;
-    
-        double cmax = Math.max(r, Math.max(g, b)); // maximum of r, g, b 
-        double cmin = Math.min(r, Math.min(g, b)); // minimum of r, g, b 
-        double diff = cmax - cmin; // diff of cmax and cmin. 
-        double h = -1, s = -1; 
-          
-        if (cmax == cmin) h = 0; 
-    
-        else if (cmax == r) h = (60 * ((g - b) / diff) + 360) % 360; 
-        else if (cmax == g) h = (60 * ((b - r) / diff) + 120) % 360; 
-        else if (cmax == b) h = (60 * ((r - g) / diff) + 240) % 360; 
-    
-        if (cmax == 0) s = 0; 
-        else
-            s = (diff / cmax) * 255; 
-    
-        // compute v 
-        double v = cmax * 255; 
-    
-        return new int[]{(int)h/2, (int)s, (int)v};
-      }
+    public int[] getHSV() {return getHSV(this.color);}
 
-      public static int[] getHSV(Color8Bit color) {
+    public static int[] getHSV(Color8Bit color) {
         double r = color.red / 255.0;
         double g = color.green / 255.0;
         double b = color.blue / 255.0;
-    
+
         double cmax = Math.max(r, Math.max(g, b)); // maximum of r, g, b 
         double cmin = Math.min(r, Math.min(g, b)); // minimum of r, g, b 
         double diff = cmax - cmin; // diff of cmax and cmin. 
         double h = -1, s = -1; 
-          
+            
         if (cmax == cmin) h = 0; 
-    
+
         else if (cmax == r) h = (60 * ((g - b) / diff) + 360) % 360; 
         else if (cmax == g) h = (60 * ((b - r) / diff) + 120) % 360; 
         else if (cmax == b) h = (60 * ((r - g) / diff) + 240) % 360; 
-    
+
         if (cmax == 0) s = 0; 
         else
             s = (diff / cmax) * 255; 
-    
+
         // compute v 
         double v = cmax * 255; 
-    
+
         return new int[]{(int)h/2, (int)s, (int)v};
-      }
+    }
 }
