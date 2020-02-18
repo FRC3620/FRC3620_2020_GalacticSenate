@@ -289,15 +289,8 @@ public class RobotContainer {
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
-    JoystickButton spin4Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
-
-    JoystickButton stopForColor = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    stopForColor.whenPressed (new SpinControlPanelUntilColor());
-
-    operatorDPad.up().whenPressed(new PopupArmCommand()); 
-    operatorDPad.down().whenPressed(new PopDownArmCommand());
-       
+   
+   
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
@@ -311,6 +304,16 @@ public class RobotContainer {
     intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     //Operator Controller
+   operatorDPad.up().whenPressed(new PopupArmCommand()); 
+    operatorDPad.down().whenPressed(new PopDownArmCommand());
+       
+
+    JoystickButton spin4Button = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    spin4Button.whenPressed (new SpinControlPanel4TimesCommand());
+
+    JoystickButton stopForColor = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    stopForColor.whenPressed (new SpinControlPanelUntilColor());
+
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
@@ -353,6 +356,14 @@ public class RobotContainer {
 
   public static double getClimbingJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
+    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+      return 0;
+    } 
+    return -axisValue;
+  }
+
+  public static double getColorJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
