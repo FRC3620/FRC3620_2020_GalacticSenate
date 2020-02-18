@@ -18,5 +18,7 @@ package frc.robot;
 public final class Constants {
     public static int LED_STRIP_LENGTH = 300; //Length, in LEDs, of the LED strip
 
-    public static int PWM_LIGHT = 5; //PWM port for the led strip
+    public static final class PWM {
+        public static int LIGHTS = 5; //PWM port for the led strip
+    }
 }

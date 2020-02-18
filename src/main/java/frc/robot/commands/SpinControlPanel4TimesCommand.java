@@ -101,7 +101,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
     SmartDashboard.putString("Green Counter", Integer.toString(greenCounter)); 
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
-    SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
+    SmartDashboard.putString("Rotation Counter", Double.toString(rotationCount)); 
   
    
   }
