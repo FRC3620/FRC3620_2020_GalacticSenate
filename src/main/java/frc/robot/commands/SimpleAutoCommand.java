@@ -21,10 +21,10 @@ public class SimpleAutoCommand extends SequentialCommandGroup {
   public SimpleAutoCommand(DriveSubsystem subsystem) {
     this.driveSubsystem = subsystem;
     addCommands(
-
-      new AutoDriveCommand(4.3*12, 180, 0, 0, driveSubsystem),
-      new AutoDriveCommand(22*12, 90, 0, 0, driveSubsystem),
-      new AutoDriveCommand(21.5*12, -90, 0, 0, driveSubsystem),
-      new AutoDriveCommand(4.3*12, 0, 0, 0, driveSubsystem));
+      new ZeroDriveEncodersCommand(driveSubsystem),
+      new AutoDriveCommand(7.7*12, -73, 0, 0, driveSubsystem),
+      new AutoDriveCommand(12*12, -90, 0, 0, driveSubsystem),
+      new AutoDriveCommand(8.5*12, 90, 0, 0, driveSubsystem),
+      new SnapToHeadingCommand(180, driveSubsystem));
   }
 }

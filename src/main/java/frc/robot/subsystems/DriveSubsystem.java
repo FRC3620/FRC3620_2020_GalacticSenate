@@ -83,10 +83,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 176;//PRACTICE: 119. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = -50;//PRACTICE: 140. COMP: -50;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 170;//PRACTICE: 90. COMP 170;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 165;//PRACTICE: 43. COMP 165; 
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 119;//PRACTICE: 119. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//PRACTICE: 140. COMP: -50;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 90;//PRACTICE: 90. COMP 170;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 43;//PRACTICE: 43. COMP 165; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -251,11 +251,11 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(leftBackVelPID);
 			updateVelocityPID(rightBackVelPID);
 		}
-
-		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
 		currentHeading = getNavXFixedAngle();
+
+		SmartDashboard.putNumber("NavX heading", currentHeading);
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
@@ -661,7 +661,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
 
-		double angle = ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
@@ -775,6 +775,7 @@ public class DriveSubsystem extends SubsystemBase {
 		return targetHeading;
 	}
 	public void setTargetHeading(double angle){
+		logger.info("setting heading to "+angle);
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {

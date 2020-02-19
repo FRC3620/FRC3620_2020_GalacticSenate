@@ -295,10 +295,10 @@ public class RobotContainer {
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
     
-    SmartDashboard.putData("Auto Drive Left Command", new AutoDriveCommand(4.3*12, 180, 0, 0, driveSubsystem));
-    SmartDashboard.putData("Auto Drive Right Command", new AutoDriveCommand(4.3*12, 0, 0, 0, driveSubsystem));
-    SmartDashboard.putData("Auto Drive Forward Command", new AutoDriveCommand(22*12, 90, 0, 0, driveSubsystem));
-    SmartDashboard.putData("Auto Drive Backward Command", new AutoDriveCommand(21.5*12, -90, 0, 0, driveSubsystem));
+    SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
+    SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
   }
 
