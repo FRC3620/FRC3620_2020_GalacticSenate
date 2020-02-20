@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.RobotContainer;
@@ -20,7 +22,7 @@ public class LiftSubsystem extends SubsystemBase {
   private boolean lightTriggered = false;
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   private final Solenoid liftRelease = RobotContainer.liftSubsystemRelease; // solenoid fires lift upward
-  private final WPI_TalonSRX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
+  private final WPI_TalonFX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
 
   public LiftSubsystem() {
     this.setDefaultCommand(new MoveLiftCommand(this));
@@ -44,7 +46,7 @@ public class LiftSubsystem extends SubsystemBase {
     }
   }
   
-  
+  // Lift should move up from positive power 
   public void liftPower(double speed) { // Runs lift controller based on joystick pos.
     if (liftController != null) {
       liftController.set(speed); //speed = speed passes through by moveliftcommand

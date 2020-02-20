@@ -93,7 +93,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
   public static CANSparkMax intakeSubsystemSparkMax;
-  public static WPI_TalonSRX liftSubsystemWinch;
+  public static WPI_TalonFX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
   public static Solenoid solenoidArmUp;
   public static Solenoid ballReleaseSolenoid;
@@ -266,7 +266,7 @@ public class RobotContainer {
     } 
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Lift Winch") || iAmACompetitionRobot) {
-      liftSubsystemWinch = new WPI_TalonSRX(5);
+      liftSubsystemWinch = new WPI_TalonFX(5);
     }
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
@@ -322,10 +322,6 @@ public class RobotContainer {
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
-   
-   
-    JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
     driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
     driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
@@ -402,6 +398,11 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  /**
+   * Return the climbing joystick position. Return positive values if
+   * the operator pushes the joystick up.
+   * @return
+   */
   public static double getClimbingJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
