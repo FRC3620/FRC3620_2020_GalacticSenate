@@ -7,11 +7,16 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class TeleOpDriveCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
   private DriveSubsystem driveSubsystem;
 
   double strafeX;
@@ -32,7 +37,8 @@ public class TeleOpDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredHeading = driveSubsystem.getNavXAbsoluteAngle();
+    logger.info("Init tod");
+    desiredHeading = driveSubsystem.getNavXFixedAngle();
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 

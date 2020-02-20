@@ -44,7 +44,7 @@ public class AutoDriveCommand extends CommandBase {
 
     double currentPosition = driveSubsystem.getDriveMotorPosition();
     double spinX = -driveSubsystem.getSpinPower();
-    driveSubsystem.timedDrive(desiredAngle, 0.85, spinX);
+    driveSubsystem.timedDrive(desiredAngle, 0.6, spinX);
 
     distanceTravelled = Math.abs(currentPosition - initialPosition);
   }

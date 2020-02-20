@@ -300,6 +300,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {

@@ -41,6 +41,10 @@ public class SnapToHeadingCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if(Math.abs(targetHeading-driveSubsystem.getNavXFixedAngle())>5){
+      return true;
+    }
+    return false;
+    
   }
 }
