@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -24,10 +25,18 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new ZeroDriveEncodersCommand(driveSubsystem),
       new AutoDriveCommand(7*12, -90, 0, 0, driveSubsystem),
       new AutoDriveCommand(7.5*12, 17, 0, 0, driveSubsystem),
-      new SnapToHeadingCommand(113, driveSubsystem),
-      new SnapToHeadingCommand(23, driveSubsystem),
-      new AutoDriveCommand(3.4, -67, 0, 0, driveSubsystem),
-      new AutoDriveCommand(1.4, 113, 0, 0, driveSubsystem));
+      new WaitCommand(.3),
+      new AutoSnapToHeadingCommand(-113, driveSubsystem),
+      new WaitCommand(2),
+      new AutoSnapToHeadingCommand(-23, driveSubsystem),
+      new WaitCommand(.1),
+      new AutoDriveCommand(1.3*12, -63, -23, 0, driveSubsystem),
+      new WaitCommand(.2),
+      new AutoSemicircleCommand(5.5, 0.5, driveSubsystem),
+      new AutoDriveCommand(10*12, -90, 0, 0, driveSubsystem),
+      new WaitCommand(.2),
+      new AutoSnapToHeadingCommand(-180, driveSubsystem));
+
 
   }
     
