@@ -8,44 +8,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class MoveLiftCommand extends CommandBase {
-  private LiftSubsystem liftSubsystem;
-
+public class SnapToHeadingCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
+  double targetHeading;
   /**
-   * Creates a new MoveLift.
+   * Creates a new SnapToHeadingCommand.
    */
-  public MoveLiftCommand(LiftSubsystem m_liftSubsystem) {
-    this.liftSubsystem = m_liftSubsystem;
-
-
+  public SnapToHeadingCommand(double heading, DriveSubsystem m_driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_liftSubsystem);
+    targetHeading = heading;
+    driveSubsystem = m_driveSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    driveSubsystem.setTargetHeading(targetHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double liftPower = RobotContainer.getClimbingJoystick(); //Consistantly grabs the value of the climbing joystick
-    liftSubsystem.liftPower(liftPower);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    liftSubsystem.liftoff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
