@@ -8,11 +8,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -24,12 +21,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
@@ -96,13 +91,8 @@ public class RobotContainer {
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static WPI_TalonSRX liftSubsystemWinch;
-  public static Solenoid liftSubsystemRelease;
   public static Solenoid solenoidArmUp;
-  public static Solenoid ballReleaseSolenoid;
-  public static Solenoid netSolenoid;
   public static Solenoid intakeSubsystemArmDown;
-  public static Solenoid intakeSubsystemHolder1;
-  public static Solenoid intakeSubsystemHolder2;
 
   private static DigitalInput practiceBotJumper;
 
@@ -162,19 +152,11 @@ public class RobotContainer {
       driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
-
     }
 
     if (shooterSubsystemFalcon1 != null) {
       shooterSubsystemFalcon1.configFactoryDefault();
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
-
-      /*
-      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs); // undocumented current measurement status frame
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      */
     }
 
     if (shooterSubsystemFalcon2 != null) {
@@ -276,13 +258,8 @@ public class RobotContainer {
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       theCompressor = new Compressor(0);
-      liftSubsystemRelease = new Solenoid(0);
-      solenoidArmUp = new Solenoid(1);
-      ballReleaseSolenoid = new Solenoid(2);
-      intakeSubsystemArmDown = new Solenoid(3);
-      intakeSubsystemHolder1 = new Solenoid(4);
-      //intakeSubsystemHolder2 = new Solenoid(5);
-      //netSolenoid = new Solenoid(6);
+      solenoidArmUp = new Solenoid(0);
+      intakeSubsystemArmDown = new Solenoid(1);
     }
   }
 
@@ -329,7 +306,6 @@ public class RobotContainer {
 
     //Driver Controller
    
-   
     JoystickButton rumbButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     rumbButton.whenPressed(new RumbleCommand(rumbleSubsystemDriver));
 
@@ -364,16 +340,7 @@ public class RobotContainer {
     beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem)); 
-
-    JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
-    releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
-
-    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
-    liftReleaseButton.whenPressed(new LiftReleaseCommand(liftSubsystem));
-
-    JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {

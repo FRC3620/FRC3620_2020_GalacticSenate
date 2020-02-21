@@ -19,23 +19,10 @@ import frc.robot.commands.MoveLiftCommand;
  */
 public class LiftSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-  private final Solenoid liftRelease = RobotContainer.liftSubsystemRelease; // solenoid fires lift upward
   private final WPI_TalonSRX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
 
   public LiftSubsystem() {
     this.setDefaultCommand(new MoveLiftCommand(this));
-  }
-
-  public void releaseLift() { // releases lift
-    if (liftRelease != null) {
-      liftRelease.set(true);
-    }
-  }
-
-  public void liftReleaseOff() { // turns off release
-    if (liftRelease != null) {
-      liftRelease.set(false);
-    }
   }
 
   public void liftoff() { // turns off lift
@@ -44,12 +31,10 @@ public class LiftSubsystem extends SubsystemBase {
     }
   }
   
-  
   public void liftPower(double speed) { // Runs lift controller based on joystick pos.
     if (liftController != null) {
       liftController.set(speed); //speed = speed passes through by moveliftcommand
       SmartDashboard.putNumber("Speed", speed);
     }
   }
-
 }
