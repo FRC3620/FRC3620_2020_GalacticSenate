@@ -92,6 +92,8 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
+  public static CANSparkMax shooterSubsystemHoodMax;
+  public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static WPI_TalonSRX liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
@@ -183,7 +185,7 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.setInverted(InvertType.None);
+      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
     }
 
     if(shooterSubsystemBallFeeder != null) {
@@ -242,6 +244,14 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+    }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)){
+      shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+      shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+      shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+      shooterSubsystemHoodMax.setSmartCurrentLimit(30);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {

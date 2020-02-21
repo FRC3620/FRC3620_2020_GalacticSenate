@@ -11,6 +11,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +27,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
   private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
   private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  private CANPIDController anglePID = hoodMotor.getPIDController();
+  private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -45,6 +52,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
   private double brpm = 4000;
+
+  //hood PID Values
+  private final double hoodP = 0;
+  private final double hoodI = 0;
+  private final double hoodD = 0;
+  private final double hoodIz = 0;
+  private final double hoodPosition = 0;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -82,12 +96,27 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     SmartDashboard.putNumber("Top Velocity", trpm);
     SmartDashboard.putNumber("Bottom Velocity", brpm);
+
+    if (hoodMotor != null) {
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setIZone(hoodIz);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
   }
 
   @Override
   public void periodic() {
     trpm = SmartDashboard.getNumber("Top Velocity", 4100);
     brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+    double currentPosition = hoodEncoder.getPosition();
+    double ERROR = hoodPosition - currentPosition;
+
+    SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
+    SmartDashboard.putNumber("HoodERROR", ERROR);
 
     //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
@@ -97,7 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
     //SmartDashboard.putNumber("Top Velocity", falconTop.getSelectedSensorVelocity());
   }
-
+  
   public void ShootPID(){
     /* converting rev/min to units/rev
     100ms for a min is 600ms
