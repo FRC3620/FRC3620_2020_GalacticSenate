@@ -88,6 +88,21 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
     SmartDashboard.putNumber("RPM", rpm);
     For testing use the values below */
+    if (falconTop != null) {
+      SmartDashboard.putNumber("Shooter", falconTop.get());
+    } else {SmartDashboard.putNumber("Shooter", 3.14159); }
+
+    if (feeder != null) {
+      SmartDashboard.putNumber("Feeder", feeder.get());
+    } else {SmartDashboard.putNumber("Feeder", 3.14159); }
+
+    if (RobotContainer.ballReleaseSolenoid != null) {
+      SmartDashboard.putBoolean("Ball Release Solenoid", RobotContainer.ballReleaseSolenoid.get());
+      SmartDashboard.putBoolean("Net Solenoid", RobotContainer.ballReleaseSolenoid.get());
+    } else {
+      SmartDashboard.putBoolean("Ball Release Solenoid", false); 
+      SmartDashboard.putBoolean("Net Solenoid", false); 
+    }
   }
 
   public void ShootPID(){
