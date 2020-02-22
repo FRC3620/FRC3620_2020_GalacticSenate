@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -93,7 +94,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
   public static CANSparkMax intakeSubsystemSparkMax;
-  public static WPI_TalonSRX liftSubsystemWinch;
+  public static CANSparkMax liftSubsystemWinch;
   public static Solenoid liftSubsystemRelease;
   public static Solenoid solenoidArmUp;
   public static Solenoid ballReleaseSolenoid;
@@ -266,7 +267,7 @@ public class RobotContainer {
     } 
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Lift Winch") || iAmACompetitionRobot) {
-      liftSubsystemWinch = new WPI_TalonSRX(5);
+      liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
     }
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
