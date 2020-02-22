@@ -79,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double WHEEL_CIRCUMFERENCE = 2*Math.PI*WHEEL_RADIUS;
 	private final double DRIVE_ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE*WHEEL_TO_ENCODER_RATIO_VELOCITY;
  
-	private final double MAX_VELOCITY_RPM = 500; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM
+	private final double MAX_VELOCITY_RPM = 750; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
@@ -111,9 +111,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.029;
-	private double kSpinI = 0.00000;
-	private double kSpinD = 0.008;
+	private double kSpinP = 0.02;
+	private double kSpinI = 0.00001;
+	private double kSpinD = 0.003;
 	private boolean autoSpinMode;
 	private double currentHeading;
 	private double targetHeading;

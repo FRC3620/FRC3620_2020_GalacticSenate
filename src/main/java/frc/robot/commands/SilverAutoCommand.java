@@ -14,12 +14,12 @@ import frc.robot.subsystems.DriveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GoldenAutoCommand extends SequentialCommandGroup {
+public class SilverAutoCommand extends SequentialCommandGroup {
   DriveSubsystem driveSubsystem;
   /**
    * Creates a new GoldenAutoCommand.
    */
-  public GoldenAutoCommand(DriveSubsystem subsystem) {
+  public SilverAutoCommand(DriveSubsystem subsystem) {
     driveSubsystem = subsystem;
     addCommands(
       new ZeroDriveEncodersCommand(driveSubsystem),
@@ -27,18 +27,12 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new WaitCommand(.1),
       new AutoDriveCommand(5*12, -90, 0.8, 0, driveSubsystem),
       new WaitCommand(0.3),
-      new AutoDriveCommand(6.7*12, 17, 0.8, 0, driveSubsystem),
-      new WaitCommand(.3),
+      new AutoDriveCommand(4*12, -5, 0.8, 0 , driveSubsystem),
+      new WaitCommand(.2),
       new AutoSnapToHeadingCommand(-113, driveSubsystem),
       new WaitCommand(2),
-      new AutoSnapToHeadingCommand(0, driveSubsystem),
-      new WaitCommand(.1),
-      new AutoDriveCommand(1*12, -63, 0.8, 0, driveSubsystem),
-      new WaitCommand(.2),
-      new AutoSemiElipseCommand(5, 1,  0.6, driveSubsystem),
-      new AutoDriveCommand(9*12, -90, 0.8, 0, driveSubsystem),
-      new WaitCommand(.2),
-      new AutoSnapToHeadingCommand(-180, driveSubsystem));
+      new AutoSnapToHeadingCommand(-60, driveSubsystem),
+      new AutoDriveCommand(2*12, 22.5, 0.8, -60 , driveSubsystem));
 
 
   }
