@@ -10,19 +10,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AutoSemicircleCommand extends CommandBase {
+public class AutoSemiElipseCommand extends CommandBase {
   DriveSubsystem driveSubsystem;
   double currentHeading;
   double distanceTravelled;
   double initialPosition;
   double speed;
-  double circleRadius; //in feet
+  double radiusA; //in feet
+  double radiusB;
+  double elipseConstant;
 
   /**
    * Creates a new AutoSemicircleCommand.
    */
-  public AutoSemicircleCommand(double radius, double speed, DriveSubsystem driveSubsystem) {
-    circleRadius = radius*12; //convert to feet
+  public AutoSemiElipseCommand(double a, double b, double speed, DriveSubsystem driveSubsystem) {
+    this.radiusA = a*12; //convert to feet
+    this.radiusB = b*12;
     this.driveSubsystem = driveSubsystem;
     this.speed = speed;
 
@@ -34,16 +37,17 @@ public class AutoSemicircleCommand extends CommandBase {
     initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
     currentHeading = driveSubsystem.getNavXFixedAngle();
     driveSubsystem.setTargetHeading(currentHeading);
+    elipseConstant = Math.sqrt((radiusA*radiusA + radiusB*radiusB)/2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPosition() - initialPosition);
-    double angleSwept = distanceTravelled / circleRadius; //in radians
+    double angleSwept = distanceTravelled / elipseConstant; //approximation to the perimeter of an ellipse in radians
 
-    double joyX = Math.sin(angleSwept); 
-    double joyY = Math.cos(angleSwept);
+    double joyX = radiusA*Math.sin(angleSwept); 
+    double joyY = radiusB*Math.cos(angleSwept);
 
     driveSubsystem.teleOpDrive(joyX, joyY, 0);
   }
@@ -57,7 +61,7 @@ public class AutoSemicircleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (distanceTravelled > 3.1416*circleRadius){ // stop driving after we have travelled half a circumference
+    if (distanceTravelled > 3.1416*elipseConstant){ // stop driving after we have travelled half a circumference
       return true;
     }
     return false;

@@ -32,7 +32,7 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new WaitCommand(.1),
       new AutoDriveCommand(1.3*12, -63, -23, 0, driveSubsystem),
       new WaitCommand(.2),
-      new AutoSemicircleCommand(5.5, 0.5, driveSubsystem),
+      new AutoSemiElipseCommand(5.5, 3,  0.5, driveSubsystem),
       new AutoDriveCommand(10*12, -90, 0, 0, driveSubsystem),
       new WaitCommand(.2),
       new AutoSnapToHeadingCommand(-180, driveSubsystem));
