@@ -6,6 +6,7 @@
 * Swerve
 * Lights
 * Democracy
+* Badges, apparently
 
 ## Find Us
 * [Facebook](https://www.facebook.com/AverageJoes3620/)
