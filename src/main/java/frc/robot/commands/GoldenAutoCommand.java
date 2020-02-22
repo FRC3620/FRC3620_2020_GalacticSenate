@@ -23,18 +23,18 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
     driveSubsystem = subsystem;
     addCommands(
       new ZeroDriveEncodersCommand(driveSubsystem),
-      new AutoDriveCommand(6.3*12, -90, 0, 0, driveSubsystem),
+      new AutoDriveCommand(6.3*12, -90, 0.8, 0, driveSubsystem),
       new WaitCommand(0.3),
-      new AutoDriveCommand(6.5*12, 17, 0, 0, driveSubsystem),
+      new AutoDriveCommand(6.7*12, 17, 0.8, 0, driveSubsystem),
       new WaitCommand(.3),
       new AutoSnapToHeadingCommand(-113, driveSubsystem),
       new WaitCommand(2),
-      new AutoSnapToHeadingCommand(-23, driveSubsystem),
+      new AutoSnapToHeadingCommand(0, driveSubsystem),
       new WaitCommand(.1),
-      new AutoDriveCommand(1*12, -63, -23, 0, driveSubsystem),
+      new AutoDriveCommand(1.3*12, -63, 0.8, 0, driveSubsystem),
       new WaitCommand(.2),
-      new AutoSemiElipseCommand(5.5, 1.3,  0.5, driveSubsystem),
-      new AutoDriveCommand(10*12, -90, 0, 0, driveSubsystem),
+      new AutoSemiElipseCommand(5, 1,  0.6, driveSubsystem),
+      new AutoDriveCommand(9*12, -90, 0.8, 0, driveSubsystem),
       new WaitCommand(.2),
       new AutoSnapToHeadingCommand(-180, driveSubsystem));
 

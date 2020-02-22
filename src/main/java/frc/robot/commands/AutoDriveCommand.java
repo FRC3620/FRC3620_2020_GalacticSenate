@@ -19,6 +19,7 @@ public class AutoDriveCommand extends CommandBase {
   private double desiredDistance;
   private double desiredAngle;
   private double desiredHeading;
+  private double pathSpeed;
 
   public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
@@ -27,6 +28,7 @@ public class AutoDriveCommand extends CommandBase {
     desiredDistance = distance;
     desiredAngle = strafeAngle;
     desiredHeading = heading;
+    pathSpeed = speed;
 
   }
 
@@ -44,7 +46,7 @@ public class AutoDriveCommand extends CommandBase {
 
     double currentPosition = driveSubsystem.getDriveMotorPosition();
     double spinX = -driveSubsystem.getSpinPower();
-    driveSubsystem.timedDrive(desiredAngle, 0.8, spinX);
+    driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
 
     distanceTravelled = Math.abs(currentPosition - initialPosition);
   }
