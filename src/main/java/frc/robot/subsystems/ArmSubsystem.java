@@ -124,19 +124,19 @@ public class ArmSubsystem extends SubsystemBase {
     ColorMatchResult match = m_colorMatcher.matchClosestColor(getCurrentColor());
 
     if (match.color == kBlueTarget) {
-      Color = "Blue";
-      SmartDashboard.putString("Color Sensed", Color);
+      Color = "Blue"; //Sets the color as Blue
+      SmartDashboard.putString("Color Sensed", Color); //Pushes the color to ShuffleBoard
       return TargetColor.BLUE;
     } else if (match.color == kRedTarget) {
-      Color = "Red";
-      SmartDashboard.putString("Color Sensed", Color);
+      Color = "Red"; //Sets the color
+      SmartDashboard.putString("Color Sensed", Color); //Pushes it
       return TargetColor.RED;
     } else if (match.color == kGreenTarget) {
-      Color = "Green";
-      SmartDashboard.putString("Color Sensed", Color);
+      Color = "Green"; //Sets it
+      SmartDashboard.putString("Color Sensed", Color); //Pushes it
       return TargetColor.GREEN;
     } else if (match.color == kYellowTarget) {
-      Color = "Yellow";
+      Color = "Yellow"; //You get the idea
       SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.YELLOW;
     } else {
