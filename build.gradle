@@ -61,6 +61,15 @@ dependencies {
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
+// this helps junit test results show up in output
+tasks.withType(Test) { 
+  testLogging {
+    //exceptionFormat "full"
+    //events "started", "skipped", "passed", "failed"
+    showStandardStreams true
+  }
+}
+
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
