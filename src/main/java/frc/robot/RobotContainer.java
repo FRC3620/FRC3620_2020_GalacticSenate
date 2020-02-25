@@ -90,7 +90,7 @@ public class RobotContainer {
   public static CANSparkMax shooterSubsystemHoodMax;
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
-  public static WPI_TalonSRX liftSubsystemWinch;
+  public static CANSparkMax liftSubsystemWinch;
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
 
@@ -253,7 +253,7 @@ public class RobotContainer {
     } 
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Lift Winch") || iAmACompetitionRobot) {
-      liftSubsystemWinch = new WPI_TalonFX(5);
+      liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
     }
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
 
 import frc.robot.RobotContainer;
 import frc.robot.commands.MoveLiftCommand;
@@ -21,7 +22,7 @@ import frc.robot.commands.MoveLiftCommand;
 public class LiftSubsystem extends SubsystemBase {
   private boolean lightTriggered = false;
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-  private final WPI_TalonSRX liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
+  private final CANSparkMax liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
 
   public LiftSubsystem() {
     this.setDefaultCommand(new MoveLiftCommand(this));
