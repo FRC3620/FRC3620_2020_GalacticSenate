@@ -14,6 +14,7 @@ import frc.robot.commands.ManuallyMoveColorMotor;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -119,17 +120,28 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public TargetColor getTargetColor() {
+    String Color = "No colors yet";
     ColorMatchResult match = m_colorMatcher.matchClosestColor(getCurrentColor());
 
     if (match.color == kBlueTarget) {
+      Color = "Blue";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.BLUE;
     } else if (match.color == kRedTarget) {
+      Color = "Red";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.RED;
     } else if (match.color == kGreenTarget) {
+      Color = "Green";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.GREEN;
     } else if (match.color == kYellowTarget) {
+      Color = "Yellow";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.YELLOW;
     } else {
+      Color = "Unknown Color";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.UNKNOWN;
     }
   }
