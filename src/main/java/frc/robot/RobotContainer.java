@@ -228,12 +228,20 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
+      liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
+      liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
+      liftSubsystemWinch.setOpenLoopRampRate(.3);
+      liftSubsystemWinch.setClosedLoopRampRate(.3);
+      liftSubsystemWinch.setSmartCurrentLimit(30);
+    }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
       shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
-      shooterSubsystemHoodMax.setSmartCurrentLimit(30);
+      shooterSubsystemHoodMax.setSmartCurrentLimit(20);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
@@ -251,10 +259,6 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4, "Ball Feeder") || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
-
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Lift Winch") || iAmACompetitionRobot) {
-      liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
-    }
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       theCompressor = new Compressor(0);

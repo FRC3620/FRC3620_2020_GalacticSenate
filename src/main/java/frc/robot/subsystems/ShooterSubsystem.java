@@ -65,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double hoodIz = 0;
-  private final double hoodPosition = 0;
+  private double hoodPosition = 0;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -121,6 +121,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Top Velocity", trpm);
     SmartDashboard.putNumber("Bottom Velocity", brpm);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
 
     if (hoodMotor != null) {
       hoodEncoder = hoodMotor.getEncoder();
@@ -137,6 +138,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     trpm = SmartDashboard.getNumber("Top Velocity", 4100);
     brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+    hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
     //double currentPosition = hoodEncoder.getPosition();
     //double ERROR = hoodPosition - currentPosition;
