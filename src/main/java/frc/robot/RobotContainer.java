@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -82,7 +80,7 @@ public class RobotContainer {
   public static CANEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
   
-  public static SpeedController m_armMotor;
+  public static WPI_TalonSRX m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
@@ -182,8 +180,6 @@ public class RobotContainer {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
     }
 
-    m_armMotor = new Victor(8);
-
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
@@ -258,6 +254,10 @@ public class RobotContainer {
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4, "Ball Feeder") || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
+    } 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Color Sensor/Climber") || iAmACompetitionRobot) { 
+      m_armMotor = new WPI_TalonSRX(5);
     } 
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
