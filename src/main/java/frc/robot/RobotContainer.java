@@ -383,6 +383,16 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  public static boolean isItOkToRecalibrateTheSwerveHeadings() {
+    boolean leftBumper = driverJoystick.getRawButton(XBoxConstants.BUTTON_LEFT_BUMPER);
+    boolean rightBumper = driverJoystick.getRawButton(XBoxConstants.BUTTON_RIGHT_BUMPER);
+    if ((leftBumper & rightBumper) == true){
+    return true;
+    }else{
+    return false;}
+    }
+    //If the bumpers aren't held on the driver controller when saving the swerve settings, nothing will happen
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

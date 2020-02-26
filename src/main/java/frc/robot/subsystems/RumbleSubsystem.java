@@ -88,6 +88,10 @@ public class RumbleSubsystem extends SubsystemBase {
         // Put code here to be run every loop
     }
 
+	public void RumbleCommand(RumbleSubsystem rumbleSubsystemDriver, org.usfirst.frc3620.misc.Hand right, double d,
+			int i) {
+	}
+
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
