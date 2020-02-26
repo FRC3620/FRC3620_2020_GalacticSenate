@@ -16,8 +16,11 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import edu.wpi.first.wpiutil.net.PortForwarder;
 
 import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -47,6 +50,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
+
+    PortForwarder.add (10080, "frcvision.local", 80);
+    PortForwarder.add (10022, "frcvision.local", 22);
 
     driverStation = DriverStation.getInstance();
 
