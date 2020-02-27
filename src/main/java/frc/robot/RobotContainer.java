@@ -55,7 +55,7 @@ public class RobotContainer {
   final static int OPERATOR_JOYSTICK_PORT = 1;
 
   // need this
-  CANDeviceFinder canDeviceFinder;
+  static CANDeviceFinder canDeviceFinder;
 
   // hardware here...
   public static CANSparkMax driveSubsystemRightFrontDrive;
