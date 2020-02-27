@@ -13,7 +13,12 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -25,6 +30,8 @@ import frc.robot.miscellaneous.SwerveSettingsContainer;
 import frc.robot.miscellaneous.Vector;
 
 public class DriveSubsystem extends SubsystemBase {
+
+	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
   public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
 	public final CANSparkMax rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
@@ -79,16 +86,16 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
 	SwerveSettingsContainer competitionDefaultAbsoluteEncoderOffsets = new SwerveSettingsContainer (
-		140, 119, 88, -90
+		-50, 176, 170, 165
 	);
 	SwerveSettingsContainer practiceDefaultAbsoluteEncoderOffsets = new SwerveSettingsContainer (
 		140, 119, 94, 50
 	);
 	// reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	//private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//140;
-	//private double RIGHT_FRONT_ABSOLUTE_OFFSET = 119;//119;
-	//private double LEFT_BACK_ABSOLUTE_OFFSET = 88;//94;
-	//private double RIGHT_BACK_ABSOLUTE_OFFSET = -90;//50; 
+	//private double RIGHT_FRONT_ABSOLUTE_OFFSET = 176;//119; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	//private double LEFT_FRONT_ABSOLUTE_OFFSET = -50;//140;
+	//private double LEFT_BACK_ABSOLUTE_OFFSET = 170;//94;
+	//private double RIGHT_BACK_ABSOLUTE_OFFSET = 165;//50; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -109,6 +116,16 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private boolean changeAzimuthTestHeading = false;
 	private boolean fieldRelative = false;
+
+	private PIDController spinPIDController;
+	private double kSpinP = 0.025;
+	private double kSpinI = 0;
+	private double kSpinD = 0.003;
+	private boolean doingPID;
+	private boolean autoSpinMode;
+	private double currentHeading;
+	private double targetHeading;
+	private double spinPower;
 
 	//***********************************************************************************************************
 	//***********************************************************************************************************
@@ -200,7 +217,15 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
-    this.setDefaultCommand(new TeleOpDriveCommand(this));
+	this.setDefaultCommand(new TeleOpDriveCommand(this));
+	
+	spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
+	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
+	spinPIDController.setTolerance(3);
+
+	SmartDashboard.putNumber("Target Heading", targetHeading);
+
+	fixRelativeEncoders();
   }
 
   @Override
@@ -235,8 +260,6 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());	
 			SmartDashboard.putNumber("Right Back Drive Motor Position", rightBackDriveEncoder.getPosition());
 		}
-		
-		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
 
 		if (rightFrontDriveMaster  != null) {
 			updateVelocityPID(rightFrontVelPID);
@@ -244,6 +267,39 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(leftBackVelPID);
 			updateVelocityPID(rightBackVelPID);
 		}
+
+		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
+
+		currentHeading = getNavXFixedAngle();
+
+		double commandedSpin = RobotContainer.getDriveSpinJoystick();
+
+		if(Math.abs(commandedSpin) != 0){
+			setManualSpinMode();
+		}else{
+			setAutoSpinMode();
+		}
+		if(!autoSpinMode){
+			periodicManualSpinMode();
+		}else{
+			periodicAutoSpinMode();
+		}
+
+  }
+
+  public void periodicManualSpinMode(){
+		setTargetHeading(currentHeading);
+		double commandedSpin = RobotContainer.getDriveSpinJoystick();
+		spinPower = commandedSpin;
+  }
+
+  public void periodicAutoSpinMode(){
+
+		spinPIDController.setSetpoint(targetHeading);
+		spinPower = spinPIDController.calculate(currentHeading);
+		double error = spinPIDController.getPositionError();
+
+		SmartDashboard.putNumber("Spin PID error", error);
   }
 
   public void saveCurrentAbsoluteEncoderOffsets() {
@@ -685,4 +741,33 @@ public class DriveSubsystem extends SubsystemBase {
 	public void resetNavX() {
 		ahrs.reset();
 	}
+
+	public double getSpinPower(){
+		return spinPower;
+	}
+
+	public void setManualSpinMode() {
+        if (autoSpinMode){
+           // logger.info("Switching to Manual Spin Mode");
+        }
+        autoSpinMode = false;
+		doingPID = false;
+	}
+	public double getTargetHeading(){
+		return targetHeading;
+	}
+	public void setTargetHeading(double angle){
+		targetHeading = angle;
+	}
+	public void setAutoSpinMode() {
+        if (autoSpinMode){
+           // logger.info("Switching to Auto Spin Mode");
+        }
+        autoSpinMode = true;
+		doingPID = true;
+	}
+	public void setDoingSpinPID(boolean toPIDOrNotToPID){
+        doingPID = toPIDOrNotToPID;
+    }
+	
 }

@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -41,6 +42,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
+ * 
+ * @version 11 February 2020
+ * 
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
@@ -84,17 +88,16 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
+  public static CANSparkMax shooterSubsystemHoodMax;
+  public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
-  public static WPI_TalonSRX liftSubsystemWinch;
-  public static Solenoid liftSubsystemRelease;
+  public static CANSparkMax liftSubsystemWinch;
   public static Solenoid solenoidArmUp;
-  public static Solenoid ballReleaseSolenoid;
-  public static Solenoid netSolenoid;
   public static Solenoid intakeSubsystemArmDown;
-  public static Solenoid intakeSubsystemHolder1;
-  public static Solenoid intakeSubsystemHolder2;
 
   private static DigitalInput practiceBotJumper;
+
+  public static Compressor theCompressor;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -150,37 +153,22 @@ public class RobotContainer {
       driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
-
     }
 
     if (shooterSubsystemFalcon1 != null) {
       shooterSubsystemFalcon1.configFactoryDefault();
       shooterSubsystemFalcon1.setInverted(InvertType.InvertMotorOutput);
-
-      /*
-      shooterSubsystemFalcon1.setStatusFramePeriod(0x1240, 1, kTimeoutMs); // undocumented current measurement status frame
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-      shooterSubsystemFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      */
     }
 
     if (shooterSubsystemFalcon2 != null) {
       shooterSubsystemFalcon2.configFactoryDefault();
-      shooterSubsystemFalcon2.setInverted(InvertType.None);
-      if (false) {
-        // undocumented current measurement status frame
-        shooterSubsystemFalcon2.setStatusFramePeriod(0x1240, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, kTimeoutMs);
-        shooterSubsystemFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1, kTimeoutMs);
-      }
+      shooterSubsystemFalcon2.follow(shooterSubsystemFalcon1);
+      shooterSubsystemFalcon2.setInverted(InvertType.OpposeMaster);
     }
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.follow(shooterSubsystemFalcon1);
-      shooterSubsystemFalcon3.setInverted(InvertType.OpposeMaster);
+      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
     }
 
     if(shooterSubsystemBallFeeder != null) {
@@ -204,7 +192,7 @@ public class RobotContainer {
               
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1) || iAmACompetitionRobot){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
 
       driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
@@ -237,29 +225,43 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1) || iAmACompetitionRobot) {
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
+      liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
+      liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
+      liftSubsystemWinch.setOpenLoopRampRate(.3);
+      liftSubsystemWinch.setClosedLoopRampRate(.3);
+      liftSubsystemWinch.setSmartCurrentLimit(30);
+    }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
+      shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+      shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+      shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+      shooterSubsystemHoodMax.setSmartCurrentLimit(20);
+    }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2) || iAmACompetitionRobot) { 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Pre Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3) || iAmACompetitionRobot) { 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Right Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4) || iAmACompetitionRobot) { 
+    
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4, "Ball Feeder") || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5) || iAmACompetitionRobot) {
-      liftSubsystemWinch = new WPI_TalonSRX(5);
-    }
+    
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
-      liftSubsystemRelease = new Solenoid(0);
-      solenoidArmUp = new Solenoid(1);
-      ballReleaseSolenoid = new Solenoid(2);
-      intakeSubsystemArmDown = new Solenoid(3);
-      intakeSubsystemHolder1 = new Solenoid(4);
-      intakeSubsystemHolder2 = new Solenoid(5);
-      netSolenoid = new Solenoid(6);
+      theCompressor = new Compressor(0);
+      solenoidArmUp = new Solenoid(0);
+      intakeSubsystemArmDown = new Solenoid(1);
     }
   }
 
@@ -280,6 +282,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new SaveSwerveAnalogEncodersSettingsCommand(driveSubsystem, rumbleSubsystemDriver));
+    SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -301,9 +304,15 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
+    DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
     //Driver Controller
+
+    driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
+    driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
+    driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
+    driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
 
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
@@ -331,16 +340,7 @@ public class RobotContainer {
     beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
-    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem)); 
-
-    JoystickButton releaseBallsFromTroughButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
-    releaseBallsFromTroughButton.toggleWhenPressed(new BallsCommand());
-
-    JoystickButton liftReleaseButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
-    liftReleaseButton.whenPressed(new LiftReleaseCommand(liftSubsystem));
-
-    JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
@@ -364,7 +364,7 @@ public class RobotContainer {
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return -axisValue;
+    return axisValue;
   }
     
   public static double getOperatorSpinJoystick() {
@@ -375,6 +375,11 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  /**
+   * Return the climbing joystick position. Return positive values if
+   * the operator pushes the joystick up.
+   * @return
+   */
   public static double getClimbingJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
@@ -383,16 +388,24 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  //If the joysticks aren't held on the driver controller when saving the swerve settings, nothing will happen
   public static boolean isItOkToRecalibrateTheSwerveHeadings() {
     boolean leftJoystick = driverJoystick.getRawButton(XBoxConstants.BUTTON_LEFT_STICK);
     boolean rightJoystick = driverJoystick.getRawButton(XBoxConstants.BUTTON_RIGHT_STICK);
-    if ((leftJoystick & rightJoystick) == true){
-    return true;
-    }else{
-    return false;}
+    if ((leftJoystick & rightJoystick) == true) {
+      return true;
+    } else {
+      return false;
     }
-    //If the joysticks aren't held on the driver controller when saving the swerve settings, nothing will happen
+  }
 
+  public static double getColorJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
+    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+      return 0;
+    } 
+    return -axisValue;
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

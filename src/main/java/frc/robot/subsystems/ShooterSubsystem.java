@@ -11,6 +11,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,26 +25,47 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon2; 
+  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
   private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
+  private CANPIDController anglePID;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
 
+  /*
+  PID Values Link
+  https://docs.google.com/spreadsheets/d/1Ap6Y6N5QLvBdPORXFwbMu-nDgwLP74CkY4iBRznK5PU/edit?usp=sharing
+  */
   //top FPID Values
   private final double tFVelocity = 0.045; //0.045
-  private final double tPVelocity = 0.60; //0.60
+  private final double tPVelocity = 0.6; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
-  private final double trpm = 5200; //5200
+  private double trpm = 4100; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private final double brpm = 4000;
+  private double brpm = 4000;
+
+  //feeder FPID Values
+  private final double fFVelocity = 0.0465;
+  private final double fPVelocity = 0;
+  private final double fIVelocity = 0;
+  private final double fDVelocity = 0;
+  private double frpm = 1000;
+
+  //hood PID Values
+  private final double hoodP = 0;
+  private final double hoodI = 0;
+  private final double hoodD = 0;
+  private final double hoodIz = 0;
+  private double hoodPosition = 0;
 
   public ShooterSubsystem() {
     if (falconTop != null) {
@@ -76,20 +101,60 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
+
+    if (feeder != null) {
+      //for PID you have to have a sensor to check on so you know the error
+      feeder.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kVelocitySlotIdx, kTimeoutMs);
+
+      //set max and minium(nominal) speed in percentage output
+      feeder.configNominalOutputForward(0, kTimeoutMs);
+      feeder.configNominalOutputReverse(0, kTimeoutMs);
+      feeder.configPeakOutputForward(+1, kTimeoutMs);
+      feeder.configPeakOutputReverse(-1, kTimeoutMs);
+
+      //set up the feeder for using FPID
+      feeder.config_kF(kVelocitySlotIdx, fFVelocity, kTimeoutMs);
+      feeder.config_kP(kVelocitySlotIdx, fPVelocity, kTimeoutMs);
+      feeder.config_kI(kVelocitySlotIdx, fIVelocity, kTimeoutMs);
+      feeder.config_kD(kVelocitySlotIdx, fDVelocity, kTimeoutMs);
+    }
+
+    SmartDashboard.putNumber("Top Velocity", trpm);
+    SmartDashboard.putNumber("Bottom Velocity", brpm);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
+
+    if (hoodMotor != null) {
+      anglePID = hoodMotor.getPIDController();
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setIZone(hoodIz);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
   }
 
   @Override
   public void periodic() {
-    /* This method will be called once per scheduler run
-    SmartDashboard.putNumber("FValue", kFVelocity);
-    SmartDashboard.putNumber("PValue", kPVelocity);
-    SmartDashboard.putNumber("IValue", kIVelocity);
-    SmartDashboard.putNumber("DValue", kDVelocity);
-    SmartDashboard.putNumber("Output Voltage", falconTop.getMotorOutputVoltage());
-    SmartDashboard.putNumber("RPM", rpm);
-    For testing use the values below */
-  }
+    trpm = SmartDashboard.getNumber("Top Velocity", 4100);
+    brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+    hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
+    //double currentPosition = hoodEncoder.getPosition();
+    //double ERROR = hoodPosition - currentPosition;
+    //SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
+    //SmartDashboard.putNumber("HoodERROR", ERROR);
+
+    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
+    //SmartDashboard.putNumber("Bottom Velocity", falconBottom.getSelectedSensorVelocity());
+
+    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
+    //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+    //SmartDashboard.putNumber("Top Velocity", falconTop.getSelectedSensorVelocity());
+  }
+  
   public void ShootPID(){
     /* converting rev/min to units/rev
     100ms for a min is 600ms
@@ -105,29 +170,6 @@ public class ShooterSubsystem extends SubsystemBase {
     if (falconBottom != null) {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }
-    
-    /*if(feeder != null) {
-      feeder.set(0.5); //load next ball into shooter
-    }*/
-    /*
-    if (falconBottom != null) {
-      falconBottom.set(ControlMode.PercentOutput, 0.60);
-    } */
-  }
-
-  public void Shoot(){
-    //set target velocity using percent output
-    if (falconTop != null) {
-      falconTop.set(ControlMode.PercentOutput, 0.7);
-    }
-
-    if (falconBottom != null) {
-      falconBottom.set(ControlMode.PercentOutput, 0.35);
-    }
-
-    if(feeder != null) {
-      feeder.set(0.2); //load next ball into shooter
-    }
   }
 
   public void ShooterOff(){
@@ -139,37 +181,18 @@ public class ShooterSubsystem extends SubsystemBase {
     if (falconBottom != null) {
       falconBottom.set(ControlMode.PercentOutput, 0);
     }
-
-    /*if(feeder != null) {
-      feeder.set(0.0); //stop loading balls into shooter
-    }*/
   }
 
-  public void BeltOn(){
+  public void PIDBeltOn(){
+    double feederTargetVelocity = frpm;
     if(feeder != null) {
-      feeder.set(0.3); 
+      feeder.set(ControlMode.Velocity, feederTargetVelocity); 
     }
   }
 
   public void BeltOff(){
     if(feeder != null) {
-      feeder.set(0.0);
+      feeder.set(ControlMode.PercentOutput, 0);                  
     }
-  }
-
-  public void PutNetUp() {
-    RobotContainer.netSolenoid.set(true);
-  }
-
-  public void PutNetDown() {
-    RobotContainer.netSolenoid.set(false);
-  }
-
-  public void ReleaseTheBalls() {
-    RobotContainer.ballReleaseSolenoid.set(true);
-  }
-  
-  public void HoldBalls() {
-    RobotContainer.ballReleaseSolenoid.set(false);
   }
 }
