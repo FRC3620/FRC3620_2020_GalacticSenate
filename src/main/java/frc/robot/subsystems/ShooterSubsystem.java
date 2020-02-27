@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
-  private CANPIDController anglePID = hoodMotor.getPIDController();
+  private CANPIDController anglePID;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -124,6 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood Position", hoodPosition);
 
     if (hoodMotor != null) {
+      anglePID = hoodMotor.getPIDController();
       hoodEncoder = hoodMotor.getEncoder();
       anglePID.setReference(hoodPosition, ControlType.kPosition);
       anglePID.setP(hoodP);
