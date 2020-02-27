@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * @author Nick Zimanski (SlippStream)
- * @version 20 February 2020
+ * @version 21 February 2020
  * @see {@link frc.robot.subsystems.LightSubsystem LightSubsystem}
  */
 public class LightEffect {
@@ -15,7 +15,7 @@ public class LightEffect {
         BLUE(new Color8Bit(0,0,255)),
         GREEN(new Color8Bit(0,255,0)),
         GRAY(new Color8Bit(128,128,128)),
-        PURPLE(new Color8Bit(132,56,214)),
+        PURPLE(new Color8Bit(146,52,200)),
         ORANGE(new Color8Bit(150,60,0)),
         MAIZE(new Color8Bit(255,210,0));
 

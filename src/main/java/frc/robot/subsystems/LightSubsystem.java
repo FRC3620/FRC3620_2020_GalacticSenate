@@ -36,7 +36,7 @@ public class LightSubsystem extends SubsystemBase {
 
   private boolean presetEnRoute = false;
   private boolean firstTime = false; //Tracks whether a light effect is displaying for the first cycle.
-  private boolean isDSConnected = false;
+  private boolean isDSConnected = true;
 
   private final boolean defaultOverride = false;
   private final double defaultBatteryLowVoltage = 12.0; //Volts that, when dipped below, alert the lights
@@ -56,8 +56,7 @@ public class LightSubsystem extends SubsystemBase {
   private int heartbeat_runCount = 0;
   private double breathe_runCount = 4.712;
   private int blink_runCount = 0;
-
-  ArrayList<Integer> shot_locationArr = new ArrayList<Integer>();
+  private ArrayList<Integer> shot_locationArr = new ArrayList<Integer>();
 
   /**
    * Instantiates the light strip and buffer. Refer to {@link frc.robot.RobotContainer#lightSubsystem RobotContainer.lightSubsytem} when making calls.
@@ -115,14 +114,12 @@ public class LightSubsystem extends SubsystemBase {
     presetEnRoute = true;
     switch (pattern) {
       case DISABLED:
-        purgePasswordQueue();
         setTwinkle(new Color8Bit(100,0,0), 0, false);
         break;
       case INIT:
         setShot(new Color8Bit[] {LightEffect.Color.BLUE.value, LightEffect.Color.MAIZE.value}, 7500, false, 10, 2, false);
         break;
       case TELEOP:
-        purgePasswordQueue();
         if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 1800, true, 350);}
         else {setBlink(new Color8Bit(0, 0, 255), 1800, false, 350);}
         setTwinkle(new Color8Bit(0, 180, 0), 0, false, false);
@@ -137,10 +134,10 @@ public class LightSubsystem extends SubsystemBase {
         setBlink(new Color8Bit(255,0,0), 1500, true, 200, true);
         break;
       case DS_CONNECTED:
-        setBreathe(LightEffect.Color.GREEN.value, 1800, true, true);
+        setBreathe(LightEffect.Color.GREEN.value, 2000, true, true);
         break;
       case DS_DISCONNECTED:
-        setBreathe(LightEffect.Color.ORANGE.value, 0, true, false);
+        setBreathe(LightEffect.Color.PURPLE.value, 0, true, false, "DSConnect");
         break;
       default:
         break;
@@ -351,12 +348,13 @@ public class LightSubsystem extends SubsystemBase {
       isDSConnected = DriverStation.getInstance().isDSAttached();
 
       if (isDSConnected) {
-        purgeQueue();
+        removeEffectByPassword("DSConnect");
         setPreset(LightEffect.Preset.DS_CONNECTED);
         setPreset(LightEffect.Preset.DISABLED);
       }
       else {
         purgeQueue();
+        logger.debug("here");
         setPreset(LightEffect.Preset.DS_DISCONNECTED);
       }
     }
@@ -551,8 +549,6 @@ public class LightSubsystem extends SubsystemBase {
 
 
 
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -597,22 +593,33 @@ public class LightSubsystem extends SubsystemBase {
       }
       firstTime = false;
 
+
+      //Checks passwords
       if (passwordQueue.size() != 0) {
+        //Fore each password in queue
         for (int i = 0; i < passwordQueue.size(); i++) {
           String pass = passwordQueue.get(i);
+          //For each effect in queue
           for (int k = 0; k < queue.size(); k ++) {
-            if (queue.get(k).getPassword() != null && queue.get(k).getPassword().equals(pass)) {
+            if (queue.get(k).getPassword() != null && queue.get(k).getPassword() == pass) {
               //Killing the effect
               //logger.debug("Removing effect: " + queue.get(k).getPattern() + " with password: " + pass);
               
-              if (k == 0) currentEffect = null; //Sets the current effect to null, bringing in the next effect
+              if (k == 0) {
+                currentEffect = null; //Sets the current effect to null, bringing in the next effect
+
+                //checks if a time=0 effect would be brought in before a timed effect
+                if (queue.size() > 2 && queue.get(1).getMilliseconds() == 0 && queue.get(2).getMilliseconds() != 0) {
+                  queue.add(queue.get(1));
+                  queue.remove(1);
+                }
+              }
 
               queue.remove(k); //removes the effect
-
             }
           } //end for k
         } //end for i
-        passwordQueue.clear();
+        purgePasswordQueue();
       }
 
       //Checks if there is an effect waiting on an indefinite effect or if there is a timer at limit
@@ -627,6 +634,10 @@ public class LightSubsystem extends SubsystemBase {
 
           //Killing the effect
           //logger.debug("Ending effect: " + currentEffect.getPattern());
+          if (queue.size() > 2 && queue.get(1).getMilliseconds() == 0 && queue.get(2).getMilliseconds() != 0) {
+            queue.add(queue.get(1));
+            queue.remove(1);
+          }
           queue.remove(0);
           currentEffect = null;
         } 
