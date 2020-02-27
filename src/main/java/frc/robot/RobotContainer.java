@@ -279,7 +279,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
-    SmartDashboard.putData(new SaveSwerveAnalogEncodersSettingsCommand(driveSubsystem));
+    SmartDashboard.putData(new SaveSwerveAnalogEncodersSettingsCommand(driveSubsystem, rumbleSubsystemDriver));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -384,14 +384,14 @@ public class RobotContainer {
   }
 
   public static boolean isItOkToRecalibrateTheSwerveHeadings() {
-    boolean leftBumper = driverJoystick.getRawButton(XBoxConstants.BUTTON_LEFT_BUMPER);
-    boolean rightBumper = driverJoystick.getRawButton(XBoxConstants.BUTTON_RIGHT_BUMPER);
-    if ((leftBumper & rightBumper) == true){
+    boolean leftJoystick = driverJoystick.getRawButton(XBoxConstants.BUTTON_LEFT_STICK);
+    boolean rightJoystick = driverJoystick.getRawButton(XBoxConstants.BUTTON_RIGHT_STICK);
+    if ((leftJoystick & rightJoystick) == true){
     return true;
     }else{
     return false;}
     }
-    //If the bumpers aren't held on the driver controller when saving the swerve settings, nothing will happen
+    //If the joysticks aren't held on the driver controller when saving the swerve settings, nothing will happen
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
