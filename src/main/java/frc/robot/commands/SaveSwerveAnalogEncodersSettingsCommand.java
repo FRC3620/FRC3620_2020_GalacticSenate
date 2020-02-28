@@ -29,7 +29,7 @@ public class SaveSwerveAnalogEncodersSettingsCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     m_subsystem = subsystem;
 
-    rumbleCommand = new RumbleCommand(rumbleSubsystem, Hand.RIGHT, .6, 1.5); 
+    rumbleCommand = new RumbleCommand(rumbleSubsystem, Hand.RIGHT, .6, 1.25); 
   }
 
   // Called when the command is initially scheduled.

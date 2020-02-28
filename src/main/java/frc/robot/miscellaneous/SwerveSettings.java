@@ -75,6 +75,6 @@ public class SwerveSettings {
         leftFrontEntry.setPersistent();
         leftBackEntry.setPersistent();
         rightBackEntry.setPersistent();
-
+        
     }
 }
