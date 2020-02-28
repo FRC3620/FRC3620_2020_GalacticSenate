@@ -72,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double CHASIS_WIDTH = 22.25; //inches
 	private final double CHASIS_LENGTH = 24.25; //inches
 
-	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*240; //units are tics*motor revolutions
+	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*235; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
 	private final double WHEEL_TO_ENCODER_RATIO_VELOCITY = (1/8.31); //for every full wheel turn, the motor turns 8.31 times
 	private final double WHEEL_RADIUS = 2; //in inches
@@ -83,10 +83,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 119;//PRACTICE: 119. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 116.9;//PRACTICE: 116.9. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
 	private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//PRACTICE: 140. COMP: -50;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 90;//PRACTICE: 90. COMP 170;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 43;//PRACTICE: 43. COMP 165; 
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 91.5;//PRACTICE: 91.5. COMP 170;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 42.2;//PRACTICE: 42.2. COMP 165; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
