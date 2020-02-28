@@ -358,6 +358,13 @@ public class RobotContainer {
 
     JoystickButton holdBallsInIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     holdBallsInIntakeButton.toggleWhenPressed(new IntakeBallHolderCommand(intakeSubsystem));
+
+    JoystickButton shooterRangeModDown = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    shooterRangeModDown.whenPressed(new ShooterRangeModAdjustCommand(-1));
+
+    JoystickButton shooterRangeModUp = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
+    shooterRangeModUp.whenPressed(new ShooterRangeModAdjustCommand(1));
+
   }
 
   public static double getDriveVerticalJoystick() {

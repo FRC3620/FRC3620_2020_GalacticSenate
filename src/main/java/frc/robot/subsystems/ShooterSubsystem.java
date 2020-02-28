@@ -27,6 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
+  private float rangeModifier = 1.0f; //Multiply this by distance from goal before calculating range 
+
 
   //top FPID Values
   private final double tFVelocity = 0.045; //0.045
@@ -77,7 +79,9 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
   }
-
+  public void modifyRangeModifer(float mod) {
+    rangeModifier += mod;
+  }
   @Override
   public void periodic() {
     /* This method will be called once per scheduler run
