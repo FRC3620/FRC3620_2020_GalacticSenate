@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.music.Orchestra;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -85,6 +86,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
+  public static Orchestra imperialOrchestra;
   public static WPI_TalonSRX shooterSubsystemBallFeeder; 
   public static CANSparkMax shooterSubsystemHoodMax;
   public static CANEncoder shooterSubsystemHoodEncoder;
@@ -166,6 +168,8 @@ public class RobotContainer {
     }
 
     if (shooterSubsystemFalcon3 != null) {
+      imperialOrchestra.addInstrument(shooterSubsystemFalcon3);
+      imperialOrchestra.loadMusic("R2D2.chrp");
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
     }
