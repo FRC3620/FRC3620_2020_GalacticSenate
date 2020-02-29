@@ -13,8 +13,6 @@ import frc.robot.RobotContainer;
  */
 public class IntakeSubsystem extends SubsystemBase {
   private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
-  private final Solenoid holder1 = RobotContainer.intakeSubsystemHolder1;
-  //private final Solenoid holder2 = RobotContainer.intakeSubsystemHolder2;
   private final Solenoid armDown = RobotContainer.intakeSubsystemArmDown;
 
   public IntakeSubsystem(){
@@ -43,15 +41,5 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void moveArmUp() {
     armDown.set(false);
-  }
-
-  public void ballHolderOn() {
-    holder1.set(true);
-    //holder2.set(true);
-  }
-
-  public void ballHolderOff() {
-    holder1.set(false);
-    //holder2.set(false);
   }
 }

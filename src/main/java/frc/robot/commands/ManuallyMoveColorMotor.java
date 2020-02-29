@@ -51,7 +51,7 @@ public class ManuallyMoveColorMotor extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    armSubsystem.stopSpinningControlPanelWheel();
+    armSubsystem.stopRunningMotor();
 
   }
 
