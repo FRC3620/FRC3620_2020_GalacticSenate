@@ -72,21 +72,21 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double CHASIS_WIDTH = 22.25; //inches
 	private final double CHASIS_LENGTH = 24.25; //inches
 
-	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*240; //units are tics*motor revolutions
+	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*235; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
 	private final double WHEEL_TO_ENCODER_RATIO_VELOCITY = (1/8.31); //for every full wheel turn, the motor turns 8.31 times
 	private final double WHEEL_RADIUS = 2; //in inches
 	private final double WHEEL_CIRCUMFERENCE = 2*Math.PI*WHEEL_RADIUS;
 	private final double DRIVE_ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE*WHEEL_TO_ENCODER_RATIO_VELOCITY;
  
-	private final double MAX_VELOCITY_RPM = 500; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM
+	private final double MAX_VELOCITY_RPM = 750; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
-	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
+	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 176;//119; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = -50;//140;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 170;//94;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 165;//50; 
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 116.9;//PRACTICE: 116.9. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//PRACTICE: 140. COMP: -50;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 91.5;//PRACTICE: 91.5. COMP 170;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 42.2;//PRACTICE: 42.2. COMP 165; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -97,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	private double kPositionMinOutput = -1;
 	
-	private double kVelocityP = 0.007;
+	private double kVelocityP = 0.01;
 	private double kVelocityI = 0.000000;
 	private double kVelocityD = 0.1;
 	private double kVelocityFF = .006;
@@ -105,14 +105,15 @@ public class DriveSubsystem extends SubsystemBase {
 	private double kVelocityMaxOutput = 1;
 	private double kVelocityMinOutput = -1;
 
+	private boolean drivePIDTuning = false;
+
 	private boolean changeAzimuthTestHeading = false;
-	private boolean fieldRelative = false;
+	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.025;
-	private double kSpinI = 0;
+	private double kSpinP = 0.013;
+	private double kSpinI = 0.00001;
 	private double kSpinD = 0.003;
-	private boolean doingPID;
 	private boolean autoSpinMode;
 	private double currentHeading;
 	private double targetHeading;
@@ -195,6 +196,8 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
 	SmartDashboard.putNumber("PID Position Setpoint", 0);
 
+	SmartDashboard.putBoolean("Are We Tuning Drive PID?", drivePIDTuning);
+
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
@@ -204,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase {
 	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
 	spinPIDController.setTolerance(3);
 
-	SmartDashboard.putNumber("Target Heading", targetHeading);
+	
 
 	fixRelativeEncoders();
   }
@@ -248,10 +251,11 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(leftBackVelPID);
 			updateVelocityPID(rightBackVelPID);
 		}
-
-		SmartDashboard.putNumber("NavX heading", getNavXFixedAngle());
+		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
 		currentHeading = getNavXFixedAngle();
+
+		SmartDashboard.putNumber("NavX heading", currentHeading);
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
@@ -265,6 +269,7 @@ public class DriveSubsystem extends SubsystemBase {
 		}else{
 			periodicAutoSpinMode();
 		}
+		SmartDashboard.putNumber("Target Heading", targetHeading);
 
   }
 
@@ -381,10 +386,56 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
 		}
 		
-		SmartDashboard.putNumber("Left Front Commanded Vectors", newVectors.leftBack.getDirection());
-		//System.out.println("Left Front Commanded Vectors: " + newVectors.leftBack.getDirection());
+		if (drivePIDTuning){
 
-		//SET DRIVE AND AZIMUTH CONTROLERS HERE
+			double lbCommandedVel = newVectors.leftBack.getMagnitude();
+			double lbCurrentVel = currentDirections.leftBack.getMagnitude();
+			double lbVelError = lbCommandedVel - lbCurrentVel;
+			SmartDashboard.putNumber("Left Back Commanded Vel" , lbCommandedVel);
+			SmartDashboard.putNumber("Left Back Vel Error", lbVelError);
+
+			double lbCommandedAzimuth = newVectors.leftBack.getDirection();
+			double lbCurrentAzimuth = currentDirections.leftBack.getDirection();
+			double lbAzimuthError = lbCommandedAzimuth - lbCurrentAzimuth;
+			SmartDashboard.putNumber("Left Back Commanded Azimuth" , lbCommandedAzimuth);
+			SmartDashboard.putNumber("Left Back Azimuth Error", lbAzimuthError);
+
+			double lfCommandedVel = newVectors.leftFront.getMagnitude();
+			double lfCurrentVel = currentDirections.leftFront.getMagnitude();
+			double lfVelError = lfCommandedVel - lfCurrentVel;
+			SmartDashboard.putNumber("Left Front Commanded Vel" , lfCommandedVel);
+			SmartDashboard.putNumber("Left Front Vel Error", lfVelError);
+
+			double lfCommandedAzimuth = newVectors.leftFront.getDirection();
+			double lfCurrentAzimuth = currentDirections.leftFront.getDirection();
+			double lfAzimuthError = lfCommandedAzimuth - lfCurrentAzimuth;
+			SmartDashboard.putNumber("Left Front Commanded Azimuth" , lfCommandedAzimuth);
+			SmartDashboard.putNumber("Left Front Azimuth Error", lfAzimuthError);
+
+			double rbCommandedVel = newVectors.rightBack.getMagnitude();
+			double rbCurrentVel = currentDirections.rightBack.getMagnitude();
+			double rbVelError = rbCommandedVel - rbCurrentVel;
+			SmartDashboard.putNumber("Right Back Commanded Vel" , rbCommandedVel);
+			SmartDashboard.putNumber("Right Back Vel Error", rbVelError);
+
+			double rbCommandedAzimuth = newVectors.rightBack.getDirection();
+			double rbCurrentAzimuth = currentDirections.rightBack.getDirection();
+			double rbAzimuthError = rbCommandedAzimuth - rbCurrentAzimuth;
+			SmartDashboard.putNumber("Right Back Commanded Azimuth" , rbCommandedAzimuth);
+			SmartDashboard.putNumber("Right Back Azimuth Error", rbAzimuthError);
+
+			double rfCommandedVel = newVectors.rightFront.getMagnitude();
+			double rfCurrentVel = currentDirections.rightFront.getMagnitude();
+			double rfVelError = rfCommandedVel - rfCurrentVel;
+			SmartDashboard.putNumber("Right Front Commanded Vel" , rfCommandedVel);
+			SmartDashboard.putNumber("Right Front Vel Error", rfVelError);
+
+			double rfCommandedAzimuth = newVectors.rightFront.getDirection();
+			double rfCurrentAzimuth = currentDirections.rightFront.getDirection();
+			double rfAzimuthError = rfCommandedAzimuth - rfCurrentAzimuth;
+			SmartDashboard.putNumber("Right Front Commanded Azimuth" , rfCommandedAzimuth);
+			SmartDashboard.putNumber("Right Front Azimuth Error", rfAzimuthError);
+		}
 	}
 
 	public void timedDrive(double heading, double speed, double spin){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
@@ -611,7 +662,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
 
-		double angle =180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
@@ -720,12 +771,12 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
-		doingPID = false;
 	}
 	public double getTargetHeading(){
 		return targetHeading;
 	}
 	public void setTargetHeading(double angle){
+		logger.info("setting heading to "+angle);
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {
@@ -733,10 +784,5 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
-		doingPID = true;
 	}
-	public void setDoingSpinPID(boolean toPIDOrNotToPID){
-        doingPID = toPIDOrNotToPID;
-    }
-	
 }

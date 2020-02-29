@@ -42,5 +42,6 @@ public class SnapToHeadingCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     return true;
+    
   }
 }

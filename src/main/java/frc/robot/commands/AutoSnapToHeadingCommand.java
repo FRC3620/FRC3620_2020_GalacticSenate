@@ -7,49 +7,35 @@
 
 package frc.robot.commands;
 
-import org.slf4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class TeleOpDriveCommand extends CommandBase {
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
+public class AutoSnapToHeadingCommand extends CommandBase {
+
   private DriveSubsystem driveSubsystem;
 
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
-  /**
-   * Creates a new TeleOpDriveCommand.
-   */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    addRequirements(m_driveSubsystem);
+  private double desiredHeading;
+
+  public AutoSnapToHeadingCommand(double heading, DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    addRequirements(driveSubsystem);
+    desiredHeading = heading;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    logger.info("Init tod");
-    desiredHeading = driveSubsystem.getNavXFixedAngle();
+  public void initialize() { //looks at the encoder on one drive motor
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
+    double heading = driveSubsystem.getNavXFixedAngle(); 
 
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
+    double spinX = -driveSubsystem.getSpinPower();
+    driveSubsystem.timedDrive(0, 0, spinX);
   }
 
   // Called once the command ends or is interrupted.
@@ -61,6 +47,9 @@ public class TeleOpDriveCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Math.abs(desiredHeading-driveSubsystem.getNavXFixedAngle())<8){
+      return true;
+    }
     return false;
   }
 }
