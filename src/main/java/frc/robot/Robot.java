@@ -16,10 +16,13 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import org.usfirst.frc3620.misc.ColorPattern;
+import edu.wpi.first.wpiutil.net.PortForwarder;
+
+import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.misc.RobotMode;
 
 
@@ -48,12 +51,15 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
 
+    PortForwarder.add (10080, "frcvision.local", 80);
+    PortForwarder.add (10022, "frcvision.local", 22);
+
     driverStation = DriverStation.getInstance();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.INIT);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.INIT);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
@@ -98,7 +104,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     processRobotModeChange(RobotMode.DISABLED);
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.DISABLED);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.DISABLED);
   }
 
   @Override
@@ -118,7 +124,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.AUTO);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.AUTO);
   }
 
   /**
@@ -141,7 +147,7 @@ public class Robot extends TimedRobot {
     processRobotModeChange(RobotMode.TELEOP);
     logMatchInfo();
 
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TELEOP);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.TELEOP);
   }
 
   /**
@@ -157,7 +163,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     processRobotModeChange(RobotMode.TEST);
-    RobotContainer.lightSubsystem.setPreset(ColorPattern.Preset.TEST);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.TEST);
   }
 
   /**

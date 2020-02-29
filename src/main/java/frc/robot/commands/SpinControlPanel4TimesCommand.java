@@ -23,7 +23,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   private int redCounter = 0; 
   private int greenCounter = 0; 
   private int yellowCounter = 0;
-  private int rotationCount = 0; 
+  private double rotationCount = 0; 
 
   //private final int resetCount = 0;
    
@@ -87,12 +87,12 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
 
    //this checks Blue, Red, Green, and Yellow counter to see if all of them are above 2 and then reset them if they are
     //into 1 rotation count
-    if(blueCounter >= 2 && redCounter >= 2 && greenCounter >= 2 && yellowCounter >= 2){
+    if(blueCounter >= 1 && redCounter >= 1 && greenCounter >= 1 && yellowCounter >= 1){
       blueCounter = 0; 
       redCounter = 0; 
       greenCounter = 0; 
       yellowCounter = 0;
-      rotationCount ++;
+      rotationCount += 0.5;
     }
 
 
@@ -101,7 +101,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
     SmartDashboard.putString("Red Counter", Integer.toString(redCounter)); 
     SmartDashboard.putString("Green Counter", Integer.toString(greenCounter)); 
     SmartDashboard.putString("Yellow Counter", Integer.toString(yellowCounter)); 
-    SmartDashboard.putString("Rotation Counter", Integer.toString(rotationCount)); 
+    SmartDashboard.putString("Rotation Counter", Double.toString(rotationCount)); 
   
    
   }
@@ -109,7 +109,7 @@ public class SpinControlPanel4TimesCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.stopSpinningControlPanelWheel();
+    armSubsystem.stopRunningMotor();
     RobotContainer.armSubsystem.popArmDown();
   }
 
