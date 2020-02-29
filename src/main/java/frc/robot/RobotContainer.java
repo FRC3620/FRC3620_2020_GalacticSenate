@@ -235,6 +235,7 @@ public class RobotContainer {
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
       liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
@@ -385,7 +386,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
     return axisValue;
@@ -409,7 +410,7 @@ public class RobotContainer {
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
-    return axisValue;
+    return -axisValue;
   }
 
   public static double getColorJoystick() {
