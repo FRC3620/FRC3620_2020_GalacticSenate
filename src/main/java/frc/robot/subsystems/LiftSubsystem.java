@@ -36,6 +36,7 @@ public class LiftSubsystem extends SubsystemBase {
 
   public LiftSubsystem() {
     resetEncoder();
+    liftPower(0);
   }
 
   public boolean checkForLiftEncoder() {
