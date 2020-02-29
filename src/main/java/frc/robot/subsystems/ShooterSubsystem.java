@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
-  private float rangeModifier = 1.0f; //Multiply this by distance from goal before calculating range 
+  private double rangeModifier = 1.0; //Multiply this by distance from goal before calculating range 
 
 
   /*
@@ -136,9 +136,10 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setOutputRange(-0.5, 0.5);
     }
   }
-  public void modifyRangeModifer(float mod) {
+  public void modifyRangeModifer(double mod) {
     rangeModifier += mod;
   }
+  
   @Override
   public void periodic() {
     trpm = SmartDashboard.getNumber("Top Velocity", 4100);
