@@ -7,16 +7,18 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LiftSubsystem;
-import edu.wpi.first.wpilibj.Timer;
 
 public class MoveLiftCommand extends CommandBase {
   private LiftSubsystem liftSubsystem;
-  Timer rainbowTimer = new Timer();
+  private DoubleSolenoid brake = RobotContainer.liftBrake;
+
   /**
-   * Creates a new MoveLif.
+   * Creates a new MoveLift.
    */
   public MoveLiftCommand(LiftSubsystem m_liftSubsystem) {
     this.liftSubsystem = m_liftSubsystem;
@@ -29,30 +31,12 @@ public class MoveLiftCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rainbowTimer.stop();
-    rainbowTimer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double liftPower = RobotContainer.getClimbingJoystick(); //Consistantly grabs the value of the climbing joystick
-    liftSubsystem.liftPower(liftPower);
-
-    if (RobotContainer.getClimbingJoystick() >= 0.3) { //Light effect stuff
-      rainbowTimer.start();
-    } else {
-      rainbowTimer.stop();
-      rainbowTimer.reset();
-    }
-
-    if (RobotContainer.getClimbingJoystick() >= 0.3) {
-      rainbow();
-    }
-  }
-
-  public void rainbow() {
-    RobotContainer.lightSubsystem.setRainbow(5000, false, true); //would have passed through rainbowtimer + 1 but it wouldnt work
+    liftSubsystem.liftPower();
   }
 
   // Called once the command ends or is interrupted.

@@ -7,18 +7,19 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import frc.robot.commands.ManuallyMoveColorMotor;
 
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class ArmSubsystem extends SubsystemBase {
-  SpeedController armMotor = RobotContainer.m_armMotor;
+  WPI_TalonSRX armMotor = RobotContainer.m_armMotor;
 
   /**
    * Change the I2C port below to match the connection of your color sensor
@@ -64,8 +65,13 @@ public class ArmSubsystem extends SubsystemBase {
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
-    m_colorMatcher.addColorMatch(kYellowTarget);    
+    m_colorMatcher.addColorMatch(kYellowTarget);   
+    this.setDefaultCommand(new ManuallyMoveColorMotor(this)); 
   }
+
+ 
+
+
 
   @Override
   public void periodic() {
@@ -80,7 +86,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.set(0.35);
   }
 
-  public void stopSpinningControlPanelWheel() {
+  public void stopRunningMotor() {
     armMotor.set(0.0);
   }
 
@@ -90,6 +96,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void popArmDown() {
     RobotContainer.solenoidArmUp.set(false);
+  }
+
+  public void ManualColorMotor()  {
+    armMotor.set(RobotContainer.getColorJoystick());
   }
 
   public Color getCurrentColor() {

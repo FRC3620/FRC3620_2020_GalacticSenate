@@ -15,21 +15,21 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
-public class NetSolenoidCommand extends CommandBase {
-  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
+public class ManuallyMoveColorMotor extends CommandBase {
+  ArmSubsystem armSubsystem;
   TargetColor previousColor = TargetColor.UNKNOWN;
 
-
+  //private final int resetCount = 0;
    
 
 
   /**
    * Creates a new SpinControlPanel4TimesCommand.
    */
-  public NetSolenoidCommand() {
+  public ManuallyMoveColorMotor(ArmSubsystem armSubsystem) {
+    this.armSubsystem = armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.armSubsystem);
-
+    addRequirements(armSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -41,15 +41,17 @@ public class NetSolenoidCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    RobotContainer.shooterSubsystem.PutNetUp();
+
+    armSubsystem.ManualColorMotor();
 
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.PutNetDown();
+
+    armSubsystem.stopRunningMotor();
 
   }
 
