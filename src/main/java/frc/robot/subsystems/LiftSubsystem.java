@@ -19,8 +19,8 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.RobotContainer;
 import frc.robot.commands.MoveLiftCommand;
 /**
- * @author Sean Thursby
- * @version 18 January 2020
+ * @author Sean Thursby & Micah Wagoner
+ * @version 16 February 2020
  */
 public class LiftSubsystem extends SubsystemBase {
   private boolean lightTriggered = false;
@@ -42,6 +42,7 @@ public class LiftSubsystem extends SubsystemBase {
   public void liftPower() { // Runs lift controller based on joystick pos.
     if (liftController != null) {
       double liftPower = RobotContainer.getClimbingJoystick(); //Consistantly grabs the value of the climbing joystick
+      SmartDashboard.putNumber("Lift Controller Speed", liftPower);
       if(liftPower != 0) {
         brake.set(Value.kReverse);
         liftController.set(liftPower); //speed = speed passes through by moveliftcommand
