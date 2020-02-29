@@ -102,6 +102,8 @@ public class RobotContainer {
   public static Solenoid intakeSubsystemHolder1;
   public static Solenoid intakeSubsystemHolder2;
 
+  public static Solenoid visionLight;
+
   private static DigitalInput practiceBotJumper;
 
   public static Compressor theCompressor;
@@ -274,6 +276,7 @@ public class RobotContainer {
       intakeSubsystemHolder1 = new Solenoid(4);
       //intakeSubsystemHolder2 = new Solenoid(5);
       //netSolenoid = new Solenoid(6);
+      visionLight = new Solenoid(7);
     }
   }
 
