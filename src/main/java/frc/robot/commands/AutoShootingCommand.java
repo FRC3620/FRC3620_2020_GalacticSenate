@@ -40,7 +40,7 @@ public class AutoShootingCommand extends CommandBase {
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
     if(ERROR >= 0.98 && ERROR <= 1.02) {
-      RobotContainer.shooterSubsystem.PIDBeltOn();
+      RobotContainer.shooterSubsystem.BeltOn();
     }
     //RobotContainer.shooterSubsystem.Shoot();
     //RobotContainer.shooterSubsystem.BeltOn();

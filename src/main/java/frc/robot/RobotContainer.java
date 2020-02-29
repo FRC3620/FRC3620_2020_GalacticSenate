@@ -226,7 +226,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
-      intakeSubsystemSparkMax.setInverted(true);
+      intakeSubsystemSparkMax.setInverted(false);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
@@ -235,6 +235,7 @@ public class RobotContainer {
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
       liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
@@ -385,7 +386,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
     return axisValue;
