@@ -64,9 +64,6 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    if(timer.get() >= 5) {
-      RobotContainer.shooterSubsystem.PIDBeltOn();
-    }
     //RobotContainer.shooterSubsystem.Shoot();
     //RobotContainer.shooterSubsystem.BeltOn();
   }
@@ -75,7 +72,6 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    RobotContainer.shooterSubsystem.BeltOff();
     //dataLogger.done();
   }
 

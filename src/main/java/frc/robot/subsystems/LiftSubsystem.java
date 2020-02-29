@@ -37,6 +37,14 @@ public class LiftSubsystem extends SubsystemBase {
       liftController.set(0);
     }
   }
+
+  public void BrakeOn() {
+    brake.set(Value.kForward);
+  }
+
+  public void BrakeOff() {
+    brake.set(Value.kReverse);
+  }
   
   // Lift should move up from positive power 
   public void liftPower() { // Runs lift controller based on joystick pos.

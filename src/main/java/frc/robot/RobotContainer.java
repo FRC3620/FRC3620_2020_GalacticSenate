@@ -226,7 +226,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
-      intakeSubsystemSparkMax.setInverted(true);
+      intakeSubsystemSparkMax.setInverted(false);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
@@ -409,7 +409,7 @@ public class RobotContainer {
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
-    return -axisValue;
+    return axisValue;
   }
 
   public static double getColorJoystick() {
