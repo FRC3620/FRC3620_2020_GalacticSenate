@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
@@ -19,31 +20,68 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private NetworkTable networkTable = inst.getTable("ChickenVision");
 
-  private NetworkTableEntry shootingTargetPresent = networkTable.getEntry("Shooting Centered");
-  private NetworkTableEntry shootingTargetYaw = networkTable.getEntry("Shooting Target Yaw");
+  private NetworkTableEntry targetCentered = networkTable.getEntry("targetCentered");
+  private NetworkTableEntry targetYaw = networkTable.getEntry("targetYaw");
+  private NetworkTableEntry targetAcquired = networkTable.getEntry("targetCentered");
+  private NetworkTableEntry targetDistance = networkTable.getEntry("targetDistance");
 
   private Solenoid visionLight = RobotContainer.visionLight;
 
+  private boolean visionTargeting = false;
+
+  private PIDController spinPIDController;
+	private double kSpinP = 0.0;
+	private double kSpinI = 0.0;
+	private double kSpinD = 0.0;
+	private double spinPower = 0;
+
   public VisionSubsystem() {
+
+    spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
+    spinPIDController.setTolerance(1);
 
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(visionTargeting){
+      if(getShootingTargetAcquired()){
+        spinPIDController.setSetpoint(0);
+        spinPower = spinPIDController.calculate(getShootingTargetYaw());
+      }
+    }
   }
 
   public double getShootingTargetYaw(){
-    if (shootingTargetPresent.getBoolean(false)){
-      return shootingTargetYaw.getDouble(0);
+    
+    if (targetCentered.getBoolean(false)){
+      return targetYaw.getDouble(0);
     }
-    else{
-      return 0;
-    }
+    return 0;
   }
 
-  public boolean getShootingTargetPresent(){
-    return shootingTargetPresent.getBoolean(false);
+  public boolean getShootingTargetAcquired(){
+    return targetAcquired.getBoolean(false);
+  }
+
+  public boolean getShootingTargetCentered(){
+    return targetCentered.getBoolean(false);
+  }
+
+  public double getShootingTargetDistance(){
+    return targetDistance.getDouble(0);
+  }
+
+  public void setVisionTargetingTrue(){
+    visionTargeting = true;
+  }
+
+  public void setVisionTargetingFalse(){
+    visionTargeting = false;
+  }
+
+  public double getSpinPower(){
+    return spinPower;
   }
 
   public void turnVisionLightOn() {
