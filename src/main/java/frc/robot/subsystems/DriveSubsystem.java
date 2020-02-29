@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase {
  
 	private final double MAX_VELOCITY_RPM = 750; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
-	private final double MAX_TURN = 3; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
+	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 116.9;//PRACTICE: 116.9. COMP: 176; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
 	private double LEFT_FRONT_ABSOLUTE_OFFSET = 140;//PRACTICE: 140. COMP: -50;
@@ -111,7 +111,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.02;
+	private double kSpinP = 0.013;
 	private double kSpinI = 0.00001;
 	private double kSpinD = 0.003;
 	private boolean autoSpinMode;
@@ -207,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase {
 	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
 	spinPIDController.setTolerance(3);
 
-	SmartDashboard.putNumber("Target Heading", targetHeading);
+	
 
 	fixRelativeEncoders();
   }
@@ -269,6 +269,7 @@ public class DriveSubsystem extends SubsystemBase {
 		}else{
 			periodicAutoSpinMode();
 		}
+		SmartDashboard.putNumber("Target Heading", targetHeading);
 
   }
 
