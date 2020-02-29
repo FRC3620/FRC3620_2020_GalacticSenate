@@ -7,21 +7,20 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import frc.robot.commands.ManuallyMoveColorMotor;
 
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class ArmSubsystem extends SubsystemBase {
-  SpeedController armMotor = RobotContainer.m_armMotor;
+  WPI_TalonSRX armMotor = RobotContainer.m_armMotor;
 
   /**
    * Change the I2C port below to match the connection of your color sensor
@@ -88,7 +87,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.set(0.35);
   }
 
-  public void stopSpinningControlPanelWheel() {
+  public void stopRunningMotor() {
     armMotor.set(0.0);
   }
 

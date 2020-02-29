@@ -13,43 +13,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
-public class BallsCommand extends CommandBase {
-  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
-  TargetColor previousColor = TargetColor.UNKNOWN;
-
-
-   
-
-
+public class ShooterRangeModAdjustCommand extends CommandBase {
+  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  int direction;
   /**
    * Creates a new SpinControlPanel4TimesCommand.
    */
-  public BallsCommand() {
+  public ShooterRangeModAdjustCommand(int direction) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.armSubsystem);
-
+    addRequirements(RobotContainer.shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-// System.out.println("Worked");
+    shooterSubsystem.modifyRangeModifer(direction*0.05f);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    RobotContainer.shooterSubsystem.ReleaseTheBalls();
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.HoldBalls();
 
   }
 

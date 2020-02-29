@@ -10,7 +10,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -19,6 +21,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private NetworkTableEntry shootingTargetPresent = networkTable.getEntry("Shooting Centered");
   private NetworkTableEntry shootingTargetYaw = networkTable.getEntry("Shooting Target Yaw");
+
+  private Solenoid visionLight = RobotContainer.visionLight;
 
   public VisionSubsystem() {
 
@@ -41,4 +45,13 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean getShootingTargetPresent(){
     return shootingTargetPresent.getBoolean(false);
   }
+
+  public void turnVisionLightOn() {
+    visionLight.set(true);
+  }
+
+  public void turnVisionLightOff() {
+    visionLight.set(false);
+  }
 }
+
