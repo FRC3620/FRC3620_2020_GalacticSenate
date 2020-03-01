@@ -40,7 +40,7 @@ public class DriveAndAlignCommand extends CommandBase {
     
     spinX = spinXDriver;
 
-    if (visionSubsystem.getShootingTargetPresent()){
+    if (visionSubsystem.getShootingTargetAcquired()){
       double yaw = visionSubsystem.getShootingTargetYaw();
       spinX = -0.03*yaw;
     }

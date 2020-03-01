@@ -85,8 +85,8 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -83.3;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
 	private double LEFT_FRONT_ABSOLUTE_OFFSET = -130.3;//PRACTICE: 140. COMP: -130.3;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 7.6;//PRACTICE: 91.5. COMP 7.6;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = -23.5;//PRACTICE: 42.2. COMP -23.5; 
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 59.5;//PRACTICE: 91.5. COMP 7.6;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = -20.1;//PRACTICE: 42.2. COMP -23.5; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
