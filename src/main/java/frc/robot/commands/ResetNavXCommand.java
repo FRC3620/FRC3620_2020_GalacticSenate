@@ -24,6 +24,7 @@ public class ResetNavXCommand extends CommandBase {
   @Override
   public void initialize() {
     driveSubsystem.resetNavX();
+    driveSubsystem.setTargetHeading(driveSubsystem.getNavXFixedAngle());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -7,47 +7,49 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class MoveLiftCommand extends CommandBase {
-  private LiftSubsystem liftSubsystem;
-  private DoubleSolenoid brake = RobotContainer.liftBrake;
+public class AutoSnapToHeadingCommand extends CommandBase {
 
-  /**
-   * Creates a new MoveLift.
-   */
-  public MoveLiftCommand(LiftSubsystem m_liftSubsystem) {
-    this.liftSubsystem = m_liftSubsystem;
+  private DriveSubsystem driveSubsystem;
 
+  private double desiredHeading;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_liftSubsystem);
+  public AutoSnapToHeadingCommand(double heading, DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    addRequirements(driveSubsystem);
+    desiredHeading = heading;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() { //looks at the encoder on one drive motor
+    driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    liftSubsystem.liftPower();
+    double heading = driveSubsystem.getNavXFixedAngle(); 
+
+    double spinX = -driveSubsystem.getSpinPower();
+    driveSubsystem.timedDrive(0, 0, spinX);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    liftSubsystem.liftoff();
+    driveSubsystem.teleOpDrive(0,0,0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Math.abs(desiredHeading-driveSubsystem.getNavXFixedAngle())<8){
+      return true;
+    }
     return false;
   }
 }

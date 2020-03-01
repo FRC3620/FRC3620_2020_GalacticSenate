@@ -90,11 +90,16 @@ public class RobotContainer {
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
+  public static CANEncoder liftEncoder;
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
 
+  public static Solenoid visionLight;
+
   private static DigitalInput practiceBotJumper;
+  public static DigitalInput liftLimitSwitch;
+  public static DigitalInput hoodLimitSwitch;
 
   public static Compressor theCompressor;
 
@@ -134,22 +139,22 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.7);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
     }
@@ -177,6 +182,8 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
+    liftLimitSwitch = new DigitalInput(1);
+    hoodLimitSwitch = new DigitalInput(2);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
@@ -224,18 +231,22 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+      intakeSubsystemSparkMax.setInverted(false);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
-      liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
+      liftEncoder = liftSubsystemWinch.getEncoder();
+      liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
-      liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setSmartCurrentLimit(70);
+      liftSubsystemWinch.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
       shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
@@ -267,6 +278,7 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
+      visionLight = new Solenoid(7);
     }
   }
 
@@ -287,6 +299,16 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
+    
+    SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
+    SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
+    SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
+    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -349,18 +371,24 @@ public class RobotContainer {
 
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return -axisValue;
+    if (axisValue < 0){
+      return (axisValue*axisValue);
+    }
+    return -axisValue*axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return axisValue;
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
 
   public static double getDriveSpinJoystick() {
@@ -373,7 +401,7 @@ public class RobotContainer {
     
   public static double getOperatorSpinJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
     return -axisValue;
