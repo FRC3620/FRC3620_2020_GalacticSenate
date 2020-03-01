@@ -83,7 +83,8 @@ public class LiftSubsystem extends SubsystemBase {
               setManualMode();
           }
 
-          if(!autoMagicMode){
+          if(true){
+            //if(!autoMagicMode){
               periodicManualMode();
           }else{
               //Automagic
@@ -165,15 +166,19 @@ public class LiftSubsystem extends SubsystemBase {
       }
 
       liftController.set(speed);
+      SmartDashboard.putNumber("Requested Motor Power", speed);
+      SmartDashboard.putNumber("Lift Current", liftController.getOutputCurrent());
     }
   }
 
   void applyBrake() {
     brake.set(Value.kForward);
+    SmartDashboard.putBoolean("LiftBrake", true);
   }
 
   void releaseBreak() {
     brake.set(Value.kReverse);
+    SmartDashboard.putBoolean("LiftBrake", false);
   }
 
   double ticstoinches(double tics) { 

@@ -237,10 +237,10 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
       liftEncoder = liftSubsystemWinch.getEncoder();
-      liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
+      liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
-      liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setSmartCurrentLimit(70);
       liftSubsystemWinch.setInverted(true);
     }
 
