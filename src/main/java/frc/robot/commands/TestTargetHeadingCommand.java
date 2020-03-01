@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,39 +7,33 @@
 
 package frc.robot.commands;
 
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveSubsystem;
 
-/**
- * An example command that uses an example subsystem.
- */
-public class BeltDriverCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ShooterSubsystem shooterSubsystem;
-
-  public BeltDriverCommand(ShooterSubsystem subsystem) {
-    this.shooterSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+public class TestTargetHeadingCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
+  public TestTargetHeadingCommand(DriveSubsystem m_driveSubsystem) {
+    driveSubsystem = m_driveSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     
+    SmartDashboard.putNumber("Target Heading Set", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.shooterSubsystem.BeltOn();
+    double targetHeading = SmartDashboard.getNumber("Target Heading Set", 0);
+    driveSubsystem.setTargetHeading(targetHeading);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.BeltOff();
   }
 
   // Returns true when the command should end.

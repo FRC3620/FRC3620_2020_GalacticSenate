@@ -7,12 +7,25 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class TeleOpDriveCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
   private DriveSubsystem driveSubsystem;
+
+  double strafeX;
+  double strafeY;
+  double spinXDriver;
+  double spinXOperator; 
+  double spinX;
+  double desiredHeading;
+  double currentHeading;
   /**
    * Creates a new TeleOpDriveCommand.
    */
@@ -24,22 +37,17 @@ public class TeleOpDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    logger.info("Init tod");
+    desiredHeading = driveSubsystem.getNavXFixedAngle();
+    driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double strafeX = RobotContainer.getDriveHorizontalJoystick();
-    double strafeY = RobotContainer.getDriveVerticalJoystick();
-    double spinXDriver = RobotContainer.getDriveSpinJoystick();
-    double spinXOperator = RobotContainer.getOperatorSpinJoystick();
-    double spinX;
-    
-    spinX = spinXDriver;
-
-    if (spinXDriver == 0){
-      spinX = spinXOperator;
-    }
+    strafeX = RobotContainer.getDriveHorizontalJoystick();
+    strafeY = RobotContainer.getDriveVerticalJoystick();
+    spinX = -driveSubsystem.getSpinPower();
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }

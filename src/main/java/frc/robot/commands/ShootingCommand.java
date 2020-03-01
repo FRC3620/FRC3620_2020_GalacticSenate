@@ -27,11 +27,12 @@ public class ShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   IFastDataLogger dataLogger;
-
+  Timer timer;
   TalonFX talonFX;
   
   public ShootingCommand(ShooterSubsystem subsystem) {
-    shooterSubsystem = subsystem;
+    this.shooterSubsystem = subsystem;
+    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     talonFX = RobotContainer.shooterSubsystemFalcon1;
   }
@@ -39,6 +40,7 @@ public class ShootingCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.start();
     dataLogger = new FastDataLoggerCollections();
     dataLogger.setInterval(0.001);
     dataLogger.setMaxLength(10.0);
@@ -70,7 +72,6 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    //RobotContainer.shooterSubsystem.BeltOff();
     //dataLogger.done();
   }
 
