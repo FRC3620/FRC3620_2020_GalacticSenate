@@ -7,49 +7,40 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.Logger;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ArmSubsystem.TargetColor;
 
 public class ShooterRangeModAdjustCommand extends CommandBase {
-  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
-  int direction;
-  /**
-   * Creates a new SpinControlPanel4TimesCommand.
-   */
-  public ShooterRangeModAdjustCommand(int direction) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.shooterSubsystem);
+  ShooterSubsystem shooterSubsystem;
+  int direction; // positive one for up, negative one for down
+  double sensitivity = 0.05; //the amount each button press changes the range modifier
+
+  public ShooterRangeModAdjustCommand(int direction_) {
+    direction = direction_;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.modifyRangeModifer(direction*0.05f);
+    shooterSubsystem = RobotContainer.shooterSubsystem;
+    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
   }
 
   // Returns true when the command should end.
   // (To return true the rotation count must be greater than or equal to 4)
   @Override
   public boolean isFinished() {
-
-    return false;
+    return true;
   }
 }
