@@ -103,7 +103,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
-      hoodEncoder = hoodMotor.getEncoder();
       anglePID.setReference(hoodPosition, ControlType.kPosition);
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
@@ -112,9 +111,11 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setOutputRange(-0.5, 0.5);
     }
   }
+
   public void modifyRangeModifer(float mod) {
     rangeModifier += mod;
   }
+  
   @Override
   public void periodic() {
     trpm = SmartDashboard.getNumber("Top Velocity", 4100);

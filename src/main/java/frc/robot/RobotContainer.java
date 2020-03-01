@@ -90,6 +90,7 @@ public class RobotContainer {
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
+  public static CANEncoder liftEncoder;
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
@@ -97,6 +98,8 @@ public class RobotContainer {
   public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
+  public static DigitalInput liftLimitSwitch;
+  public static DigitalInput hoodLimitSwitch;
 
   public static Compressor theCompressor;
 
@@ -179,6 +182,8 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
+    liftLimitSwitch = new DigitalInput(1);
+    hoodLimitSwitch = new DigitalInput(2);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
@@ -231,6 +236,7 @@ public class RobotContainer {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
+      liftEncoder = liftSubsystemWinch.getEncoder();
       liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
@@ -240,6 +246,7 @@ public class RobotContainer {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
       shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
