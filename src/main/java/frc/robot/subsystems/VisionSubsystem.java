@@ -23,7 +23,7 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTableEntry targetCentered = networkTable.getEntry("targetCentered");
   private NetworkTableEntry targetYaw = networkTable.getEntry("targetYaw");
   private NetworkTableEntry targetAcquired = networkTable.getEntry("targetCentered");
-  private NetworkTableEntry targetDistance = networkTable.getEntry("targetDistance");
+  private NetworkTableEntry targetYCenter = networkTable.getEntry("targetYCenter");
 
   private Solenoid visionLight = RobotContainer.visionLight;
 
@@ -68,8 +68,8 @@ public class VisionSubsystem extends SubsystemBase {
     return targetCentered.getBoolean(false);
   }
 
-  public double getShootingTargetDistance(){
-    return targetDistance.getDouble(0);
+  public double getShootingTargetYCenter(){
+    return targetYCenter.getDouble(0);
   }
 
   public void setVisionTargetingTrue(){

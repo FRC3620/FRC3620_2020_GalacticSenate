@@ -245,12 +245,13 @@ public class RobotContainer {
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
-      shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodMax = new CANSparkMax(11, MotorType.kBrushless);
       shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
       shooterSubsystemHoodMax.setSmartCurrentLimit(20);
+      shooterSubsystemHoodMax.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
@@ -309,6 +310,9 @@ public class RobotContainer {
     SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
+
+    SmartDashboard.putData("Move Hood", new MoveHoodCommand(shooterSubsystem));
+    SmartDashboard.putData("Reset Hood Encoder", new ResetEncoderCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -343,6 +347,9 @@ public class RobotContainer {
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
+    JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
+
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
 
@@ -362,8 +369,8 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton beltDriver = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
+    JoystickButton calcButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
