@@ -350,11 +350,11 @@ public class RobotContainer {
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
     beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
 
+    JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
+
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
-
-    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
 
     JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
@@ -371,11 +371,11 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton calcButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
-
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
+
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
@@ -402,6 +402,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
+    SmartDashboard.putNumber("driverSpin", axisValue);
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
