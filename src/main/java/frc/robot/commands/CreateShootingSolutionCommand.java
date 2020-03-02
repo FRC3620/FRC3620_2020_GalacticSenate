@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -20,6 +21,7 @@ public class CreateShootingSolutionCommand extends CommandBase {
   double pixelHeight;
   double calcRPM;
   double calcPosition;
+  RumbleCommand rumbleCommand;
   /**
    * Creates a new MoveHoodManuallyUpCommand.
    */
@@ -27,6 +29,11 @@ public class CreateShootingSolutionCommand extends CommandBase {
     this.shooterSubsystem = subsystem1;
     this.visionSubsystem = subsystem2;
     this.rumbleSubsystem = subsystem3;
+
+    rumbleCommand = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
+    1.0, // intensity
+    1.0 // duration
+    );
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -40,6 +47,7 @@ public class CreateShootingSolutionCommand extends CommandBase {
       shooterSubsystem.setTopRPM(calcRPM);
       shooterSubsystem.setPosition(calcPosition);
       //rumbleSubsystem.setRumble(Hand.BOTH, 0.5);
+      rumbleCommand.schedule();
     }
   }
 

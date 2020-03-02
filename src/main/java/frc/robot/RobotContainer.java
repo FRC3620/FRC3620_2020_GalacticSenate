@@ -359,6 +359,8 @@ public class RobotContainer {
     JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 
+    JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
     //Operator Controller
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
@@ -403,7 +405,10 @@ public class RobotContainer {
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return axisValue;
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
     
   public static double getOperatorSpinJoystick() {

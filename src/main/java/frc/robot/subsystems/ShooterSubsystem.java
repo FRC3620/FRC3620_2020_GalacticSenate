@@ -114,14 +114,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   public double calcHoodPosition(double cy) {
-    double calcposition = 117.9442214-(1.41455865*cy)+(6.390471008e-3*Math.pow(cy,2))-(1.191888623e-5*Math.pow(cy,3))+(7.914976108e-9*Math.pow(cy, 4));
+    double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
     return calcposition;
   }
 
   public double calcTopRPM(double cy) {
     double calcTopRPM = 2650;
     if(cy > 200) {
-      calcTopRPM = 3530.57629-(19.24789286*cy)+(7.372612103e-2*Math.pow(cy,2))-(1.4845263e-5*Math.pow(cy, 3))-(1.057778756e-7*Math.pow(cy, 4));
+      //calcTopRPM = 3530.57629-(19.24789286*cy)+(7.372612103e-2*Math.pow(cy,2))-(1.4845263e-5*Math.pow(cy, 3))-(1.057778756e-7*Math.pow(cy, 4));
+      calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
     }
     return calcTopRPM;
   }
