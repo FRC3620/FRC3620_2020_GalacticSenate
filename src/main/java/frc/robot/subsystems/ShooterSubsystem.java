@@ -34,6 +34,8 @@ public class ShooterSubsystem extends SubsystemBase {
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
+  private float rangeModifier = 1.0f; //Multiply this by distance from goal before calculating range 
+
 
   /*
   PID Values Link
@@ -44,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double tPVelocity = 0.6; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
-  private double trpm = 4100; //5200
+  public double trpm = 4100; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
@@ -52,13 +54,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
   private double brpm = 4000;
-
-  //feeder FPID Values
-  private final double fFVelocity = 0.0465;
-  private final double fPVelocity = 0;
-  private final double fIVelocity = 0;
-  private final double fDVelocity = 0;
-  private double frpm = 1000;
 
   //hood PID Values
   private final double hoodP = 0;
@@ -102,30 +97,12 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
 
-    if (feeder != null) {
-      //for PID you have to have a sensor to check on so you know the error
-      feeder.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kVelocitySlotIdx, kTimeoutMs);
-
-      //set max and minium(nominal) speed in percentage output
-      feeder.configNominalOutputForward(0, kTimeoutMs);
-      feeder.configNominalOutputReverse(0, kTimeoutMs);
-      feeder.configPeakOutputForward(+1, kTimeoutMs);
-      feeder.configPeakOutputReverse(-1, kTimeoutMs);
-
-      //set up the feeder for using FPID
-      feeder.config_kF(kVelocitySlotIdx, fFVelocity, kTimeoutMs);
-      feeder.config_kP(kVelocitySlotIdx, fPVelocity, kTimeoutMs);
-      feeder.config_kI(kVelocitySlotIdx, fIVelocity, kTimeoutMs);
-      feeder.config_kD(kVelocitySlotIdx, fDVelocity, kTimeoutMs);
-    }
-
     SmartDashboard.putNumber("Top Velocity", trpm);
     SmartDashboard.putNumber("Bottom Velocity", brpm);
     SmartDashboard.putNumber("Hood Position", hoodPosition);
 
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
-      hoodEncoder = hoodMotor.getEncoder();
       anglePID.setReference(hoodPosition, ControlType.kPosition);
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
@@ -135,6 +112,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public void modifyRangeModifer(float mod) {
+    rangeModifier += mod;
+  }
+  
   @Override
   public void periodic() {
     trpm = SmartDashboard.getNumber("Top Velocity", 4100);
@@ -183,10 +164,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void PIDBeltOn(){
-    double feederTargetVelocity = frpm;
+  public void BeltOn(){
     if(feeder != null) {
-      feeder.set(ControlMode.Velocity, feederTargetVelocity); 
+      feeder.set(ControlMode.PercentOutput, 0.5); 
     }
   }
 

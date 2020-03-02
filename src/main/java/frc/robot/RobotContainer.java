@@ -18,12 +18,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -82,7 +81,7 @@ public class RobotContainer {
   public static CANEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
   
-  public static SpeedController m_armMotor;
+  public static WPI_TalonSRX m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
   public static WPI_TalonFX shooterSubsystemFalcon3;
@@ -91,10 +90,16 @@ public class RobotContainer {
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
+  public static CANEncoder liftEncoder;
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
+  public static DoubleSolenoid liftBrake;
+
+  public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
+  public static DigitalInput liftLimitSwitch;
+  public static DigitalInput hoodLimitSwitch;
 
   public static Compressor theCompressor;
 
@@ -177,12 +182,12 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
+    liftLimitSwitch = new DigitalInput(1);
+    hoodLimitSwitch = new DigitalInput(2);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
     }
-
-    m_armMotor = new Victor(8);
 
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
@@ -226,18 +231,22 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+      intakeSubsystemSparkMax.setInverted(false);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
+      liftEncoder = liftSubsystemWinch.getEncoder();
       liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
       liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
       shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+      shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
@@ -259,11 +268,17 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 4, "Ball Feeder") || iAmACompetitionRobot) { 
       shooterSubsystemBallFeeder = new WPI_TalonSRX(4);
     } 
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 5, "Color Sensor/Climber") || iAmACompetitionRobot) { 
+      m_armMotor = new WPI_TalonSRX(5);
+    } 
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.PCM, 0) || iAmACompetitionRobot) {
       theCompressor = new Compressor(0);
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
+      liftBrake = new DoubleSolenoid(2,3);
+      visionLight = new Solenoid(7);
     }
   }
 
@@ -284,6 +299,16 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
+    
+    SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
+    SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
+    SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
+    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -346,18 +371,24 @@ public class RobotContainer {
 
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return -axisValue;
+    if (axisValue < 0){
+      return (axisValue*axisValue);
+    }
+    return -axisValue*axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return axisValue;
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
 
   public static double getDriveSpinJoystick() {
@@ -370,7 +401,7 @@ public class RobotContainer {
     
   public static double getOperatorSpinJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
     return -axisValue;

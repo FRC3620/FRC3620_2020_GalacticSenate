@@ -21,12 +21,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
-  Timer timer;
   TalonFX talonFX;
+  double ERROR = (talonFX.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
   
   public AutoShootingCommand(ShooterSubsystem subsystem) {
     this.shooterSubsystem = subsystem;
-    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     talonFX = RobotContainer.shooterSubsystemFalcon1;
   }
@@ -34,16 +33,14 @@ public class AutoShootingCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.reset();
-    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    if(timer.get() >= 5) {
-      RobotContainer.shooterSubsystem.PIDBeltOn();
+    if(ERROR >= 0.98 && ERROR <= 1.02) {
+      RobotContainer.shooterSubsystem.BeltOn();
     }
     //RobotContainer.shooterSubsystem.Shoot();
     //RobotContainer.shooterSubsystem.BeltOn();
@@ -59,6 +56,6 @@ public class AutoShootingCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= 10);
+    return false;
   }
 }
