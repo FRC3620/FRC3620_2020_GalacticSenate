@@ -27,14 +27,6 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("pdp.totalPower", () -> f2(powerDistributionPanel.getTotalPower()));
 			dataLogger.addDataProvider("pdp.totalEnergy", () -> f2(powerDistributionPanel.getTotalEnergy()));
 		}
-			
-			// this needs work!
-
-		//This is here for now from last year just for referece for poor micah
-		if (RobotContainer.pivotSubsystemMax2 != null) {
-			dataLogger.addDataProvider("pivotMotor2AppliedOutputPower", () -> f2(RobotContainer.pivotSubsystemMax2.getAppliedOutput()));
-			dataLogger.addDataProvider("pivotMotor2Current", () -> f2(RobotContainer.pivotSubsystemMax2.getOutputCurrent()));
-        }
 
 	}
 
