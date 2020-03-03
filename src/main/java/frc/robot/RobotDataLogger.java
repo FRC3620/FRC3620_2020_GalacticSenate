@@ -22,11 +22,14 @@ public class RobotDataLogger {
 		dataLogger.addDataProvider("robotModeInt", () -> Robot.currentRobotMode.ordinal());
 		dataLogger.addDataProvider("batteryVoltage", () -> f2(RobotController.getBatteryVoltage()));
 
-		// do not log extra stuff
 		if (canDeviceFinder.isDevicePresent(CANDeviceId.CANDeviceType.PDP, 0)) {
 			dataLogger.addDataProvider("pdp.totalCurrent", () -> f2(powerDistributionPanel.getTotalCurrent()));
 			dataLogger.addDataProvider("pdp.totalPower", () -> f2(powerDistributionPanel.getTotalPower()));
 			dataLogger.addDataProvider("pdp.totalEnergy", () -> f2(powerDistributionPanel.getTotalEnergy()));
+		}
+
+		if (RobotContainer.theCompressor != null) {
+			dataLogger.addDataProvider("compressorCurrent", () -> f2(RobotContainer.theCompressor.getCompressorCurrent()));
 		}
 
 	}
