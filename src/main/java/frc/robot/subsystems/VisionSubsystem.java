@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private NetworkTableEntry targetCentered = networkTable.getEntry("targetCentered");
   private NetworkTableEntry targetYaw = networkTable.getEntry("targetYaw");
-  private NetworkTableEntry targetAcquired = networkTable.getEntry("targetCentered");
+  private NetworkTableEntry targetAcquired = networkTable.getEntry("targetAcquired");
   private NetworkTableEntry targetYCenter = networkTable.getEntry("targetYCenter");
 
   private Solenoid visionLight = RobotContainer.visionLight;
@@ -30,7 +30,7 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean visionTargeting = false;
 
   private PIDController spinPIDController;
-	private double kSpinP = 0.0;
+	private double kSpinP = 0.01;
 	private double kSpinI = 0.0;
 	private double kSpinD = 0.0;
 	private double spinPower = 0;
@@ -54,7 +54,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getShootingTargetYaw(){
     
-    if (targetCentered.getBoolean(false)){
+    if (!targetCentered.getBoolean(false)){ // if we are not centered give me my yaw
       return targetYaw.getDouble(0);
     }
     return 0;
@@ -78,6 +78,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void setVisionTargetingFalse(){
     visionTargeting = false;
+  }
+
+  public boolean getVisionTargeting(){
+    return visionTargeting;
   }
 
   public double getSpinPower(){

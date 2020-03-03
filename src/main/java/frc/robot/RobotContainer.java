@@ -142,21 +142,25 @@ public class RobotContainer {
       driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
+      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
       driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
+      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
       driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.7);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
+      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
       driveSubsystemRightBackDrive.setClosedLoopRampRate(0.7);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
+      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(0.3);
     }
 
     if (shooterSubsystemFalcon1 != null) {
