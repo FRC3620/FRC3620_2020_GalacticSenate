@@ -8,6 +8,7 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -96,10 +97,12 @@ public class LiftSubsystem extends SubsystemBase {
               }
           }
       }
-      SmartDashboard.putNumber("liftMotorPower", liftController.getAppliedOutput());
-      SmartDashboard.putString("liftMode", autoMagicMode ? "AUTOMAGIC" : "MANUAL");
-      SmartDashboard.putNumber("liftSetpoint", desiredHeight);
-      SmartDashboard.putBoolean("liftEncoderValid", encoderIsValid);
+      if(liftController != null){
+          SmartDashboard.putNumber("liftMotorPower", liftController.getAppliedOutput());
+          SmartDashboard.putString("liftMode", autoMagicMode ? "AUTOMAGIC" : "MANUAL");
+          SmartDashboard.putNumber("liftSetpoint", desiredHeight);
+          SmartDashboard.putBoolean("liftEncoderValid", encoderIsValid);
+      }
   }
 
   public void setManualMode() {

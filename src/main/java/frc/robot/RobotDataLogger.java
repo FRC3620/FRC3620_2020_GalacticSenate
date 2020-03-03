@@ -17,6 +17,7 @@ public class RobotDataLogger {
 	public RobotDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
 		powerDistributionPanel = new PowerDistributionPanel();
 
+		dataLogger.addDataProvider("matchTime", () -> f2(driverStation.getMatchTime()));
 		dataLogger.addDataProvider("robotMode", () -> Robot.currentRobotMode.toString());
 		dataLogger.addDataProvider("robotModeInt", () -> Robot.currentRobotMode.ordinal());
 		dataLogger.addDataProvider("batteryVoltage", () -> f2(RobotController.getBatteryVoltage()));
