@@ -29,8 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
-  private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   private CANPIDController anglePID;
@@ -105,10 +104,6 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    SmartDashboard.putNumber("Bottom Velocity", brpm);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
-
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
       anglePID.setP(hoodP);
@@ -176,7 +171,7 @@ public class ShooterSubsystem extends SubsystemBase {
           encoderIsValid = true;
       }
 
-      if (encoderIsValid){
+      if(encoderIsValid){
         anglePID.setReference(hoodPosition, ControlType.kPosition);
       } else {
           //we want to be down, but we're not there yet
@@ -193,6 +188,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
+    if(position > 17){
+      hoodPosition = 17;
+    }
     hoodPosition = position;
   }
 
@@ -224,18 +222,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void BeltOn(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0.5); 
-    }
-  }
-
-  public void BeltOff(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0);                  
-    }
-  }
-
   public void runHoodDownSlowly(){
     anglePID.setReference(-0.2, ControlType.kDutyCycle);
   }
@@ -247,8 +233,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getHoodPosition() {
     if(checkForHoodEncoder()) {
         double revs = hoodEncoder.getPosition();
-        double currentPosition = revs - hoodEncoderZeroValue;
-        return currentPosition;
+        return revs;
     } else {
         return(0);
     }
@@ -256,7 +241,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void resetEncoder(){
     if(checkForHoodEncoder()) {
-        hoodEncoderZeroValue = hoodEncoder.getPosition();
+        hoodEncoder.setPosition(0);
     }
   }
 }

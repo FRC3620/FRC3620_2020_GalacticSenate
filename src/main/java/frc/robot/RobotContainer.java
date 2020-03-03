@@ -113,6 +113,7 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
+  public static BeltSubsystem beltSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -177,6 +178,7 @@ public class RobotContainer {
 
     if(shooterSubsystemBallFeeder != null) {
       shooterSubsystemBallFeeder.setInverted(InvertType.None);
+      shooterSubsystemBallFeeder.configVoltageCompSaturation(6);
     }
   }
 
@@ -293,6 +295,8 @@ public class RobotContainer {
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
+    beltSubsystem = new BeltSubsystem();
+
   }
 
   void setupSmartDashboardCommands() {
@@ -311,7 +315,6 @@ public class RobotContainer {
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
 
-    SmartDashboard.putData("Move Hood", new MoveHoodCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -347,7 +350,7 @@ public class RobotContainer {
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem));
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
