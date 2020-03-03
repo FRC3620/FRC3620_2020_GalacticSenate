@@ -7,6 +7,7 @@
 
 package frc.robot.miscellaneous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -36,6 +37,9 @@ public class SwerveCalculator {
 			double robotHeading = driveSubsystem.getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
 			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
 			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
+			SmartDashboard.putNumber("joyX", joyX);
+			SmartDashboard.putNumber("joyY", joyY);
+			SmartDashboard.putNumber("Strafe Vector Angle", strafeVectorAngle);
 			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
 
 			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector

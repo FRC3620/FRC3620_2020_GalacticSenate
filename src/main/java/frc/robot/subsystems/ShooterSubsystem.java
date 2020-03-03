@@ -16,6 +16,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -30,10 +31,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   private CANPIDController anglePID;
+  private DigitalInput LimitSwitch = RobotContainer.hoodLimitSwitch;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
+  private double rangeModifier = 1.0; //Multiply this by distance from goal before calculating range 
+
 
   /*
   PID Values Link
@@ -53,15 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bDVelocity = 7.5;
   private double brpm = 4000;
 
-  //feeder FPID Values
-  private final double fFVelocity = 0.0465;
-  private final double fPVelocity = 0;
-  private final double fIVelocity = 0;
-  private final double fDVelocity = 0;
-  private double frpm = 1000;
-
   //hood PID Values
-  private final double hoodP = 0;
+  private final double hoodP = 0.13;
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double hoodIz = 0;
@@ -102,59 +99,79 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
 
-    if (feeder != null) {
-      //for PID you have to have a sensor to check on so you know the error
-      feeder.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kVelocitySlotIdx, kTimeoutMs);
-
-      //set max and minium(nominal) speed in percentage output
-      feeder.configNominalOutputForward(0, kTimeoutMs);
-      feeder.configNominalOutputReverse(0, kTimeoutMs);
-      feeder.configPeakOutputForward(+1, kTimeoutMs);
-      feeder.configPeakOutputReverse(-1, kTimeoutMs);
-
-      //set up the feeder for using FPID
-      feeder.config_kF(kVelocitySlotIdx, fFVelocity, kTimeoutMs);
-      feeder.config_kP(kVelocitySlotIdx, fPVelocity, kTimeoutMs);
-      feeder.config_kI(kVelocitySlotIdx, fIVelocity, kTimeoutMs);
-      feeder.config_kD(kVelocitySlotIdx, fDVelocity, kTimeoutMs);
-    }
-
     SmartDashboard.putNumber("Top Velocity", trpm);
     SmartDashboard.putNumber("Bottom Velocity", brpm);
     SmartDashboard.putNumber("Hood Position", hoodPosition);
 
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
-      hoodEncoder = hoodMotor.getEncoder();
-      anglePID.setReference(hoodPosition, ControlType.kPosition);
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
       anglePID.setIZone(hoodIz);
-      anglePID.setOutputRange(-0.5, 0.5);
+      anglePID.setOutputRange(-0.3, 0.3);
+    }
+  }
+  
+  public double calcHoodPosition(double cy) {
+    double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
+    return calcposition;
+  }
+
+  public double calcTopRPM(double cy) {
+    double calcTopRPM = 2650;
+    if(cy > 200) {
+      //calcTopRPM = 3530.57629-(19.24789286*cy)+(7.372612103e-2*Math.pow(cy,2))-(1.4845263e-5*Math.pow(cy, 3))-(1.057778756e-7*Math.pow(cy, 4));
+      calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
+    }
+    return calcTopRPM;
+  }
+
+  public void modifyRangeModifer(double mod) {
+    rangeModifier += mod;
+  }
+  
+  public void resetHoodEncoder() {
+    if(true) {
+      hoodEncoder.setPosition(0);
     }
   }
 
   @Override
   public void periodic() {
-    trpm = SmartDashboard.getNumber("Top Velocity", 4100);
-    brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
-    hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
+    //trpm = SmartDashboard.getNumber("Top Velocity", 4100);
+    //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+    //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
-    //double currentPosition = hoodEncoder.getPosition();
-    //double ERROR = hoodPosition - currentPosition;
-    //SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
-    //SmartDashboard.putNumber("HoodERROR", ERROR);
+    SmartDashboard.putNumber("Top Velocity", trpm);
+    SmartDashboard.putNumber("Bottom Velocity", brpm);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
 
-    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    double currentPosition = hoodEncoder.getPosition();
+    double ERROR = hoodPosition - currentPosition;
+    if(Math.abs(ERROR) > 0.2) {
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+    }
+    SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
+    SmartDashboard.putNumber("HoodERROR", ERROR);
+
+    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
-    //SmartDashboard.putNumber("Bottom Velocity", falconBottom.getSelectedSensorVelocity());
+    //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
-    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
+    SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
     //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    //SmartDashboard.putNumber("Top Velocity", falconTop.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
   }
   
+  public void setTopRPM(double RPM) {
+    trpm = RPM;
+  }
+
+  public void setPosition(double position) {
+    hoodPosition = position;
+  }
+
   public void ShootPID(){
     /* converting rev/min to units/rev
     100ms for a min is 600ms
@@ -183,10 +200,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void PIDBeltOn(){
-    double feederTargetVelocity = frpm;
+  public void BeltOn(){
     if(feeder != null) {
-      feeder.set(ControlMode.Velocity, feederTargetVelocity); 
+      feeder.set(ControlMode.PercentOutput, 0.5); 
     }
   }
 
@@ -194,5 +210,13 @@ public class ShooterSubsystem extends SubsystemBase {
     if(feeder != null) {
       feeder.set(ControlMode.PercentOutput, 0);                  
     }
+  }
+
+  public void moveHood(){
+  anglePID.setReference(hoodPosition, ControlType.kPosition);
+  }
+
+  public void stopHood(){
+    hoodMotor.set(0);
   }
 }

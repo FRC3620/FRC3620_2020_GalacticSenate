@@ -14,6 +14,7 @@ import com.revrobotics.ColorSensorV3;
 import frc.robot.commands.ManuallyMoveColorMotor;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -79,15 +80,21 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void spinControlPanelWheel() {
-    armMotor.set(0.5);
+    if(armMotor != null){
+      armMotor.set(0.5);
+    }
   }
 
   public void spinControlPanelWheelSlow() {
-    armMotor.set(0.35);
+    if(armMotor != null){
+      armMotor.set(0.35);
+    }
   }
 
   public void stopRunningMotor() {
-    armMotor.set(0.0);
+    if(armMotor != null){
+      armMotor.set(0);
+    }
   }
 
   public void popArmUp() {
@@ -99,7 +106,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void ManualColorMotor()  {
-    armMotor.set(RobotContainer.getColorJoystick());
+    if(armMotor != null){
+      armMotor.set(RobotContainer.getColorJoystick());
+    }
+    
   }
 
   public Color getCurrentColor() {
@@ -118,17 +128,28 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public TargetColor getTargetColor() {
+    String Color = "No colors yet";
     ColorMatchResult match = m_colorMatcher.matchClosestColor(getCurrentColor());
 
     if (match.color == kBlueTarget) {
+      Color = "Blue"; //Sets the color as Blue
+      SmartDashboard.putString("Color Sensed", Color); //Pushes the color to ShuffleBoard
       return TargetColor.BLUE;
     } else if (match.color == kRedTarget) {
+      Color = "Red"; //Sets the color
+      SmartDashboard.putString("Color Sensed", Color); //Pushes it
       return TargetColor.RED;
     } else if (match.color == kGreenTarget) {
+      Color = "Green"; //Sets it
+      SmartDashboard.putString("Color Sensed", Color); //Pushes it
       return TargetColor.GREEN;
     } else if (match.color == kYellowTarget) {
+      Color = "Yellow"; //You get the idea
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.YELLOW;
     } else {
+      Color = "Unknown Color";
+      SmartDashboard.putString("Color Sensed", Color);
       return TargetColor.UNKNOWN;
     }
   }

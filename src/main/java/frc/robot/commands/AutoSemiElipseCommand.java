@@ -10,25 +10,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AutoDriveCommand extends CommandBase {
+public class AutoSemiElipseCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
+  double currentHeading;
+  double distanceTravelled;
+  double initialPosition;
+  double speed;
+  double radiusA; //in feet
+  double radiusB;
+  double elipseConstant;
 
-  private DriveSubsystem driveSubsystem;
-
-  private double initialPosition;
-  private double distanceTravelled;
-  private double desiredDistance;
-  private double desiredAngle;
-  private double desiredHeading;
-  private double pathSpeed;
-
-  public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
+  /**
+   * Creates a new AutoSemicircleCommand.
+   */
+  public AutoSemiElipseCommand(double a, double b, double speed, DriveSubsystem driveSubsystem) {
+    this.radiusA = a*12; //convert to feet
+    this.radiusB = b*12;
     this.driveSubsystem = driveSubsystem;
-    addRequirements(driveSubsystem);
-
-    desiredDistance = distance;
-    desiredAngle = strafeAngle;
-    desiredHeading = heading;
-    pathSpeed = speed;
+    this.speed = speed;
 
   }
 
@@ -36,31 +35,33 @@ public class AutoDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
-    driveSubsystem.setTargetHeading(desiredHeading);
+    currentHeading = driveSubsystem.getNavXFixedAngle();
+    driveSubsystem.setTargetHeading(currentHeading);
+    elipseConstant = Math.sqrt((radiusA*radiusA + radiusB*radiusB)/2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double heading = driveSubsystem.getNavXFixedAngle(); 
+    distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPosition() - initialPosition);
+    double angleSwept = distanceTravelled / elipseConstant; //approximation to the perimeter of an ellipse in radians
 
-    double currentPosition = driveSubsystem.getDriveMotorPosition();
-    double spinX = -driveSubsystem.getSpinPower();
-    driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
+    double joyX = radiusA*Math.sin(angleSwept); 
+    double joyY = radiusB*Math.cos(angleSwept);
 
-    distanceTravelled = Math.abs(currentPosition - initialPosition);
+    driveSubsystem.teleOpDrive(joyX, joyY, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.teleOpDrive(0,0,0);
+    driveSubsystem.teleOpDrive(0, 0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(distanceTravelled >= desiredDistance){
+    if (distanceTravelled > 3.1416*elipseConstant){ // stop driving after we have travelled half a circumference
       return true;
     }
     return false;

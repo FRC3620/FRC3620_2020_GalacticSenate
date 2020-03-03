@@ -8,44 +8,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
-public class DriveAndAlignCommand extends CommandBase {
+public class AutoSnapToHeadingCommand extends CommandBase {
+
   private DriveSubsystem driveSubsystem;
-  private VisionSubsystem visionSubsystem;
-  /**
-   * Creates a new TeleOpDriveCommand.
-   */
-  public DriveAndAlignCommand(DriveSubsystem m_driveSubsystem, VisionSubsystem m_visionSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    this.visionSubsystem = m_visionSubsystem;
-    addRequirements(m_driveSubsystem);
+
+  private double desiredHeading;
+
+  public AutoSnapToHeadingCommand(double heading, DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    addRequirements(driveSubsystem);
+    desiredHeading = heading;
 
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() { //looks at the encoder on one drive motor
+    driveSubsystem.setTargetHeading(desiredHeading);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double strafeX = RobotContainer.getDriveHorizontalJoystick();
-    double strafeY = RobotContainer.getDriveVerticalJoystick();
-    double spinXDriver = RobotContainer.getDriveSpinJoystick();
-    double spinX;
-    
-    spinX = spinXDriver;
+    double heading = driveSubsystem.getNavXFixedAngle(); 
 
-    if (visionSubsystem.getShootingTargetAcquired()){
-      double yaw = visionSubsystem.getShootingTargetYaw();
-      spinX = -0.03*yaw;
-    }
-
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
+    double spinX = -driveSubsystem.getSpinPower();
+    driveSubsystem.timedDrive(0, 0, spinX);
   }
 
   // Called once the command ends or is interrupted.
@@ -57,6 +47,9 @@ public class DriveAndAlignCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Math.abs(desiredHeading-driveSubsystem.getNavXFixedAngle())<8){
+      return true;
+    }
     return false;
   }
 }
