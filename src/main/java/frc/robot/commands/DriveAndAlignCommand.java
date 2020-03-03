@@ -45,10 +45,7 @@ public class DriveAndAlignCommand extends CommandBase {
       if (!visionSubsystem.getShootingTargetCentered()){
         double yaw = visionSubsystem.getShootingTargetYaw();
         spinX = -0.025*yaw;// + -(yaw/Math.abs(yaw))*0.1; //absolute value division gets sign of yaw
-        SmartDashboard.putNumber("Auto line up power ", spinX);
-        System.out.println(yaw);
       }
-      
     }
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);

@@ -22,25 +22,29 @@ public class AutoShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   TalonFX talonFX;
-  double ERROR = (talonFX.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
+  Timer timer = new Timer();
   
   public AutoShootingCommand(ShooterSubsystem subsystem) {
     this.shooterSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     talonFX = RobotContainer.shooterSubsystemFalcon1;
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double ERROR = (talonFX.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
     RobotContainer.shooterSubsystem.ShootPID();
     if(ERROR >= 0.98 && ERROR <= 1.02) {
       RobotContainer.shooterSubsystem.BeltOn();
+      timer.start();
     }
     //RobotContainer.shooterSubsystem.Shoot();
     //RobotContainer.shooterSubsystem.BeltOn();
@@ -49,13 +53,13 @@ public class AutoShootingCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.ShooterOff();
-    //RobotContainer.shooterSubsystem.BeltOff();
+    shooterSubsystem.ShooterOff();
+    shooterSubsystem.BeltOff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.hasElapsed(4);
   }
 }
