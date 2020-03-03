@@ -57,7 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private double brpm = 4000;
+  private double brpm = 5000;
 
   //hood PID Values
   private final double hoodP = 0.13;
