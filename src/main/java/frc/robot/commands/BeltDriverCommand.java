@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BeltDriverCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final BeltSubsystem beltSubsystem;
-  private double ERROR = (RobotContainer.shooterSubsystemFalcon1.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
+  private double ERROR;
 
   public BeltDriverCommand(BeltSubsystem subsystem) {
     this.beltSubsystem = subsystem;
@@ -28,7 +28,7 @@ public class BeltDriverCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    ERROR = (RobotContainer.shooterSubsystemFalcon1.getSelectedSensorVelocity() / (RobotContainer.shooterSubsystem.trpm * 2048 / 600 ));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

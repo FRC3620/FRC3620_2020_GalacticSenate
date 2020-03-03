@@ -21,7 +21,7 @@ public class BeltIdleCommand extends CommandBase {
 
   public BeltIdleCommand(BeltSubsystem subsystem) {
     this.beltSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -33,7 +33,7 @@ public class BeltIdleCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.beltSubsystem.BeltOn(1);
+   // RobotContainer.beltSubsystem.BeltOn(-0.2);
   }
 
   // Called once the command ends or is interrupted.
