@@ -312,7 +312,6 @@ public class RobotContainer {
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
 
     SmartDashboard.putData("Move Hood", new MoveHoodCommand(shooterSubsystem));
-    SmartDashboard.putData("Reset Hood Encoder", new ResetEncoderCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
