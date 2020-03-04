@@ -8,7 +8,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.BeltSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -17,11 +17,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class BeltDriverCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ShooterSubsystem shooterSubsystem;
+  private final BeltSubsystem beltSubsystem;
+  private double ERROR = (RobotContainer.shooterSubsystemFalcon1.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
 
-  public BeltDriverCommand(ShooterSubsystem subsystem) {
-    this.shooterSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+  public BeltDriverCommand(BeltSubsystem subsystem) {
+    this.beltSubsystem = subsystem;
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -33,18 +34,23 @@ public class BeltDriverCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.shooterSubsystem.BeltOn();
+    if(ERROR >= 0.98 && ERROR <= 1.02){
+      RobotContainer.beltSubsystem.BeltOn(1);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.shooterSubsystem.BeltOff();
+    RobotContainer.beltSubsystem.BeltOff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(ERROR >= 0.98 && ERROR <= 1.02){
+      return false;
+    }
+    return true;
   }
 }

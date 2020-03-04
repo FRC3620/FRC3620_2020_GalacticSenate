@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
@@ -40,9 +41,14 @@ public class DriveAndAlignCommand extends CommandBase {
     
     spinX = spinXDriver;
 
-    if (visionSubsystem.getShootingTargetPresent()){
-      double yaw = visionSubsystem.getShootingTargetYaw();
-      spinX = -0.03*yaw;
+    if (visionSubsystem.getShootingTargetAcquired()){
+      if (!visionSubsystem.getShootingTargetCentered()){
+        double yaw = visionSubsystem.getShootingTargetYaw();
+        spinX = -0.025*yaw;// + -(yaw/Math.abs(yaw))*0.1; //absolute value division gets sign of yaw
+        SmartDashboard.putNumber("Auto line up power ", spinX);
+        System.out.println(yaw);
+      }
+      
     }
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);

@@ -16,8 +16,12 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
+import org.usfirst.frc3620.misc.RobotMode;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -25,16 +29,18 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
-  private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   private CANPIDController anglePID;
+  private DigitalInput limitSwitch = RobotContainer.hoodLimitSwitch;
+  private Boolean encoderIsValid = false;
+  private double hoodEncoderZeroValue;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
   private final int kTimeoutMs = 0;
-  private float rangeModifier = 1.0f; //Multiply this by distance from goal before calculating range 
+  private double rangeModifier = 1.0; //Multiply this by distance from goal before calculating range 
 
 
   /*
@@ -56,13 +62,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private double brpm = 4000;
 
   //hood PID Values
-  private final double hoodP = 0;
+  private final double hoodP = 0.13;
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double hoodIz = 0;
   private double hoodPosition = 0;
 
   public ShooterSubsystem() {
+    resetEncoder();
     if (falconTop != null) {
       //for PID you have to have a sensor to check on so you know the error
       falconTop.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
@@ -97,45 +104,96 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    SmartDashboard.putNumber("Bottom Velocity", brpm);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
-
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
-      anglePID.setReference(hoodPosition, ControlType.kPosition);
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
       anglePID.setIZone(hoodIz);
-      anglePID.setOutputRange(-0.5, 0.5);
+      anglePID.setOutputRange(-0.3, 0.3);
     }
   }
+  
+  public boolean checkForHoodEncoder() {
+    return(!(hoodEncoder == null));
+  }
 
-  public void modifyRangeModifer(float mod) {
+  public boolean isHoodLimitDepressed() {
+    if(limitSwitch.get() == true) {
+      return false;
+    }
+    return true;
+  }
+
+  public double calcHoodPosition(double cy) {
+    double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
+    return calcposition;
+  }
+
+  public double calcTopRPM(double cy) {
+    double calcTopRPM = 2650;
+    if(cy > 200) {
+      //calcTopRPM = 3530.57629-(19.24789286*cy)+(7.372612103e-2*Math.pow(cy,2))-(1.4845263e-5*Math.pow(cy, 3))-(1.057778756e-7*Math.pow(cy, 4));
+      calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
+    }
+    return calcTopRPM;
+  }
+
+  public void modifyRangeModifer(double mod) {
     rangeModifier += mod;
   }
-  
+
   @Override
   public void periodic() {
-    trpm = SmartDashboard.getNumber("Top Velocity", 4100);
-    brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
-    hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
+    //trpm = SmartDashboard.getNumber("Top Velocity", 4100);
+    //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
+    //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
-    //double currentPosition = hoodEncoder.getPosition();
-    //double ERROR = hoodPosition - currentPosition;
-    //SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
-    //SmartDashboard.putNumber("HoodERROR", ERROR);
+    SmartDashboard.putNumber("Top Velocity", trpm);
+    SmartDashboard.putNumber("Bottom Velocity", brpm);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
 
-    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
-    //SmartDashboard.putNumber("Bottom Velocity", falconBottom.getSelectedSensorVelocity());
+    //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
-    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
+    SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
     //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    //SmartDashboard.putNumber("Top Velocity", falconTop.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+
+    SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
+
+    SmartDashboard.putNumber("hoodEncoderInRevs", getHoodPosition());
+
+    if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+      if(isHoodLimitDepressed() && !encoderIsValid){
+          resetEncoder();
+          encoderIsValid = true;
+      }
+
+      if(encoderIsValid){
+        anglePID.setReference(hoodPosition, ControlType.kPosition);
+      } else {
+          //we want to be down, but we're not there yet
+          //we need to do some runHood with a negative
+          runHoodDownSlowly();
+      }
+    }
+    SmartDashboard.putNumber("hoodSetpoint", hoodPosition);
+    SmartDashboard.putBoolean("hoodEncoderValid", encoderIsValid);
   }
-  
+
+  public void setTopRPM(double RPM) {
+    trpm = RPM;
+  }
+
+  public void setPosition(double position) {
+    if(position > 17){
+      hoodPosition = 17;
+    }
+    hoodPosition = position;
+  }
+
   public void ShootPID(){
     /* converting rev/min to units/rev
     100ms for a min is 600ms
@@ -164,15 +222,26 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void BeltOn(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0.5); 
+  public void runHoodDownSlowly(){
+    anglePID.setReference(-0.2, ControlType.kDutyCycle);
+  }
+
+  public void stopHood(){
+    anglePID.setReference(0, ControlType.kDutyCycle);
+  }
+
+  public double getHoodPosition() {
+    if(checkForHoodEncoder()) {
+        double revs = hoodEncoder.getPosition();
+        return revs;
+    } else {
+        return(0);
     }
   }
 
-  public void BeltOff(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0);                  
+  public void resetEncoder(){
+    if(checkForHoodEncoder()) {
+        hoodEncoder.setPosition(0);
     }
   }
 }

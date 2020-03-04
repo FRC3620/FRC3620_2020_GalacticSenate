@@ -8,23 +8,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class ShooterRangeModAdjustCommand extends CommandBase {
-  ShooterSubsystem shooterSubsystem;
-  int direction; // positive one for up, negative one for down
-  double sensitivity = 0.05; //the amount each button press changes the range modifier
+public class EnableVisionTargetingCommand extends CommandBase {
+  VisionSubsystem visionSubsystem;
 
-  public ShooterRangeModAdjustCommand(int direction_) {
-    direction = direction_;
+  /**
+   * Creates a new EnableVisionTargetingCommand.
+   */
+  public EnableVisionTargetingCommand(VisionSubsystem subsystem) {
+    this.visionSubsystem = subsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem = RobotContainer.shooterSubsystem;
-    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
+    visionSubsystem.setVisionTargetingTrue();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,12 +34,12 @@ public class ShooterRangeModAdjustCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    visionSubsystem.setVisionTargetingFalse();
   }
 
   // Returns true when the command should end.
-  // (To return true the rotation count must be greater than or equal to 4)
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
