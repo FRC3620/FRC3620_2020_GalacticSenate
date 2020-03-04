@@ -80,15 +80,21 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void spinControlPanelWheel() {
-    armMotor.set(0.5);
+    if(armMotor != null){
+      armMotor.set(0.5);
+    }
   }
 
   public void spinControlPanelWheelSlow() {
-    armMotor.set(0.35);
+    if(armMotor != null){
+      armMotor.set(0.35);
+    }
   }
 
   public void stopRunningMotor() {
-    armMotor.set(0.0);
+    if(armMotor != null){
+      armMotor.set(0);
+    }
   }
 
   public void popArmUp() {
@@ -100,7 +106,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void ManualColorMotor()  {
-    armMotor.set(RobotContainer.getColorJoystick());
+    if(armMotor != null){
+      armMotor.set(RobotContainer.getColorJoystick());
+    }
+    
   }
 
   public Color getCurrentColor() {
