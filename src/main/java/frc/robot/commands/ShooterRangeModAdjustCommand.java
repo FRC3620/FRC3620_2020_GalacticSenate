@@ -17,13 +17,13 @@ public class ShooterRangeModAdjustCommand extends CommandBase {
   double sensitivity = 0.05; //the amount each button press changes the range modifier
 
   public ShooterRangeModAdjustCommand(int direction_) {
+    shooterSubsystem = RobotContainer.shooterSubsystem;
     direction = direction_;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem = RobotContainer.shooterSubsystem;
     shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
   }
 
@@ -38,7 +38,6 @@ public class ShooterRangeModAdjustCommand extends CommandBase {
   }
 
   // Returns true when the command should end.
-  // (To return true the rotation count must be greater than or equal to 4)
   @Override
   public boolean isFinished() {
     return true;
