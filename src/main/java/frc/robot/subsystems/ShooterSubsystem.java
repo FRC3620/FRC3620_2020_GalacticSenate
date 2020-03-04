@@ -66,7 +66,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double hoodIz = 0;
-  private double hoodPosition = 0;
+  private double requestedHoodPosition = 0;
+
+  private double requestedTopShooterVelocity = 0;
 
   public ShooterSubsystem() {
     resetEncoder();
@@ -149,21 +151,20 @@ public class ShooterSubsystem extends SubsystemBase {
     //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    SmartDashboard.putNumber("Bottom Velocity", brpm);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
+    //SmartDashboard.putNumber("Top Velocity", trpm);
+    //SmartDashboard.putNumber("Bottom Velocity", brpm);
 
-    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
     //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
-    SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
+    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
     //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+    //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
 
-    SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
+    //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
 
-    SmartDashboard.putNumber("hoodEncoderInRevs", getHoodPosition());
+    //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
 
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if(isHoodLimitDepressed() && !encoderIsValid){
@@ -172,14 +173,14 @@ public class ShooterSubsystem extends SubsystemBase {
       }
 
       if(encoderIsValid){
-        anglePID.setReference(hoodPosition, ControlType.kPosition);
+        anglePID.setReference(requestedHoodPosition, ControlType.kPosition);
       } else {
           //we want to be down, but we're not there yet
           //we need to do some runHood with a negative
           runHoodDownSlowly();
       }
     }
-    SmartDashboard.putNumber("hoodSetpoint", hoodPosition);
+    SmartDashboard.putNumber("hoodSetpoint", requestedHoodPosition);
     SmartDashboard.putBoolean("hoodEncoderValid", encoderIsValid);
   }
 
@@ -189,9 +190,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     if(position > 17){
-      hoodPosition = 17;
+      requestedHoodPosition = 17;
     }
-    hoodPosition = position;
+    requestedHoodPosition = position;
   }
 
   public void ShootPID(){
@@ -201,6 +202,7 @@ public class ShooterSubsystem extends SubsystemBase {
     */
     //set target velocity using PID
     double topTargetVelocity = trpm * 2048 / 600;
+    requestedTopShooterVelocity = topTargetVelocity;
     if (falconTop != null) {
       falconTop.set(ControlMode.Velocity, topTargetVelocity);
     }
@@ -223,14 +225,18 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void runHoodDownSlowly(){
-    anglePID.setReference(-0.2, ControlType.kDutyCycle);
+    if(hoodMotor != null){
+      anglePID.setReference(-0.2, ControlType.kDutyCycle);
+    }
   }
 
   public void stopHood(){
-    anglePID.setReference(0, ControlType.kDutyCycle);
+    if(hoodMotor != null){
+      anglePID.setReference(0, ControlType.kDutyCycle);
+    }
   }
 
-  public double getHoodPosition() {
+  public double getActualHoodPosition() {
     if(checkForHoodEncoder()) {
         double revs = hoodEncoder.getPosition();
         return revs;
@@ -242,6 +248,22 @@ public class ShooterSubsystem extends SubsystemBase {
   public void resetEncoder(){
     if(checkForHoodEncoder()) {
         hoodEncoder.setPosition(0);
+    }
+  }
+
+  public double getRequestedHoodPosition(){
+    return requestedHoodPosition;
+  }
+  
+  public double getRequestedTopShooterVelocity() {
+    return requestedTopShooterVelocity;
+  }
+
+  public double getActualTopShooterVelocity() {
+    if (falconTop != null) {
+    return falconTop.getSelectedSensorVelocity();
+    } else {
+      return 0;
     }
   }
 }

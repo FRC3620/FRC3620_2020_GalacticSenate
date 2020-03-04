@@ -54,7 +54,7 @@ public class RobotContainer {
   final static int OPERATOR_JOYSTICK_PORT = 1;
 
   // need this
-  CANDeviceFinder canDeviceFinder;
+  static CANDeviceFinder canDeviceFinder;
 
   // hardware here...
   public static CANSparkMax driveSubsystemRightFrontDrive;
@@ -354,7 +354,7 @@ public class RobotContainer {
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem));
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
