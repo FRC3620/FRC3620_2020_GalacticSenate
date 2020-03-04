@@ -36,10 +36,9 @@ public class DriveAndAlignCommand extends CommandBase {
   public void execute() {
     double strafeX = RobotContainer.getDriveHorizontalJoystick();
     double strafeY = RobotContainer.getDriveVerticalJoystick();
-    double spinXDriver = RobotContainer.getDriveSpinJoystick();
     double spinX;
     
-    spinX = spinXDriver;
+    spinX = -driveSubsystem.getSpinPower();;
 
     if (visionSubsystem.getShootingTargetAcquired()){
       if (!visionSubsystem.getShootingTargetCentered()){
@@ -60,6 +59,6 @@ public class DriveAndAlignCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return visionSubsystem.getShootingTargetCentered();
   }
 }

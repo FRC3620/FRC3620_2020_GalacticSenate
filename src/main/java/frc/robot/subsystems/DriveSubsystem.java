@@ -464,6 +464,38 @@ public class DriveSubsystem extends SubsystemBase {
 
 	}
 
+	public void twoWheelRotation(){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
+
+		double leftFrontAngle = -45;
+		double rightFrontAngle = 45;
+		double leftBackAngle = 90; //should be pointing forward
+		double rightBackAngle = 90; //should be pointing forward
+		double turnSpeed = 0.2;
+
+		DriveVectors currentDirections = getCurrentVectors();
+		 
+		DriveVectors newVectors = new DriveVectors();
+		
+		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
+		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);//only move the front wheels
+		newVectors.leftBack = new Vector(leftBackAngle, 0);
+		newVectors.rightBack = new Vector(rightBackAngle, 0);
+
+		newVectors = sc.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
+		
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
+			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
+			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+		}
+	}
+
 	public void setPositionPID(CANPIDController pidController) {
 		if (pidController != null) {
 			pidController.setP(kPositionP);	
