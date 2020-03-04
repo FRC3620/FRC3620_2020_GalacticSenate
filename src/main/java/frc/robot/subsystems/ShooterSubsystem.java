@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -35,7 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private CANPIDController anglePID;
   private DigitalInput limitSwitch = RobotContainer.hoodLimitSwitch;
   private Boolean encoderIsValid = false;
-  private double hoodEncoderZeroValue;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -265,5 +263,9 @@ public class ShooterSubsystem extends SubsystemBase {
     } else {
       return 0;
     }
+  }
+
+  public double getRangeModifier() {
+    return rangeModifier;
   }
 }
