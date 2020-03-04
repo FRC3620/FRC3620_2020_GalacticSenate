@@ -226,7 +226,7 @@ public class RobotContainer {
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
     
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Intake") || iAmACompetitionRobot){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
@@ -234,7 +234,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setInverted(false);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
       liftEncoder = liftSubsystemWinch.getEncoder();
       liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
@@ -244,7 +244,7 @@ public class RobotContainer {
       liftSubsystemWinch.setInverted(true);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Hood") || iAmACompetitionRobot){
       shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
       shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
