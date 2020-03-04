@@ -18,25 +18,17 @@ import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class CreateShootingSolutionCommand extends CommandBase {
+public class AutoCreateShootingSolutionCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
-  RumbleSubsystem rumbleSubsystem;
-  RumbleCommand rumbleCommand;
   Logger logger;
   /**
    * Creates a new MoveHoodManuallyUpCommand.
    */
-  public CreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2, RumbleSubsystem subsystem3) {
+  public AutoCreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2) {
     this.shooterSubsystem = subsystem1;
     this.visionSubsystem = subsystem2;
-    this.rumbleSubsystem = subsystem3;
     logger = EventLogging.getLogger(getClass(), Level.INFO);
-
-    rumbleCommand = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
-    1.0, // intensity
-    1.0 // duration
-    );
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -50,8 +42,6 @@ public class CreateShootingSolutionCommand extends CommandBase {
       logger.info("pixel Height = {}, calculated Position = {}, calculated RPM = {}", pixelHeight, calcPosition, calcRPM);
       shooterSubsystem.setTopRPM(calcRPM);
       shooterSubsystem.setPosition(calcPosition);
-      //rumbleSubsystem.setRumble(Hand.BOTH, 0.5);
-      rumbleCommand.schedule();
     }
   }
 

@@ -140,25 +140,25 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
       driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
       driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
       driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(0.3);
@@ -315,10 +315,11 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
     SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
-    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem));
+    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
-
+    
+    SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -450,7 +451,7 @@ public class RobotContainer {
 
   public static double getColorJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
-    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+    if (axisValue < 0.2 && axisValue > -0.2) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
     return -axisValue;

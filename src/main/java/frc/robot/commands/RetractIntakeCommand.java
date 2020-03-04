@@ -13,15 +13,15 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class DeployIntakeCommand extends ParallelCommandGroup {
+public class RetractIntakeCommand extends ParallelCommandGroup {
   IntakeSubsystem intakeSubsystem;
   /**
    * Creates a new DeployIntakeCommand.
    */
-  public DeployIntakeCommand(IntakeSubsystem intakeSubsystem) {
+  public RetractIntakeCommand(IntakeSubsystem intakeSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     addCommands(
-    new AutoStartIntakeCommand(intakeSubsystem),
+    new AutoStopIntakeCommand(intakeSubsystem),
     new IntakeArmFireCommand(intakeSubsystem)
     );
 

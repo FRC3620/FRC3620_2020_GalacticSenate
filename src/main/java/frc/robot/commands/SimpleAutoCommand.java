@@ -7,8 +7,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -19,21 +23,32 @@ public class SimpleAutoCommand extends SequentialCommandGroup {
   DriveSubsystem driveSubsystem;
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
+  IntakeSubsystem intakeSubsystem;
+  RumbleSubsystem rumbleSubsystem;
 
   /**
    * Creates a new SimpleAutoCommand.
    */
-  public SimpleAutoCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem, VisionSubsystem m_visionSubsystem) {
+  public SimpleAutoCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem, VisionSubsystem m_visionSubsystem, IntakeSubsystem m_intakeSubsystem) {
     this.driveSubsystem = m_driveSubsystem;
     this.shooterSubsystem = m_shooterSubsystem;
     this.visionSubsystem = m_visionSubsystem;
+    this.intakeSubsystem = m_intakeSubsystem;
     addCommands(
       new ZeroDriveEncodersCommand(driveSubsystem),
-      new AutoDriveAndAimCommand(2*12, -90, 0.3, 180, driveSubsystem, visionSubsystem),
+      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
+      new SetShooterUpForTenFeetCommand(shooterSubsystem),
       new AutoShootingCommand(shooterSubsystem),
-      new AutoDriveCommand(7.7*12, -73, 0, 0, driveSubsystem),
-      new AutoDriveCommand(12*12, -90, 0, 0, driveSubsystem),
-      new AutoDriveCommand(8.5*12, 90, 0, 0, driveSubsystem),
-      new SnapToHeadingCommand(180, driveSubsystem));
+      new AutoDriveCommand(1*12, -90, 0.8, 180, driveSubsystem),
+      new AutoSpinCommand(0.5, 0, driveSubsystem), 
+      new IntakeArmFireCommand(intakeSubsystem),
+      new DeployIntakeCommand(intakeSubsystem)
+      /*
+      new RetractIntakeCommand(intakeSubsystem),
+      new AutoDriveCommand(12*12, -90, 0.8, 0, driveSubsystem),
+      new AutoDriveCommand(8.5*12, 90, 0.8, 0, driveSubsystem),
+      new SnapToHeadingCommand(180, driveSubsystem),
+      new AutoShootingCommand(shooterSubsystem)*/
+      );
   }
 }

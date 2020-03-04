@@ -34,7 +34,7 @@ public class BeltDriverCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    beltSubsystem.BeltOn(1);
+    beltSubsystem.BeltOn(.4);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,10 +46,6 @@ public class BeltDriverCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
-    if(error >= 0.98 && error <= 1.02){
-      return false;
-    }
-    return true;
+    return false;
   }
 }

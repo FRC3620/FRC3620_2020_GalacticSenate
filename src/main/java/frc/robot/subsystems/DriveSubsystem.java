@@ -115,6 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private double kSpinI = 0.00001;
 	private double kSpinD = 0.003;
 	private boolean autoSpinMode;
+	private boolean forceManualMode = false;
 	private double currentHeading;
 	private double targetHeading;
 	private double spinPower;
@@ -259,11 +260,17 @@ public class DriveSubsystem extends SubsystemBase {
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
-		if(Math.abs(commandedSpin) != 0){
+		if(forceManualMode){
 			setManualSpinMode();
-		}else{
-			setAutoSpinMode();
 		}
+		else{
+			if(Math.abs(commandedSpin) != 0){
+				setManualSpinMode();
+			}else{
+				setAutoSpinMode();
+			}
+		}
+		
 		if(!autoSpinMode){
 			periodicManualSpinMode();
 		}else{
@@ -464,13 +471,13 @@ public class DriveSubsystem extends SubsystemBase {
 
 	}
 
-	public void twoWheelRotation(){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
-
-		double leftFrontAngle = -45;
-		double rightFrontAngle = 45;
+	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
+		
+		double leftFrontAngle = -160;
+		double rightFrontAngle = 160;
 		double leftBackAngle = 90; //should be pointing forward
 		double rightBackAngle = 90; //should be pointing forward
-		double turnSpeed = 0.2;
+		double turnSpeed = speed*MAX_VELOCITY_IN_PER_SEC;
 
 		DriveVectors currentDirections = getCurrentVectors();
 		 
@@ -490,9 +497,9 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 			
 			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
-			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
-			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
-			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
 		}
 	}
 
@@ -800,7 +807,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void setManualSpinMode() {
         if (autoSpinMode){
-           // logger.info("Switching to Manual Spin Mode");
+           logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
 	}
@@ -816,5 +823,11 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
+	}
+	public void setForcedManualModeTrue(){
+		forceManualMode = true;
+	}
+	public void setForcedManualModeFalse(){
+		forceManualMode = false;
 	}
 }
