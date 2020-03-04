@@ -36,10 +36,6 @@ public class RobotDataLogger {
 
 		dataLogger.addDataProvider("getRequestedTopShooterVelocity", () -> f2(RobotContainer.shooterSubsystem.getRequestedTopShooterVelocity()));
 		dataLogger.addDataProvider("getActualTopShooterVelocity", () -> f2(RobotContainer.shooterSubsystem.getActualTopShooterVelocity()));
-
-
-
-
 	}
 
 	private DecimalFormat f2Formatter = new DecimalFormat("#.##");
