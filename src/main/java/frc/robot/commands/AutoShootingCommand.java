@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
-  private double ERROR = (RobotContainer.shooterSubsystemFalcon1.getSelectedSensorVelocity() / RobotContainer.shooterSubsystem.trpm);
   
   public AutoShootingCommand(ShooterSubsystem subsystem) {
     this.shooterSubsystem = subsystem;
@@ -37,7 +36,8 @@ public class AutoShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    if(ERROR >= 0.98 && ERROR <= 1.02) {
+    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
+    if(error >= 0.98 && error <= 1.02) {
       RobotContainer.beltSubsystem.BeltOn(1);
     }
     //RobotContainer.shooterSubsystem.Shoot();

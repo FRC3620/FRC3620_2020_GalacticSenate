@@ -21,7 +21,7 @@ public class BeltIdleCommand extends CommandBase {
 
   public BeltIdleCommand(BeltSubsystem subsystem) {
     this.beltSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
