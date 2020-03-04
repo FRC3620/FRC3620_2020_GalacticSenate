@@ -10,36 +10,40 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class MoveHoodCommand extends CommandBase {
+public class SetShooterUpForTwentyOneFeetCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
+
+  final double twentyOneFootRPM = 4050;
+  final double twentyOneFootPosition = 14.5;
+
   /**
    * Creates a new MoveHoodManuallyUpCommand.
    */
-  public MoveHoodCommand(ShooterSubsystem subsystem) {
-    this.shooterSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+  public SetShooterUpForTwentyOneFeetCommand(ShooterSubsystem shooterSubsystem) {
+    this.shooterSubsystem = shooterSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    shooterSubsystem.setTopRPM(twentyOneFootRPM);
+    shooterSubsystem.setPosition(twentyOneFootPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.moveHood();
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.stopHood();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

@@ -10,7 +10,7 @@ package frc.robot;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
-
+import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
@@ -65,6 +65,8 @@ public class Robot extends TimedRobot {
       public void accept(Command command) {
         logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
       }
+
+      
     });
 
     CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
@@ -78,6 +80,14 @@ public class Robot extends TimedRobot {
         logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
       }
     });
+
+     // get data logging going
+     DataLogger robotDataLogger = new DataLogger();
+     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+     robotDataLogger.setInterval(1.000);
+     robotDataLogger.start();
+     //OperatorView operatorView = new OperatorView();
+    // operatorView.operatorViewInit(RobotContainer.amICompBot());
   }
 
 

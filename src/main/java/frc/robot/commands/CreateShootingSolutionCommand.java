@@ -7,6 +7,10 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.RumbleCommand.Hand;
@@ -18,10 +22,8 @@ public class CreateShootingSolutionCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
   RumbleSubsystem rumbleSubsystem;
-  double pixelHeight;
-  double calcRPM;
-  double calcPosition;
   RumbleCommand rumbleCommand;
+  Logger logger;
   /**
    * Creates a new MoveHoodManuallyUpCommand.
    */
@@ -29,6 +31,7 @@ public class CreateShootingSolutionCommand extends CommandBase {
     this.shooterSubsystem = subsystem1;
     this.visionSubsystem = subsystem2;
     this.rumbleSubsystem = subsystem3;
+    logger = EventLogging.getLogger(getClass(), Level.INFO);
 
     rumbleCommand = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
     1.0, // intensity
@@ -41,9 +44,10 @@ public class CreateShootingSolutionCommand extends CommandBase {
   @Override
   public void initialize() {
     if(visionSubsystem.getShootingTargetAcquired() && visionSubsystem.getShootingTargetCentered()){
-      pixelHeight = visionSubsystem.getShootingTargetYCenter();
-      calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
-      calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
+      double pixelHeight = visionSubsystem.getShootingTargetYCenter();
+      double calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
+      double calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
+      logger.info("pixel Height = {}, calculated Position = {}, calculated RPM = {}", pixelHeight, calcPosition, calcRPM);
       shooterSubsystem.setTopRPM(calcRPM);
       shooterSubsystem.setPosition(calcPosition);
       //rumbleSubsystem.setRumble(Hand.BOTH, 0.5);

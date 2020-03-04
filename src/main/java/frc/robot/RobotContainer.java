@@ -54,7 +54,7 @@ public class RobotContainer {
   final static int OPERATOR_JOYSTICK_PORT = 1;
 
   // need this
-  CANDeviceFinder canDeviceFinder;
+  static CANDeviceFinder canDeviceFinder;
 
   // hardware here...
   public static CANSparkMax driveSubsystemRightFrontDrive;
@@ -113,6 +113,7 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
+  public static BeltSubsystem beltSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -181,6 +182,7 @@ public class RobotContainer {
 
     if(shooterSubsystemBallFeeder != null) {
       shooterSubsystemBallFeeder.setInverted(InvertType.None);
+      shooterSubsystemBallFeeder.configVoltageCompSaturation(6);
     }
   }
 
@@ -230,7 +232,7 @@ public class RobotContainer {
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
     
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Intake") || iAmACompetitionRobot){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
@@ -238,7 +240,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setInverted(false);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
       liftEncoder = liftSubsystemWinch.getEncoder();
       liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
@@ -248,7 +250,7 @@ public class RobotContainer {
       liftSubsystemWinch.setInverted(true);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Hood") || iAmACompetitionRobot){
       shooterSubsystemHoodMax = new CANSparkMax(11, MotorType.kBrushless);
       shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
@@ -297,6 +299,8 @@ public class RobotContainer {
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
+    beltSubsystem = new BeltSubsystem();
+
   }
 
   void setupSmartDashboardCommands() {
@@ -315,8 +319,6 @@ public class RobotContainer {
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
 
-    SmartDashboard.putData("Move Hood", new MoveHoodCommand(shooterSubsystem));
-    SmartDashboard.putData("Reset Hood Encoder", new ResetEncoderCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -352,7 +354,7 @@ public class RobotContainer {
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
+    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
@@ -375,11 +377,20 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
 
-    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+    JoystickButton againtWallShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    againtWallShoot.toggleWhenPressed(new SetShooterUpForFarWallCommand(shooterSubsystem));
+
+    JoystickButton tenFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    tenFootShoot.toggleWhenPressed(new SetShooterUpForTenFeetCommand(shooterSubsystem));
+
+    JoystickButton twentyOneFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {

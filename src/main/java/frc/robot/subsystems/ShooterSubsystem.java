@@ -10,15 +10,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
+import org.usfirst.frc3620.misc.RobotMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -26,12 +28,12 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final WPI_TalonFX falconTop = RobotContainer.shooterSubsystemFalcon1;
-  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3; 
-  private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private final WPI_TalonFX falconBottom = RobotContainer.shooterSubsystemFalcon3;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   private CANEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   private CANPIDController anglePID;
-  private DigitalInput LimitSwitch = RobotContainer.hoodLimitSwitch;
+  private DigitalInput limitSwitch = RobotContainer.hoodLimitSwitch;
+  private Boolean encoderIsValid = false;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -55,16 +57,19 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private double brpm = 4000;
+  private double brpm = 5000;
 
   //hood PID Values
   private final double hoodP = 0.13;
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double hoodIz = 0;
-  private double hoodPosition = 0;
+  private double requestedHoodPosition = 0;
+
+  private double requestedTopShooterVelocity = 0;
 
   public ShooterSubsystem() {
+    resetEncoder();
     if (falconTop != null) {
       //for PID you have to have a sensor to check on so you know the error
       falconTop.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
@@ -99,10 +104,6 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
     }
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    SmartDashboard.putNumber("Bottom Velocity", brpm);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
-
     if (hoodMotor != null) {
       anglePID = hoodMotor.getPIDController();
       anglePID.setP(hoodP);
@@ -113,6 +114,17 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
   
+  public boolean checkForHoodEncoder() {
+    return(!(hoodEncoder == null));
+  }
+
+  public boolean isHoodLimitDepressed() {
+    if(limitSwitch.get() == true) {
+      return false;
+    }
+    return true;
+  }
+
   public double calcHoodPosition(double cy) {
     double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
     return calcposition;
@@ -130,12 +142,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void modifyRangeModifer(double mod) {
     rangeModifier += mod;
   }
-  
-  public void resetHoodEncoder() {
-    if(true) {
-      hoodEncoder.setPosition(0);
-    }
-  }
 
   @Override
   public void periodic() {
@@ -143,33 +149,48 @@ public class ShooterSubsystem extends SubsystemBase {
     //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    SmartDashboard.putNumber("Bottom Velocity", brpm);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
+    //SmartDashboard.putNumber("Top Velocity", trpm);
+    //SmartDashboard.putNumber("Bottom Velocity", brpm);
 
-    double currentPosition = hoodEncoder.getPosition();
-    double ERROR = hoodPosition - currentPosition;
-    if(Math.abs(ERROR) > 0.2) {
-      anglePID.setReference(hoodPosition, ControlType.kPosition);
-    }
-    SmartDashboard.putNumber("HoodEncoderTicks", currentPosition);
-    SmartDashboard.putNumber("HoodERROR", ERROR);
-
-    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
     //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
-    SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
+    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
     //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+    //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+
+    //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
+
+    //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
+
+    if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+      if(isHoodLimitDepressed() && !encoderIsValid){
+          resetEncoder();
+          encoderIsValid = true;
+      }
+
+      if(encoderIsValid){
+        anglePID.setReference(requestedHoodPosition, ControlType.kPosition);
+      } else {
+          //we want to be down, but we're not there yet
+          //we need to do some runHood with a negative
+          runHoodDownSlowly();
+      }
+    }
+    SmartDashboard.putNumber("hoodSetpoint", requestedHoodPosition);
+    SmartDashboard.putBoolean("hoodEncoderValid", encoderIsValid);
   }
-  
+
   public void setTopRPM(double RPM) {
     trpm = RPM;
   }
 
   public void setPosition(double position) {
-    hoodPosition = position;
+    if(position > 17){
+      requestedHoodPosition = 17;
+    }
+    requestedHoodPosition = position;
   }
 
   public void ShootPID(){
@@ -179,6 +200,7 @@ public class ShooterSubsystem extends SubsystemBase {
     */
     //set target velocity using PID
     double topTargetVelocity = trpm * 2048 / 600;
+    requestedTopShooterVelocity = topTargetVelocity;
     if (falconTop != null) {
       falconTop.set(ControlMode.Velocity, topTargetVelocity);
     }
@@ -200,23 +222,50 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void BeltOn(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0.5); 
+  public void runHoodDownSlowly(){
+    if(hoodMotor != null){
+      anglePID.setReference(-0.2, ControlType.kDutyCycle);
     }
-  }
-
-  public void BeltOff(){
-    if(feeder != null) {
-      feeder.set(ControlMode.PercentOutput, 0);                  
-    }
-  }
-
-  public void moveHood(){
-  anglePID.setReference(hoodPosition, ControlType.kPosition);
   }
 
   public void stopHood(){
-    hoodMotor.set(0);
+    if(hoodMotor != null){
+      anglePID.setReference(0, ControlType.kDutyCycle);
+    }
+  }
+
+  public double getActualHoodPosition() {
+    if(checkForHoodEncoder()) {
+        double revs = hoodEncoder.getPosition();
+        return revs;
+    } else {
+        return(0);
+    }
+  }
+
+  public void resetEncoder(){
+    if(checkForHoodEncoder()) {
+        hoodEncoder.setPosition(0);
+    }
+  }
+
+  public double getRequestedHoodPosition(){
+    return requestedHoodPosition;
+  }
+  
+  public double getRequestedTopShooterVelocity() {
+    return requestedTopShooterVelocity;
+  }
+
+  public double getActualTopShooterVelocity() {
+    if (falconTop != null) {
+    return falconTop.getSelectedSensorVelocity();
+    } else {
+      return 0;
+    }
+  }
+
+  public double getRangeModifier() {
+    return rangeModifier;
   }
 }

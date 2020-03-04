@@ -1,4 +1,3 @@
-package org.frc3620.test;
 
 import static org.junit.Assert.assertFalse;
 
