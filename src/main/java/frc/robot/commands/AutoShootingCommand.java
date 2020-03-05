@@ -22,8 +22,10 @@ public class AutoShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   Timer timer = new Timer();
+  double shootingTime;
   
-  public AutoShootingCommand(ShooterSubsystem subsystem) {
+  public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
+    this.shootingTime = duration;
     this.shooterSubsystem = subsystem;
     
     // Use addRequirements() here to declare subsystem dependencies.
@@ -58,6 +60,6 @@ public class AutoShootingCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(4);
+    return timer.hasElapsed(shootingTime);
   }
 }

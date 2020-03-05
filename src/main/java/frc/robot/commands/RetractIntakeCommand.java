@@ -22,7 +22,7 @@ public class RetractIntakeCommand extends ParallelCommandGroup {
     this.intakeSubsystem = intakeSubsystem;
     addCommands(
     new AutoStopIntakeCommand(intakeSubsystem),
-    new IntakeArmFireCommand(intakeSubsystem)
+    new AutoIntakeArmUpCommand(intakeSubsystem)
     );
 
     // Add your commands in the super() call, e.g.

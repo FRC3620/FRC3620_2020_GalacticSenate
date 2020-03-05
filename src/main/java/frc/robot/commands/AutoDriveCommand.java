@@ -35,6 +35,7 @@ public class AutoDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    driveSubsystem.setAutoSpinMode();
     initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
     driveSubsystem.setTargetHeading(desiredHeading);
   }

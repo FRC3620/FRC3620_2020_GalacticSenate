@@ -19,17 +19,17 @@ import frc.robot.subsystems.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class SimpleAutoCommand extends SequentialCommandGroup {
+public class AutoSixBallCommand extends SequentialCommandGroup {
   DriveSubsystem driveSubsystem;
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
   IntakeSubsystem intakeSubsystem;
-  RumbleSubsystem rumbleSubsystem;
 
   /**
    * Creates a new SimpleAutoCommand.
    */
-  public SimpleAutoCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem, VisionSubsystem m_visionSubsystem, IntakeSubsystem m_intakeSubsystem) {
+  public AutoSixBallCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem,
+      VisionSubsystem m_visionSubsystem, IntakeSubsystem m_intakeSubsystem) {
     this.driveSubsystem = m_driveSubsystem;
     this.shooterSubsystem = m_shooterSubsystem;
     this.visionSubsystem = m_visionSubsystem;
@@ -56,10 +56,6 @@ public class SimpleAutoCommand extends SequentialCommandGroup {
       new DriveAndAlignCommand(driveSubsystem, visionSubsystem), 
       new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
       new AutoShootingCommand(shooterSubsystem, 3)
-      /*new AutoDriveCommand(12*12, -90, 0.8, 0, driveSubsystem),
-      new AutoDriveCommand(8.5*12, 90, 0.8, 0, driveSubsystem),
-      new SnapToHeadingCommand(180, driveSubsystem),
-      new AutoShootingCommand(shooterSubsystem)*/
       );
   }
 }

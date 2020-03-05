@@ -33,12 +33,12 @@ import frc.robot.subsystems.IntakeSubsystem;
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.intakeSet(0);  //runs intake OUTWARD until command runs again
+    //intakeSubsystem.intakeSet(0);  //runs intake OUTWARD until command runs again
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() { //starts/stops as button is pushed/released. Controlled in RobotContainer
-      return(false);
+      return(true);
   }
 }

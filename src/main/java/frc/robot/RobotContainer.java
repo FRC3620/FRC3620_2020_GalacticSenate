@@ -246,7 +246,7 @@ public class RobotContainer {
       liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
-      liftSubsystemWinch.setSmartCurrentLimit(70);
+      liftSubsystemWinch.setSmartCurrentLimit(80);
       liftSubsystemWinch.setInverted(true);
     }
 
@@ -316,7 +316,7 @@ public class RobotContainer {
     SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
     SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
     SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
-    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
     
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
@@ -463,7 +463,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   /**

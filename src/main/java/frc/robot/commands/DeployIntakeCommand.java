@@ -22,7 +22,7 @@ public class DeployIntakeCommand extends ParallelCommandGroup {
     this.intakeSubsystem = intakeSubsystem;
     addCommands(
     new AutoStartIntakeCommand(intakeSubsystem),
-    new IntakeArmFireCommand(intakeSubsystem)
+    new AutoIntakeArmDownCommand(intakeSubsystem)
     );
 
     // Add your commands in the super() call, e.g.

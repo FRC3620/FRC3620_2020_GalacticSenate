@@ -103,6 +103,7 @@ public class LiftSubsystem extends SubsystemBase {
           SmartDashboard.putString("liftMode", autoMagicMode ? "AUTOMAGIC" : "MANUAL");
           SmartDashboard.putNumber("liftSetpoint", desiredHeight);
           SmartDashboard.putBoolean("liftEncoderValid", encoderIsValid);
+          SmartDashboard.putNumber("Lift Output Current", liftController.getOutputCurrent());
       }
   }
 
