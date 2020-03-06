@@ -239,6 +239,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
       intakeSubsystemSparkMax.setInverted(false);
+      intakeSubsystemSparkMax.setSmartCurrentLimit(70);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
@@ -369,6 +370,9 @@ public class RobotContainer {
 
     JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
+
+    JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
+    toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
     //Operator Controller
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
@@ -393,6 +397,9 @@ public class RobotContainer {
 
     JoystickButton twentyOneFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
+
+    JoystickButton reverseIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
+    reverseIntakeButton.toggleWhenPressed(new reverseIntakeCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
