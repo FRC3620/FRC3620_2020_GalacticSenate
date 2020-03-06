@@ -830,4 +830,7 @@ public class DriveSubsystem extends SubsystemBase {
 	public void setForcedManualModeFalse(){
 		forceManualMode = false;
 	}
+	public boolean getForcedManualMode(){
+		return forceManualMode;
+	}
 }

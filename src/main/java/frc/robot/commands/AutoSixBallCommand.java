@@ -37,7 +37,6 @@ public class AutoSixBallCommand extends SequentialCommandGroup {
     addCommands(
       new AutoTurnVisionLightOnCommand(visionSubsystem),
       new ZeroDriveEncodersCommand(driveSubsystem),
-      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
       new SetShooterUpForTenFeetCommand(shooterSubsystem),
       new AutoShootingCommand(shooterSubsystem, 3),
       new AutoDriveCommand(1*12, -90, 0.8, 180, driveSubsystem),
@@ -46,16 +45,16 @@ public class AutoSixBallCommand extends SequentialCommandGroup {
       new WaitCommand(.5),
       new AutoDriveCommand(1.4*12, -70, 0.8, 0, driveSubsystem),
       new WaitCommand(.2),
-      new AutoDriveCommand(7.5*12, -90, 0.6, 0, driveSubsystem),
+      new AutoDriveCommand(9*12, -90, 0.6, 0, driveSubsystem),
       new AutoIntakeArmUpCommand(intakeSubsystem),
       new WaitCommand(.3),
       new AutoStopIntakeCommand(intakeSubsystem),
       new AutoSpinCommand(-0.5, 180, driveSubsystem), 
       new WaitCommand(.2),
-      new AutoDriveCommand(4*12, 90, 0.5, 180, driveSubsystem), 
-      new DriveAndAlignCommand(driveSubsystem, visionSubsystem), 
-      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
-      new AutoShootingCommand(shooterSubsystem, 3)
+      new AutoDriveCommand(4*12, 90, 0.5, 180, driveSubsystem)
+      //new DriveAndAlignCommand(driveSubsystem, visionSubsystem), 
+      //new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
+      //new AutoShootingCommand(shooterSubsystem, 3)
       );
   }
 }

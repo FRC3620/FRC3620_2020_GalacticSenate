@@ -22,7 +22,8 @@ public class CreateShootingSolutionCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
   RumbleSubsystem rumbleSubsystem;
-  RumbleCommand rumbleCommand;
+  RumbleCommand rumbleCommandOperator;
+  RumbleCommand rumbleCommandDriver;
   Logger logger;
   /**
    * Creates a new MoveHoodManuallyUpCommand.
@@ -33,7 +34,11 @@ public class CreateShootingSolutionCommand extends CommandBase {
     this.rumbleSubsystem = subsystem3;
     logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-    rumbleCommand = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+    1.0, // intensity
+    1.0 // duration
+    );
+    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
     1.0, // intensity
     1.0 // duration
     );
@@ -51,7 +56,8 @@ public class CreateShootingSolutionCommand extends CommandBase {
       shooterSubsystem.setTopRPM(calcRPM);
       shooterSubsystem.setPosition(calcPosition);
       //rumbleSubsystem.setRumble(Hand.BOTH, 0.5);
-      rumbleCommand.schedule();
+      rumbleCommandOperator.schedule();
+      rumbleCommandDriver.schedule();
     }
   }
 

@@ -357,7 +357,7 @@ public class RobotContainer {
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
+    beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
@@ -384,7 +384,7 @@ public class RobotContainer {
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
     JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
@@ -473,6 +473,13 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
     return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+  public Command getTrenchAuto(){
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getMeanMachineAuto(){
+    return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   /**

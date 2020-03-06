@@ -134,7 +134,7 @@ public class LiftSubsystem extends SubsystemBase {
 
   private void periodicManualMode() {
     double yPos = RobotContainer.getClimbingJoystick();
-    double speed = yPos * 0.9;
+    double speed = yPos * 1;
 
     liftPower(speed);
   }

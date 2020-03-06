@@ -13,8 +13,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class SetShooterUpForTenFeetCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
 
-  final double tenFootRPM = 2650;
-  final double tenFootPosition = 8.25;
+  final double tenFootRPM = 3213;
+  final double tenFootPosition = 11.6;
 
   /**
    * Creates a new MoveHoodManuallyUpCommand.

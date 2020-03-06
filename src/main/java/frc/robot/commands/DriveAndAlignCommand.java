@@ -16,6 +16,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class DriveAndAlignCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
   private VisionSubsystem visionSubsystem;
+  boolean areWeForceManualMode;
   /**
    * Creates a new TeleOpDriveCommand.
    */
@@ -29,6 +30,7 @@ public class DriveAndAlignCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    areWeForceManualMode = driveSubsystem.getForcedManualMode();
     driveSubsystem.setForcedManualModeTrue();
   }
 
@@ -46,7 +48,10 @@ public class DriveAndAlignCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.setForcedManualModeFalse();
+    if(!areWeForceManualMode){
+      driveSubsystem.setForcedManualModeFalse();
+    }
+    
     driveSubsystem.teleOpDrive(0,0,0);
   }
 

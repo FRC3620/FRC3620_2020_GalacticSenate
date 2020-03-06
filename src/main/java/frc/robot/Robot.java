@@ -82,7 +82,9 @@ public class Robot extends TimedRobot {
       }
     });
     
-    chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
+    //chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
+    chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
+    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 

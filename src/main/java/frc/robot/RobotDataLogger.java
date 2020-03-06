@@ -31,6 +31,11 @@ public class RobotDataLogger {
 		if (RobotContainer.theCompressor != null) {
 			dataLogger.addDataProvider("compressorCurrent", () -> f2(RobotContainer.theCompressor.getCompressorCurrent()));
 		}
+
+		if (RobotContainer.liftSubsystemWinch != null){
+			dataLogger.addDataProvider("liftCurrent", () -> f2(RobotContainer.liftSubsystemWinch.getOutputCurrent()));
+			dataLogger.addDataProvider("liftOutputPower", () -> f2(RobotContainer.liftSubsystemWinch.getAppliedOutput()));
+		}
 		dataLogger.addDataProvider("shooterRequestedHoodPosition", () -> f2(RobotContainer.shooterSubsystem.getRequestedHoodPosition()));
 		dataLogger.addDataProvider("shooterActualHoodPosition", () -> f2(RobotContainer.shooterSubsystem.getActualHoodPosition()));
 

@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class SetShooterUpForFarWallCommand extends CommandBase {
@@ -26,6 +27,7 @@ public class SetShooterUpForFarWallCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    RobotContainer.intakeSubsystem.intakeSet(0);
     shooterSubsystem.setTopRPM(wallTopRPM);
     shooterSubsystem.setPosition(wallHoodPosition);
   }

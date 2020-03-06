@@ -22,6 +22,7 @@ public class AutoShootingCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   Timer timer = new Timer();
+  Timer timerPreshooter = new Timer();
   double shootingTime;
   
   public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
