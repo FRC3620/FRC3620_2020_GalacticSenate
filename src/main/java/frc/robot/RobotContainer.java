@@ -234,6 +234,7 @@ public class RobotContainer {
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Intake") || iAmACompetitionRobot){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      resetMaxToKnownState(intakeSubsystemSparkMax);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);

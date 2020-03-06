@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -11,7 +12,9 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
   public class IntakeCommand extends CommandBase {
     //<linking with subsystem>
-    private IntakeSubsystem intakeSubsystem; 
+    private IntakeSubsystem intakeSubsystem;
+    private Timer timer = new Timer();
+    private boolean isCurrentTooMuch;
     
     public IntakeCommand (IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
@@ -22,12 +25,29 @@ import frc.robot.subsystems.IntakeSubsystem;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    isCurrentTooMuch = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      intakeSubsystem.intakeSet(.6); //runs intake INWARD
+      if(intakeSubsystem.intakeCurrent > 40 && isCurrentTooMuch == false){
+        timer.reset();
+        timer.start();
+        isCurrentTooMuch = true;
+      }
+
+      if(isCurrentTooMuch){
+        
+        intakeSubsystem.intakeSet(-0.3);
+
+        if(timer.hasElapsed(4)){
+          timer.stop();
+          isCurrentTooMuch = false;
+        }
+      } else {
+        intakeSubsystem.intakeSet(.6); //runs intake INWARD
+      }
   }
 
   // Called once the command ends or is interrupted.

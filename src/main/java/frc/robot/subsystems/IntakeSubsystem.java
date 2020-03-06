@@ -14,6 +14,7 @@ import frc.robot.RobotContainer;
 public class IntakeSubsystem extends SubsystemBase {
   private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
   private final Solenoid armDown = RobotContainer.intakeSubsystemArmDown;
+  public double intakeCurrent;
 
   public IntakeSubsystem(){
   }
@@ -31,6 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    intakeCurrent = intakeSparkMax.getOutputCurrent();
     //System.out.println("boo " + intakeFalcon1.get());
     //SmartDashboard.putBoolean("intakeSolenoid", armDown.get());
   }
