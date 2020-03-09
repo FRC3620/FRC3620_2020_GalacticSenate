@@ -9,10 +9,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class AutoDriveCommand extends CommandBase {
+public class AutoDriveAndAimCommand extends CommandBase {
 
   private DriveSubsystem driveSubsystem;
+  private VisionSubsystem visionSubsystem;
 
   private double initialPosition;
   private double distanceTravelled;
@@ -21,8 +23,9 @@ public class AutoDriveCommand extends CommandBase {
   private double desiredHeading;
   private double pathSpeed;
 
-  public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
+  public AutoDriveAndAimCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.driveSubsystem = driveSubsystem;
+    this.visionSubsystem = visionSubsystem;
     addRequirements(driveSubsystem);
 
     desiredDistance = distance;
@@ -35,7 +38,6 @@ public class AutoDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.setAutoSpinMode();
     initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
     driveSubsystem.setTargetHeading(desiredHeading);
   }
@@ -47,6 +49,10 @@ public class AutoDriveCommand extends CommandBase {
 
     double currentPosition = driveSubsystem.getDriveMotorPosition();
     double spinX = -driveSubsystem.getSpinPower();
+    if (!visionSubsystem.getShootingTargetCentered()){
+      double yaw = visionSubsystem.getShootingTargetYaw();
+      spinX = -0.025*yaw;// + -(yaw/Math.abs(yaw))*0.1; //absolute value division gets sign of yaw
+    }
     driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
 
     distanceTravelled = Math.abs(currentPosition - initialPosition);

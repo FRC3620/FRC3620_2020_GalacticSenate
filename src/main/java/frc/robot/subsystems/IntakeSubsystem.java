@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import frc.robot.RobotContainer;
@@ -14,6 +16,9 @@ import frc.robot.RobotContainer;
 public class IntakeSubsystem extends SubsystemBase {
   private final CANSparkMax intakeSparkMax = RobotContainer.intakeSubsystemSparkMax; // intake motor
   private final Solenoid armDown = RobotContainer.intakeSubsystemArmDown;
+  public double intakeCurrent;
+  public double intakeVelocity;
+  private CANEncoder intakeSparkEncoder = intakeSparkMax.getEncoder();
 
   public IntakeSubsystem(){
   }
@@ -31,8 +36,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    intakeVelocity = intakeSparkEncoder.getVelocity();
+    intakeCurrent = intakeSparkMax.getOutputCurrent();
     //System.out.println("boo " + intakeFalcon1.get());
     //SmartDashboard.putBoolean("intakeSolenoid", armDown.get());
+    if (intakeSparkMax != null) {
+      //SmartDashboard.putNumber("IntakeCurrent Output", intakeCurrent);
+      //SmartDashboard.putNumber("Intake Velocity", intakeVelocity);
+    }
   }
 
   public void moveArmDown() {

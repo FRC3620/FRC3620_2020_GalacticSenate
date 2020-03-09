@@ -10,24 +10,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class SetShooterUpForTenFeetCommand extends CommandBase {
+public class SetShooterUpForWhateverWeWantCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
-
-  final double tenFootRPM = 3213;
-  final double tenFootPosition = 11.6;
 
   /**
    * Creates a new MoveHoodManuallyUpCommand.
    */
-  public SetShooterUpForTenFeetCommand(ShooterSubsystem shooterSubsystem) {
+  public SetShooterUpForWhateverWeWantCommand(ShooterSubsystem shooterSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTopRPM(tenFootRPM);
-    shooterSubsystem.setPosition(tenFootPosition);
+    shooterSubsystem.setTopRPM(shooterSubsystem.anyRPM);
+    shooterSubsystem.setPosition(shooterSubsystem.anyPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

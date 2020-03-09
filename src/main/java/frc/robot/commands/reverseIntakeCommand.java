@@ -14,17 +14,16 @@ import frc.robot.subsystems.IntakeSubsystem;
  * 
  * Finalised command -- rules in subsystem
  */
-  public class IntakeCommand extends CommandBase {
-    //<linking with subsystem>
-    private IntakeSubsystem intakeSubsystem;
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-    
-    public IntakeCommand (IntakeSubsystem intakeSubsystem) {
-        this.intakeSubsystem = intakeSubsystem;
-        addRequirements(intakeSubsystem);
-    }
-    //</linking with subsystem>
+  public class reverseIntakeCommand extends CommandBase {
+  // <linking with subsystem>
+  private final IntakeSubsystem intakeSubsystem;
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
+  public reverseIntakeCommand(final IntakeSubsystem intakeSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
+    addRequirements(intakeSubsystem);
+  }
+  // </linking with subsystem>
 
   // Called when the command is initially scheduled.
   @Override
@@ -34,7 +33,7 @@ import frc.robot.subsystems.IntakeSubsystem;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.intakeSet(.6); //runs intake INWARD
+    intakeSubsystem.intakeSet(-.6); // runs intake OUTWARD
   }
 
   // Called once the command ends or is interrupted.
