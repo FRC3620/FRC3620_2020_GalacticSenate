@@ -10,6 +10,9 @@ import frc.robot.commands.BeltIdleCommand;
 public class BeltSubsystem extends SubsystemBase {
 
   private final WPI_TalonSRX feeder = RobotContainer.shooterSubsystemBallFeeder;
+  private double feederCurrent = 0;
+  private double feederOutput = 0;
+  private double feederVoltage = 0;
 
   public BeltSubsystem() {
     this.setDefaultCommand(new BeltIdleCommand(this));
@@ -17,7 +20,12 @@ public class BeltSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-     
+     if(feeder != null){
+       feederCurrent = feeder.getStatorCurrent();
+       feederOutput = feeder.getMotorOutputPercent();
+       feederVoltage = feeder.getMotorOutputVoltage();
+     }
+
   }
 
   public void BeltOn(double speed){
@@ -30,6 +38,18 @@ public class BeltSubsystem extends SubsystemBase {
     if(feeder != null) {
       feeder.set(ControlMode.PercentOutput, 0);                  
     }
+  }
+
+  public double getFeederCurrent() {
+    return feederCurrent;
+  }
+
+  public double getFeederOutput() {
+    return feederOutput;
+  }
+
+  public double getFeederVoltage() {
+    return feederVoltage;
   }
 
 }

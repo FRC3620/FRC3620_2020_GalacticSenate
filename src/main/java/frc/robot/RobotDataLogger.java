@@ -33,15 +33,41 @@ public class RobotDataLogger {
 		}
 
 		if (RobotContainer.liftSubsystemWinch != null){
-			dataLogger.addDataProvider("liftCurrent", () -> f2(RobotContainer.liftSubsystemWinch.getOutputCurrent()));
-			dataLogger.addDataProvider("liftOutputPower", () -> f2(RobotContainer.liftSubsystemWinch.getAppliedOutput()));
+			dataLogger.addDataProvider("Lift.Winch.CurrentOut", () -> f2(RobotContainer.liftSubsystem.getLiftCurrent()));
+			dataLogger.addDataProvider("Lift.Winch.PercentOut", () -> f2(RobotContainer.liftSubsystem.getLiftPercentOut()));
+			dataLogger.addDataProvider("Lift.Winch.Voltage", () -> f2(RobotContainer.liftSubsystem.getLiftVoltage()));
 		}
-		dataLogger.addDataProvider("shooterRequestedHoodPosition", () -> f2(RobotContainer.shooterSubsystem.getRequestedHoodPosition()));
-		dataLogger.addDataProvider("shooterActualHoodPosition", () -> f2(RobotContainer.shooterSubsystem.getActualHoodPosition()));
 
-		dataLogger.addDataProvider("getRequestedTopShooterVelocity", () -> f2(RobotContainer.shooterSubsystem.getRequestedTopShooterVelocity()));
-		dataLogger.addDataProvider("getActualTopShooterVelocity", () -> f2(RobotContainer.shooterSubsystem.getActualTopShooterVelocity()));
+		if(RobotContainer.shooterSubsystemFalcon1 != null){
+			dataLogger.addDataProvider("Shooter.Hood.Position.Requested", () -> f2(RobotContainer.shooterSubsystem.getRequestedHoodPosition()));
+			dataLogger.addDataProvider("Shooter.Hood.Position.Actual", () -> f2(RobotContainer.shooterSubsystem.getActualHoodPosition()));
+			dataLogger.addDataProvider("Shooter.Hood.CurrentOut", () -> f2(RobotContainer.shooterSubsystem.getHoodCurrent()));
+			dataLogger.addDataProvider("Shooter.Hood.PercentOut", () -> f2(RobotContainer.shooterSubsystem.getHoodPercentOut()));
+			dataLogger.addDataProvider("Shooter.Hood.Voltage", () -> f2(RobotContainer.shooterSubsystem.getHoodVoltage()));
 	
+			dataLogger.addDataProvider("Shooter.Top.Velocity.Requested", () -> f2(RobotContainer.shooterSubsystem.getRequestedTopShooterVelocity()));
+			dataLogger.addDataProvider("Shooter.Top.Velocity.Actual", () -> f2(RobotContainer.shooterSubsystem.getActualTopShooterVelocity()));
+			dataLogger.addDataProvider("Shooter.Top.CurrentOut", () -> f2(RobotContainer.shooterSubsystem.getTopShooterCurrent()));
+			dataLogger.addDataProvider("Shooter.Top.PercentOut", () -> f2(RobotContainer.shooterSubsystem.getTopPercentOut()));
+			dataLogger.addDataProvider("Shooter.Top.Voltage", () -> f2(RobotContainer.shooterSubsystem.getTopVoltage()));
+
+			dataLogger.addDataProvider("Shooter.Bottom.Velocity.Requested", () -> f2(RobotContainer.shooterSubsystem.getRequestedBottomShooterVelocity()));
+			dataLogger.addDataProvider("Shooter.Bottom.Velocity.Actual", () -> f2(RobotContainer.shooterSubsystem.getActualBottomShooterVelocity()));
+			dataLogger.addDataProvider("Shooter.Bottom.CurrentOut", () -> f2(RobotContainer.shooterSubsystem.getBottomShooterCurrent()));
+			dataLogger.addDataProvider("Shooter.Bottom.PercentOut", () -> f2(RobotContainer.shooterSubsystem.getBottomPercentOut()));
+			dataLogger.addDataProvider("Shooter.Bottom.Voltage", () -> f2(RobotContainer.shooterSubsystem.getBottomVoltage()));
+
+			dataLogger.addDataProvider("Shooter.Feeder.CurrentOut", () -> f2(RobotContainer.beltSubsystem.getFeederCurrent()));
+			dataLogger.addDataProvider("Shooter.Feeder.PercentOut", () -> f2(RobotContainer.beltSubsystem.getFeederOutput()));
+			dataLogger.addDataProvider("Shooter.Feeder.Voltage", () -> f2(RobotContainer.beltSubsystem.getFeederVoltage()));
+		}
+
+		if(RobotContainer.intakeSubsystemSparkMax != null) {
+			dataLogger.addDataProvider("Intake.CurrentOut", () -> f2(RobotContainer.intakeSubsystem.getIntakeCurrent()));
+			dataLogger.addDataProvider("Intake.PercentOut", () -> f2(RobotContainer.intakeSubsystem.getIntakePercentOut()));
+			dataLogger.addDataProvider("Intake.Voltage", () -> f2(RobotContainer.intakeSubsystem.getIntakeVoltage()));
+		}
+
 		dataLogger.addDataProvider("getTargetHeading", () -> f2(RobotContainer.driveSubsystem.getTargetHeading()));
 	}
 

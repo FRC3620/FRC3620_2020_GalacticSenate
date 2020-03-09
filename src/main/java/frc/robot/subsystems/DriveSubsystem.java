@@ -815,7 +815,7 @@ public class DriveSubsystem extends SubsystemBase {
 		return targetHeading;
 	}
 	public void setTargetHeading(double angle){
-		logger.info("setting heading to "+angle);
+		//logger.info("setting heading to "+angle);
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {

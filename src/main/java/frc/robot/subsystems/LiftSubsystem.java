@@ -8,7 +8,6 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +33,10 @@ public class LiftSubsystem extends SubsystemBase {
   private double liftEncoderZeroValue;
   private double desiredHeight = 0;
   private boolean autoMagicMode = true;
+
+  private double liftPercentOut = 0;
+  private double liftVoltage = 0;
+  private double liftCurrent = 0;
 
   public LiftSubsystem() {
     resetEncoder();
@@ -67,6 +70,12 @@ public class LiftSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+      if(liftController != null) {
+        liftPercentOut = liftController.getAppliedOutput();
+        liftCurrent = liftController.getOutputCurrent();
+        liftVoltage = liftController.getBusVoltage();
+      }
+
       // Put code here to be run every loop
       SmartDashboard.putBoolean("liftBottomLimitSwitch", isLiftLimitDepressed());
 
@@ -207,4 +216,17 @@ public class LiftSubsystem extends SubsystemBase {
         liftEncoderZeroValue = liftEncoder.getPosition();
     }
   }
+
+  public double getLiftPercentOut() {
+    return liftPercentOut;
+  }
+
+  public double getLiftCurrent() {
+    return liftCurrent;
+  }
+
+  public double getLiftVoltage() {
+    return liftVoltage;
+  }
+
 }
