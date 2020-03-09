@@ -19,7 +19,7 @@ import frc.robot.subsystems.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class AutoSixBallCommand extends SequentialCommandGroup {
+public class AutoWaitAndShootCommand extends SequentialCommandGroup {
   DriveSubsystem driveSubsystem;
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
@@ -28,7 +28,7 @@ public class AutoSixBallCommand extends SequentialCommandGroup {
   /**
    * Creates a new SimpleAutoCommand.
    */
-  public AutoSixBallCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem,
+  public AutoWaitAndShootCommand(DriveSubsystem m_driveSubsystem, ShooterSubsystem m_shooterSubsystem,
       VisionSubsystem m_visionSubsystem, IntakeSubsystem m_intakeSubsystem) {
     this.driveSubsystem = m_driveSubsystem;
     this.shooterSubsystem = m_shooterSubsystem;
@@ -38,24 +38,10 @@ public class AutoSixBallCommand extends SequentialCommandGroup {
       new AutoTurnVisionLightOnCommand(visionSubsystem),
       new ZeroDriveEncodersCommand(driveSubsystem),
       new SetShooterUpForTenFeetCommand(shooterSubsystem),
-      new WaitCommand(.5),
+      new WaitCommand(8),
       new AutoShootingCommand(shooterSubsystem, 3),
-      new AutoDriveCommand(1*12, -90, 0.8, 180, driveSubsystem),
-      new AutoSpinCommand(0.5, 0, driveSubsystem),
-      new DeployIntakeCommand(intakeSubsystem),
-      new WaitCommand(.5),
-      new AutoDriveCommand(1.65*12, -70, 0.8, 0, driveSubsystem),
-      new WaitCommand(.2),
-      new AutoDriveCommand(8*12, -90, 0.6, 0, driveSubsystem),
-      new AutoIntakeArmUpCommand(intakeSubsystem),
-      new WaitCommand(.3),
-      new AutoStopIntakeCommand(intakeSubsystem),
-      new AutoSpinCommand(-0.5, 180, driveSubsystem), 
-      new WaitCommand(.2),
-      new AutoDriveCommand(4*12, 90, 0.5, 180, driveSubsystem),
-      new DriveAndAlignCommand(driveSubsystem, visionSubsystem), 
-      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
-      new AutoShootingCommand(shooterSubsystem, 3)
+      new AutoDriveCommand(4.7*12, 90, 0.5, 180, driveSubsystem)
+      
       );
   }
 }

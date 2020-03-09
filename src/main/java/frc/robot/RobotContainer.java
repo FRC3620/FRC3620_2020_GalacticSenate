@@ -178,6 +178,7 @@ public class RobotContainer {
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
+      //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
     if(shooterSubsystemBallFeeder != null) {
@@ -322,6 +323,7 @@ public class RobotContainer {
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
     
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -399,7 +401,7 @@ public class RobotContainer {
     twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
 
     JoystickButton reverseIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
-    reverseIntakeButton.toggleWhenPressed(new reverseIntakeCommand(intakeSubsystem));
+    reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
   }
 
   public static double getDriveVerticalJoystick() {
@@ -480,6 +482,10 @@ public class RobotContainer {
 
   public Command getMeanMachineAuto(){
     return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getWaitAndSchootAuto(){
+    return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   /**

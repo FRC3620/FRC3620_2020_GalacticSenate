@@ -39,10 +39,10 @@ public class BeltDriverCommand extends CommandBase {
     double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
     if(error >= 0.98 && error <= 1.02) {
       beltSubsystem.BeltOn(.4);
-      SmartDashboard.putBoolean("Hopper is active", true);
+      SmartDashboard.putBoolean("Hopper is Active", true);
     } else{
       beltSubsystem.BeltOff();
-      SmartDashboard.putBoolean("Hopper is active", false);
+      SmartDashboard.putBoolean("Hopper is Active", false);
     }
   }
 
