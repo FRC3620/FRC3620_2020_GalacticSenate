@@ -86,7 +86,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -76.3;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
 	private double LEFT_FRONT_ABSOLUTE_OFFSET = -130.3;//PRACTICE: 140. COMP: -130.3;
 	private double LEFT_BACK_ABSOLUTE_OFFSET = 59.5;//PRACTICE: 91.5. COMP 7.6;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = -7.6;//PRACTICE: 42.2. COMP -23.5; 
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 168;//PRACTICE: 42.2. COMP -23.5; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -115,6 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private double kSpinI = 0.00001;
 	private double kSpinD = 0.003;
 	private boolean autoSpinMode;
+	private boolean forceManualMode = false;
 	private double currentHeading;
 	private double targetHeading;
 	private double spinPower;
@@ -259,11 +260,17 @@ public class DriveSubsystem extends SubsystemBase {
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
-		if(Math.abs(commandedSpin) != 0){
+		if(forceManualMode){
 			setManualSpinMode();
-		}else{
-			setAutoSpinMode();
 		}
+		else{
+			if(Math.abs(commandedSpin) != 0){
+				setManualSpinMode();
+			}else{
+				setAutoSpinMode();
+			}
+		}
+		
 		if(!autoSpinMode){
 			periodicManualSpinMode();
 		}else{
@@ -462,6 +469,38 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
 		}
 
+	}
+
+	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
+		
+		double leftFrontAngle = -160;
+		double rightFrontAngle = 160;
+		double leftBackAngle = 90; //should be pointing forward
+		double rightBackAngle = 90; //should be pointing forward
+		double turnSpeed = speed*MAX_VELOCITY_IN_PER_SEC;
+
+		DriveVectors currentDirections = getCurrentVectors();
+		 
+		DriveVectors newVectors = new DriveVectors();
+		
+		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
+		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);//only move the front wheels
+		newVectors.leftBack = new Vector(leftBackAngle, 0);
+		newVectors.rightBack = new Vector(rightBackAngle, 0);
+
+		newVectors = sc.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
+		
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
+		}
 	}
 
 	public void setPositionPID(CANPIDController pidController) {
@@ -768,7 +807,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void setManualSpinMode() {
         if (autoSpinMode){
-           // logger.info("Switching to Manual Spin Mode");
+           logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
 	}
@@ -784,5 +823,14 @@ public class DriveSubsystem extends SubsystemBase {
            // logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
+	}
+	public void setForcedManualModeTrue(){
+		forceManualMode = true;
+	}
+	public void setForcedManualModeFalse(){
+		forceManualMode = false;
+	}
+	public boolean getForcedManualMode(){
+		return forceManualMode;
 	}
 }

@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -35,7 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private CANPIDController anglePID;
   private DigitalInput limitSwitch = RobotContainer.hoodLimitSwitch;
   private Boolean encoderIsValid = false;
-  private double hoodEncoderZeroValue;
 
   //sets up all values for PID
   private final int kVelocitySlotIdx = 0;
@@ -59,7 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bPVelocity = 0.45;
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private double brpm = 4000;
+  private double brpm = 5000;
 
   //hood PID Values
   private final double hoodP = 0.13;
@@ -67,6 +65,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodD = 0;
   private final double hoodIz = 0;
   private double requestedHoodPosition = 0;
+
+  public double anyRPM;
+  public double anyPosition;
 
   private double requestedTopShooterVelocity = 0;
 
@@ -88,6 +89,9 @@ public class ShooterSubsystem extends SubsystemBase {
       falconTop.config_kI(kVelocitySlotIdx, tIVelocity, kTimeoutMs);
       falconTop.config_kD(kVelocitySlotIdx, tDVelocity, kTimeoutMs);
     }
+
+    SmartDashboard.putNumber("anyRPM", anyRPM);
+    SmartDashboard.putNumber("anyPosition", anyPosition);
 
     if (falconBottom != null) {
       //for PID you have to have a sensor to check on so you know the error
@@ -128,15 +132,20 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double calcHoodPosition(double cy) {
-    double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
+    //double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
+    //WORKS double calcposition = 3.7788078 + 0.0272996*cy - 0.0002548*Math.pow((cy-371),2) - 4.5881e-7*Math.pow((cy-371),3);
+    // BEFORE ELIMS double calcposition = 3.7806806 + 0.0275988*cy - 0.0002576*Math.pow((cy-366.75),2) - 5.8642e-7*Math.pow((cy-366.75),3);
+    double calcposition = 5.3729344 + 0.0223497*cy - 0.0002213*Math.pow((cy-360.308),2) + 2.2798e-7*Math.pow((cy-360.308),3);
     return calcposition;
   }
 
   public double calcTopRPM(double cy) {
     double calcTopRPM = 2650;
     if(cy > 200) {
-      //calcTopRPM = 3530.57629-(19.24789286*cy)+(7.372612103e-2*Math.pow(cy,2))-(1.4845263e-5*Math.pow(cy, 3))-(1.057778756e-7*Math.pow(cy, 4));
-      calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
+      //calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
+      //WORKS calcTopRPM = 698.02383 + 8.1439319*cy - 0.0288023*Math.pow((cy-371),2) - 0.0001439*Math.pow((cy-371),3); 
+      //M79calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3); 
+      calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3);
     }
     return calcTopRPM;
   }
@@ -151,15 +160,19 @@ public class ShooterSubsystem extends SubsystemBase {
     //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
-    //SmartDashboard.putNumber("Top Velocity", trpm);
+    SmartDashboard.putNumber("Top Velocity", trpm);
     //SmartDashboard.putNumber("Bottom Velocity", brpm);
 
-    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    SmartDashboard.getNumber("anyRPM", anyRPM);
+    SmartDashboard.getNumber("anyPosition", anyPosition);
+
+    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
     //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
     //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
     //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
-    //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+    SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
     //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
 
     //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
@@ -226,7 +239,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void runHoodDownSlowly(){
     if(hoodMotor != null){
-      anglePID.setReference(-0.2, ControlType.kDutyCycle);
+      anglePID.setReference(-0.15, ControlType.kDutyCycle);
     }
   }
 
@@ -265,5 +278,9 @@ public class ShooterSubsystem extends SubsystemBase {
     } else {
       return 0;
     }
+  }
+
+  public double getRangeModifier() {
+    return rangeModifier;
   }
 }

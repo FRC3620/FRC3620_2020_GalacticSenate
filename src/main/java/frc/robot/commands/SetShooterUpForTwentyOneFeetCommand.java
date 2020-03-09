@@ -8,28 +8,32 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShooterRangeModAdjustCommand extends CommandBase {
+public class SetShooterUpForTwentyOneFeetCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
-  int direction; // positive one for up, negative one for down
-  double sensitivity = 0.05; //the amount each button press changes the range modifier
 
-  public ShooterRangeModAdjustCommand(int direction_) {
-    shooterSubsystem = RobotContainer.shooterSubsystem;
-    direction = direction_;
+  final double twentyOneFootRPM = 4092;
+  final double twentyOneFootPosition = 14.35;
+
+  /**
+   * Creates a new MoveHoodManuallyUpCommand.
+   */
+  public SetShooterUpForTwentyOneFeetCommand(ShooterSubsystem shooterSubsystem) {
+    this.shooterSubsystem = shooterSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
+    shooterSubsystem.setTopRPM(twentyOneFootRPM);
+    shooterSubsystem.setPosition(twentyOneFootPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
   }
 
   // Called once the command ends or is interrupted.

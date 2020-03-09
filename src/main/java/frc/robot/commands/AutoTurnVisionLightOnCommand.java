@@ -8,23 +8,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class ShooterRangeModAdjustCommand extends CommandBase {
-  ShooterSubsystem shooterSubsystem;
-  int direction; // positive one for up, negative one for down
-  double sensitivity = 0.05; //the amount each button press changes the range modifier
-
-  public ShooterRangeModAdjustCommand(int direction_) {
-    shooterSubsystem = RobotContainer.shooterSubsystem;
-    direction = direction_;
+public class AutoTurnVisionLightOnCommand extends CommandBase {
+  VisionSubsystem visionSubsystem;
+  /**
+   * Creates a new ToggleVisionLightCommand.
+   */
+  public AutoTurnVisionLightOnCommand(VisionSubsystem subsystem) {
+    this.visionSubsystem = subsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
+    visionSubsystem.turnVisionLightOn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

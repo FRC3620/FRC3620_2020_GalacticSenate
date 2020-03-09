@@ -11,25 +11,31 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShooterRangeModAdjustCommand extends CommandBase {
+public class SetShooterUpForFarWallCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
-  int direction; // positive one for up, negative one for down
-  double sensitivity = 0.05; //the amount each button press changes the range modifier
 
-  public ShooterRangeModAdjustCommand(int direction_) {
-    shooterSubsystem = RobotContainer.shooterSubsystem;
-    direction = direction_;
+  final double wallTopRPM = 4100;
+  final double wallHoodPosition = 0;
+
+  /**
+   * Creates a new MoveHoodManuallyUpCommand.
+   */
+  public SetShooterUpForFarWallCommand(ShooterSubsystem shooterSubsystem) {
+    this.shooterSubsystem = shooterSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
+    RobotContainer.intakeSubsystem.intakeSet(0);
+    shooterSubsystem.setTopRPM(wallTopRPM);
+    shooterSubsystem.setPosition(wallHoodPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
   }
 
   // Called once the command ends or is interrupted.
