@@ -7,9 +7,25 @@
 
 package frc.robot;
 
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.DataLogger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import edu.wpi.first.wpiutil.net.PortForwarder;
+
+import org.usfirst.frc3620.misc.LightEffect;
+import org.usfirst.frc3620.misc.RobotMode;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,9 +34,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  
   private Command m_autonomousCommand;
-
+  SendableChooser<Command> chooser = new SendableChooser<>();
   private RobotContainer m_robotContainer;
+
+  private Logger logger;
+  static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
+  DriverStation driverStation;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,10 +50,55 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    logger = EventLogging.getLogger(Robot.class, Level.INFO);
+
+    PortForwarder.add (10080, "frcvision.local", 80);
+    PortForwarder.add (10022, "frcvision.local", 22);
+
+    driverStation = DriverStation.getInstance();
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.INIT);
+
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
+      }
+
+      
+    });
+
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
+      }
+    });
+    
+    //chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
+    chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
+    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
+    chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
+    //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
+    SmartDashboard.putData("Auto mode", chooser);
+
+    
+     // get data logging going
+     DataLogger robotDataLogger = new DataLogger();
+     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+     robotDataLogger.setInterval(1.000);
+     robotDataLogger.start();
+     //OperatorView operatorView = new OperatorView();
+    // operatorView.operatorViewInit(RobotContainer.amICompBot());
   }
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -48,12 +115,15 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
   }
+  
 
   /**
    * This function is called once each time the robot enters Disabled mode.
    */
   @Override
   public void disabledInit() {
+    processRobotModeChange(RobotMode.DISABLED);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.DISABLED);
   }
 
   @Override
@@ -65,12 +135,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    processRobotModeChange(RobotMode.AUTONOMOUS);
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = chooser.getSelected();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.AUTO);
   }
 
   /**
@@ -89,6 +163,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    processRobotModeChange(RobotMode.TELEOP);
+    logMatchInfo();
+
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.TELEOP);
   }
 
   /**
@@ -102,6 +181,9 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    processRobotModeChange(RobotMode.TEST);
+    RobotContainer.lightSubsystem.setPreset(LightEffect.Preset.TEST);
   }
 
   /**
@@ -109,5 +191,35 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  /*
+	 * this routine gets called whenever we change modes
+	 */
+	void processRobotModeChange(RobotMode newMode) {
+		logger.info("Switching from {} to {}", currentRobotMode, newMode);
+		
+		previousRobotMode = currentRobotMode;
+		currentRobotMode = newMode;
+
+		// if any subsystems need to know about mode changes, let
+		// them know here.
+		// exampleSubsystem.processRobotModeChange(newMode);
+		
+  }
+  
+  public static RobotMode getCurrentRobotMode(){
+    return currentRobotMode;
+  }
+
+  void logMatchInfo() {
+    if (driverStation.isFMSAttached()) {
+      logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
+        driverStation.getEventName(),
+        driverStation.getMatchType(),
+        driverStation.getMatchNumber(),
+        driverStation.getReplayNumber());
+    }
+    logger.info("Alliance {}, position {}", driverStation.getAlliance(), driverStation.getLocation());
   }
 }

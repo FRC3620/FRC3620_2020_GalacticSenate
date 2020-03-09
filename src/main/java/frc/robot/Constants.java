@@ -16,4 +16,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static int LED_STRIP_LENGTH = 78; //Length, in LEDs, of the LED strip
+
+    public static final class PWM {
+        public static int LIGHTS = 5; //PWM port for the led strip
+    }
 }

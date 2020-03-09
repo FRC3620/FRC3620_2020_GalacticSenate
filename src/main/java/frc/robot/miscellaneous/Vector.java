@@ -5,20 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.miscellaneous;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+/**
+ * Add your docs here.
+ */
+public class Vector {
+    @Override
+		public String toString() {
+			return "[d=" + direction + ", m=" + magnitude + "]";
+		}
 
-public class ExampleSubsystem extends SubsystemBase {
-  /**
-   * Creates a new ExampleSubsystem.
-   */
-  public ExampleSubsystem() {
+		public double getDirection() {
+			return direction;
+		}
 
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-}
+		public double getMagnitude() {
+			return magnitude;
+		}
+		
+		private double direction;
+		private double magnitude;
+		
+		public Vector(double _direction, double _magnitude) {
+			direction = _direction;
+			magnitude = _magnitude;
+		}
+	}
