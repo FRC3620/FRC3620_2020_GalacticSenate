@@ -29,6 +29,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final CANSparkMax liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
   private final CANEncoder liftEncoder = RobotContainer.liftEncoder;
   private DoubleSolenoid brake = RobotContainer.liftBrake;
+  private DoubleSolenoid release = RobotContainer.liftRelease;
   private DigitalInput limitSwitch = RobotContainer.liftLimitSwitch;
   private Boolean encoderIsValid = false;
   private double liftEncoderZeroValue;
@@ -156,6 +157,10 @@ public class LiftSubsystem extends SubsystemBase {
         }
       }
 
+      if(release.get() == Value.kForward){
+        speed = 0;
+      }
+
       if(speed != 0) {
         releaseBreak();
       } else {
@@ -175,17 +180,25 @@ public class LiftSubsystem extends SubsystemBase {
     }
   }
 
-  void applyBrake() {
+  public void applyBrake() {
     brake.set(Value.kForward);
     //SmartDashboard.putBoolean("LiftBrake", true);
   }
 
-  void releaseBreak() {
+  public void releaseBreak() {
     brake.set(Value.kReverse);
     //SmartDashboard.putBoolean("LiftBrake", false);
   }
 
-  double ticstoinches(double tics) { 
+  public void applyLiftPin() {
+    release.set(Value.kForward);
+  }
+
+  public void releaseLiftPin() {
+    release.set(Value.kReverse);
+  }
+
+  private double ticstoinches(double tics) { 
     // turning the encoder readings from tics to inches
     double inches = tics * 0.508696934; //(9.75inches/19.16661837167tics)
     return inches;
