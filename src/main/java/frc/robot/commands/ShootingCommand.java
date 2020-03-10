@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
+import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.Date;
@@ -29,12 +30,23 @@ public class ShootingCommand extends CommandBase {
   IFastDataLogger dataLogger;
   Timer timer;
   TalonFX talonFX;
+  RumbleCommand rumbleCommandOperator;
+  RumbleCommand rumbleCommandDriver;
   
   public ShootingCommand(ShooterSubsystem subsystem) {
     this.shooterSubsystem = subsystem;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     talonFX = RobotContainer.shooterSubsystemFalcon1;
+
+    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+    1.0, // intensity
+    1.0 // duration
+    );
+    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
+    1.0, // intensity
+    1.0 // duration
+    );
   }
 
   // Called when the command is initially scheduled.
@@ -64,9 +76,12 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    if(timer.get() >= 5) {
-      RobotContainer.shooterSubsystem.PIDBeltOn();
+    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
+    if(error >= 0.98 && error <= 1.02) {
+      rumbleCommandOperator.schedule();
+      rumbleCommandDriver.schedule();
     }
+
     //RobotContainer.shooterSubsystem.Shoot();
     //RobotContainer.shooterSubsystem.BeltOn();
   }
@@ -75,7 +90,6 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    RobotContainer.shooterSubsystem.BeltOff();
     //dataLogger.done();
   }
 

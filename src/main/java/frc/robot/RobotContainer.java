@@ -55,7 +55,7 @@ public class RobotContainer {
   final static int OPERATOR_JOYSTICK_PORT = 1;
 
   // need this
-  CANDeviceFinder canDeviceFinder;
+  static CANDeviceFinder canDeviceFinder;
 
   // hardware here...
   public static CANSparkMax driveSubsystemRightFrontDrive;
@@ -92,11 +92,17 @@ public class RobotContainer {
   public static CANEncoder shooterSubsystemHoodEncoder;
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
+  public static CANEncoder liftEncoder;
+
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
+  public static DoubleSolenoid liftRelease;
+  public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
+  public static DigitalInput liftLimitSwitch;
+  public static DigitalInput hoodLimitSwitch;
 
   public static Compressor theCompressor;
 
@@ -110,6 +116,7 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
+  public static BeltSubsystem beltSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -136,24 +143,28 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
+      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
+      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
+      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setOpenLoopRampRate(0.3);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
+      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(0.3);
     }
 
     if (shooterSubsystemFalcon1 != null) {
@@ -172,15 +183,19 @@ public class RobotContainer {
       imperialOrchestra.loadMusic("R2D2.chrp");
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
+      //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
     if(shooterSubsystemBallFeeder != null) {
       shooterSubsystemBallFeeder.setInverted(InvertType.None);
+      shooterSubsystemBallFeeder.configVoltageCompSaturation(6);
     }
   }
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
+    liftLimitSwitch = new DigitalInput(1);
+    hoodLimitSwitch = new DigitalInput(2);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn ("this is a test chassis, will try to deal with missing hardware!");
@@ -223,27 +238,34 @@ public class RobotContainer {
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
     
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9)){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Intake") || iAmACompetitionRobot){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      resetMaxToKnownState(intakeSubsystemSparkMax);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
+      intakeSubsystemSparkMax.setInverted(false);
+      intakeSubsystemSparkMax.setSmartCurrentLimit(70);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10)) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
-      liftSubsystemWinch.setIdleMode(IdleMode.kCoast);
+      liftEncoder = liftSubsystemWinch.getEncoder();
+      liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
-      liftSubsystemWinch.setSmartCurrentLimit(30);
+      liftSubsystemWinch.setSmartCurrentLimit(80);
+      liftSubsystemWinch.setInverted(true);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11)){
-      shooterSubsystemHoodMax = new CANSparkMax(10, MotorType.kBrushless);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Hood") || iAmACompetitionRobot){
+      shooterSubsystemHoodMax = new CANSparkMax(11, MotorType.kBrushless);
+      shooterSubsystemHoodEncoder = shooterSubsystemHoodMax.getEncoder();
       shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
       shooterSubsystemHoodMax.setSmartCurrentLimit(20);
+      shooterSubsystemHoodMax.setInverted(true);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
@@ -271,6 +293,8 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
+      liftRelease = new DoubleSolenoid(4,5);
+      visionLight = new Solenoid(7);
     }
   }
 
@@ -284,6 +308,8 @@ public class RobotContainer {
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
+    beltSubsystem = new BeltSubsystem();
+
   }
 
   void setupSmartDashboardCommands() {
@@ -291,6 +317,19 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
+    
+    SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
+    SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
+    SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
+    SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
+    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
+    SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
+    
+    SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -325,15 +364,23 @@ public class RobotContainer {
     JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
+    JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
+
+    JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
+
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
-
-    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
 
     JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 
+    JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
+
+    JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
+    toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
     //Operator Controller
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
@@ -344,40 +391,65 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
-    JoystickButton beltDriver = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(shooterSubsystem));
+    JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
+
+    JoystickButton againtWallShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    againtWallShoot.toggleWhenPressed(new SetShooterUpForFarWallCommand(shooterSubsystem));
+
+    JoystickButton tenFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    tenFootShoot.toggleWhenPressed(new SetShooterUpForTenFeetCommand(shooterSubsystem));
+
+    JoystickButton twentyOneFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
+
+    JoystickButton reverseIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
+    reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
+
+    JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
   }
 
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return -axisValue;
+    if (axisValue < 0){
+      return (axisValue*axisValue);
+    }
+    return -axisValue*axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
-    return axisValue;
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
+    SmartDashboard.putNumber("driverSpin", axisValue);
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
-    return axisValue;
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
     
   public static double getOperatorSpinJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (axisValue < 0.15 && axisValue > -0.15) {
       return 0;
     }
     return -axisValue;
@@ -392,13 +464,13 @@ public class RobotContainer {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
-    } 
+    }
     return -axisValue;
   }
 
   public static double getColorJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
-    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+    if (axisValue < 0.2 && axisValue > -0.2) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
     return -axisValue;
@@ -410,7 +482,19 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+  public Command getTrenchAuto(){
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getMeanMachineAuto(){
+    return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getWaitAndSchootAuto(){
+    return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   /**

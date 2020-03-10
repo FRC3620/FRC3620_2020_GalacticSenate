@@ -7,6 +7,7 @@
 
 package frc.robot.miscellaneous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -36,6 +37,9 @@ public class SwerveCalculator {
 			double robotHeading = driveSubsystem.getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
 			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
 			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
+			SmartDashboard.putNumber("joyX", joyX);
+			SmartDashboard.putNumber("joyY", joyY);
+			SmartDashboard.putNumber("Strafe Vector Angle", strafeVectorAngle);
 			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
 
 			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector
@@ -96,10 +100,11 @@ public class SwerveCalculator {
 		return diff;
 	}
 	
+	double steeringCutoff = 20;
 	public Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
 		double diff = getAngleDifference(current.getDirection(), calculated.getDirection());
 		if(Math.abs(diff) < 90 ) { // if the difference is greater than 90 degrees, the angle is normalized (see normalizeAngle()) and added 180 degrees 
-			if(Math.abs(calculated.getMagnitude())> 10){
+			if(Math.abs(calculated.getMagnitude())> steeringCutoff){
 				return new Vector(current.getDirection() + diff, calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 			}
 			else{
@@ -108,7 +113,7 @@ public class SwerveCalculator {
 		}
 		else {
 			if(diff>0) {
-				if(Math.abs(calculated.getMagnitude())> 10){
+				if(Math.abs(calculated.getMagnitude())> steeringCutoff){
 					return new Vector(current.getDirection() + diff - 180, -calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 				}
 				else{
@@ -116,7 +121,7 @@ public class SwerveCalculator {
 				}
 			}
 			else {
-				if(Math.abs(calculated.getMagnitude())> 10){
+				if(Math.abs(calculated.getMagnitude())> steeringCutoff){
 					return new Vector(current.getDirection() + diff + 180, -calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 				}
 				else{

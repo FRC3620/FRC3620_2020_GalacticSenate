@@ -7,60 +7,57 @@
 
 package frc.robot.commands;
 
-import org.slf4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class TeleOpDriveCommand extends CommandBase {
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
+public class AutoSpinCommand extends CommandBase {
+
   private DriveSubsystem driveSubsystem;
 
-  double strafeX;
-  double strafeY;
-  double spinXDriver;
-  double spinXOperator; 
-  double spinX;
-  double desiredHeading;
-  double currentHeading;
-  /**
-   * Creates a new TeleOpDriveCommand.
-   */
-  public TeleOpDriveCommand(DriveSubsystem m_driveSubsystem) {
-    this.driveSubsystem = m_driveSubsystem;
-    addRequirements(m_driveSubsystem);
+  private double initialPosition;
+  private double distanceTravelled;
+  private double desiredDistance;
+  private double desiredAngle;
+  private double desiredHeading;
+  private double pathSpeed;
+
+  public AutoSpinCommand(double speed, double heading, DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    addRequirements(driveSubsystem);
+
+    desiredHeading = heading;
+    pathSpeed = speed;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("Init tod");
-    desiredHeading = driveSubsystem.getNavXFixedAngle();
-    driveSubsystem.setTargetHeading(desiredHeading);
+    driveSubsystem.setForcedManualModeTrue();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    strafeX = RobotContainer.getDriveHorizontalJoystick();
-    strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
+    double heading = driveSubsystem.getNavXFixedAngle(); 
+    double spinX = pathSpeed;
+    driveSubsystem.timedDrive(0, 0, spinX);
 
-    driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     driveSubsystem.teleOpDrive(0,0,0);
+    driveSubsystem.setForcedManualModeFalse();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Math.abs(driveSubsystem.getNavXFixedAngle()-desiredHeading) < 5){
+      return true;
+    }
     return false;
   }
 }

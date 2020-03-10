@@ -8,29 +8,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class SnapToHeadingCommand extends CommandBase {
-  DriveSubsystem driveSubsystem;
-  double targetHeading;
+public class SetShooterUpForFarWallCommand extends CommandBase {
+  ShooterSubsystem shooterSubsystem;
+
+  final double wallTopRPM = 4100;
+  final double wallHoodPosition = 0;
+
   /**
-   * Creates a new SnapToHeadingCommand.
+   * Creates a new MoveHoodManuallyUpCommand.
    */
-  public SnapToHeadingCommand(double heading, DriveSubsystem m_driveSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    targetHeading = heading;
-    driveSubsystem = m_driveSubsystem;
+  public SetShooterUpForFarWallCommand(ShooterSubsystem shooterSubsystem) {
+    this.shooterSubsystem = shooterSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.setTargetHeading(targetHeading);
+    RobotContainer.intakeSubsystem.intakeSet(0);
+    shooterSubsystem.setTopRPM(wallTopRPM);
+    shooterSubsystem.setPosition(wallHoodPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +47,5 @@ public class SnapToHeadingCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     return true;
-    
   }
 }

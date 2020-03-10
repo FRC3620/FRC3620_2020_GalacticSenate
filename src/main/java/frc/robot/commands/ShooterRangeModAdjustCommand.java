@@ -7,47 +7,39 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class MoveLiftCommand extends CommandBase {
-  private LiftSubsystem liftSubsystem;
-  private DoubleSolenoid brake = RobotContainer.liftBrake;
+public class ShooterRangeModAdjustCommand extends CommandBase {
+  ShooterSubsystem shooterSubsystem;
+  int direction; // positive one for up, negative one for down
+  double sensitivity = 0.05; //the amount each button press changes the range modifier
 
-  /**
-   * Creates a new MoveLift.
-   */
-  public MoveLiftCommand(LiftSubsystem m_liftSubsystem) {
-    this.liftSubsystem = m_liftSubsystem;
-
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_liftSubsystem);
+  public ShooterRangeModAdjustCommand(int direction_) {
+    shooterSubsystem = RobotContainer.shooterSubsystem;
+    direction = direction_;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    shooterSubsystem.modifyRangeModifer(direction*sensitivity);  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    liftSubsystem.liftPower();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    liftSubsystem.liftoff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

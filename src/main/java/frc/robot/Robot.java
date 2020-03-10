@@ -10,13 +10,14 @@ package frc.robot;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
-
+import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -35,7 +36,7 @@ import org.usfirst.frc3620.misc.RobotMode;
 public class Robot extends TimedRobot {
   
   private Command m_autonomousCommand;
-
+  SendableChooser<Command> chooser = new SendableChooser<>();
   private RobotContainer m_robotContainer;
 
   private Logger logger;
@@ -65,6 +66,8 @@ public class Robot extends TimedRobot {
       public void accept(Command command) {
         logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
       }
+
+      
     });
 
     CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
@@ -78,6 +81,22 @@ public class Robot extends TimedRobot {
         logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
       }
     });
+    
+    //chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
+    chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
+    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
+    chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
+    //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
+    SmartDashboard.putData("Auto mode", chooser);
+
+    
+     // get data logging going
+     DataLogger robotDataLogger = new DataLogger();
+     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+     robotDataLogger.setInterval(1.000);
+     robotDataLogger.start();
+     //OperatorView operatorView = new OperatorView();
+    // operatorView.operatorViewInit(RobotContainer.amICompBot());
   }
 
 
@@ -117,7 +136,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     processRobotModeChange(RobotMode.AUTONOMOUS);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = chooser.getSelected();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
