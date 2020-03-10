@@ -184,27 +184,28 @@ public class ShooterSubsystem extends SubsystemBase {
       bottomShooterCurrent = falconBottom.getStatorCurrent();
       bottomPercentOutput = falconBottom.getMotorOutputPercent();
       bottomVoltage = falconBottom.getMotorOutputVoltage();
+
+      SmartDashboard.putNumber("Top Velocity", trpm);
+      //SmartDashboard.putNumber("Bottom Velocity", brpm);
+  
+      SmartDashboard.getNumber("anyRPM", anyRPM);
+      SmartDashboard.getNumber("anyPosition", anyPosition);
+  
+      SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
+      SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
+      //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
+      //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
+  
+      //SmartDashboard.putNumber("OutputTop%", topPercentOutput);
+      SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+      //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+  
+      //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
+  
+      //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
+  
     }
-    
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    //SmartDashboard.putNumber("Bottom Velocity", brpm);
-
-    SmartDashboard.getNumber("anyRPM", anyRPM);
-    SmartDashboard.getNumber("anyPosition", anyPosition);
-
-    SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
-    SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
-    //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
-    //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
-
-    //SmartDashboard.putNumber("OutputTop%", topPercentOutput);
-    SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
-
-    //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
-
-    //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
-
+  
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if(isHoodLimitDepressed() && !encoderIsValid){
           resetEncoder();
