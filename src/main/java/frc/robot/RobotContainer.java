@@ -91,10 +91,11 @@ public class RobotContainer {
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
   public static CANEncoder liftEncoder;
+
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
-
+  public static Solenoid liftRelease;
   public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
@@ -288,6 +289,7 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
+      liftRelease = new Solenoid(4,5);
       visionLight = new Solenoid(7);
     }
   }
@@ -402,6 +404,9 @@ public class RobotContainer {
 
     JoystickButton reverseIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
     reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
+
+    JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
   }
 
   public static double getDriveVerticalJoystick() {

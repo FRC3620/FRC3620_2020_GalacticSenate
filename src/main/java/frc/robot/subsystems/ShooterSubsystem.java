@@ -129,7 +129,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
       anglePID.setIZone(hoodIz);
-      anglePID.setOutputRange(-0.3, 0.3);
+      anglePID.setOutputRange(-0.5, 0.5);
     }
   }
   
@@ -229,8 +229,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    if(position > 17){
-      requestedHoodPosition = 17;
+    if(position >= 85){
+      requestedHoodPosition = 85;
     }
     requestedHoodPosition = position;
   }
