@@ -8,7 +8,7 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +29,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final CANSparkMax liftController = RobotContainer.liftSubsystemWinch; // motor lower lift on winch
   private final CANEncoder liftEncoder = RobotContainer.liftEncoder;
   private DoubleSolenoid brake = RobotContainer.liftBrake;
-  private DoubleSolenoid release = RobotContainer.liftRelease;
+  private Solenoid release = RobotContainer.liftRelease;
   private DigitalInput limitSwitch = RobotContainer.liftLimitSwitch;
   private Boolean encoderIsValid = false;
   private double liftEncoderZeroValue;
@@ -157,7 +157,7 @@ public class LiftSubsystem extends SubsystemBase {
         }
       }
 
-      if(release.get() == Value.kForward){
+      if(release.get()){
         speed = 0;
       }
 
@@ -191,11 +191,11 @@ public class LiftSubsystem extends SubsystemBase {
   }
 
   public void applyLiftPin() {
-    release.set(Value.kForward);
+    release.set(true);
   }
 
   public void releaseLiftPin() {
-    release.set(Value.kReverse);
+    release.set(false);
   }
 
   private double ticstoinches(double tics) { 

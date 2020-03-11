@@ -95,7 +95,7 @@ public class RobotContainer {
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
-  public static DoubleSolenoid liftRelease;
+  public static Solenoid liftRelease;
   public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
@@ -289,7 +289,7 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
-      liftRelease = new DoubleSolenoid(4,5);
+      liftRelease = new Solenoid(4,5);
       visionLight = new Solenoid(7);
     }
   }

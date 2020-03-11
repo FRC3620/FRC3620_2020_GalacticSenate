@@ -116,7 +116,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
       anglePID.setIZone(hoodIz);
-      anglePID.setOutputRange(-0.3, 0.3);
+      anglePID.setOutputRange(-0.5, 0.5);
     }
   }
   
@@ -161,14 +161,14 @@ public class ShooterSubsystem extends SubsystemBase {
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
 
     SmartDashboard.putNumber("Top Velocity", trpm);
-    //SmartDashboard.putNumber("Bottom Velocity", brpm);
+    SmartDashboard.putNumber("Bottom Velocity", brpm);
 
-    SmartDashboard.getNumber("anyRPM", anyRPM);
-    SmartDashboard.getNumber("anyPosition", anyPosition);
+    //SmartDashboard.getNumber("anyRPM", anyRPM);
+    //SmartDashboard.getNumber("anyPosition", anyPosition);
 
-    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
-    SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
-    //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
+    //SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
+    //SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
+    SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
     //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
 
     //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
@@ -177,7 +177,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
 
-    //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
+    SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
 
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if(isHoodLimitDepressed() && !encoderIsValid){
@@ -202,8 +202,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    if(position > 17){
-      requestedHoodPosition = 17;
+    if(position >= 85){
+      requestedHoodPosition = 85;
     }
     requestedHoodPosition = position;
   }
