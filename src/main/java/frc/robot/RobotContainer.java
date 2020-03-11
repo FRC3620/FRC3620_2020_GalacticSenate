@@ -181,9 +181,12 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
+      shooterSubsystemFalcon3.setInverted(InvertType.None);
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
+    }
 
+    if(shooterSubsystemFalcon1 != null && shooterSubsystemFalcon3 != null) {
+      imperialOrchestra.addInstrument(shooterSubsystemFalcon1);
       imperialOrchestra.addInstrument(shooterSubsystemFalcon3);
       imperialOrchestra.loadMusic("R2D2.chrp");
     }
@@ -384,6 +387,10 @@ public class RobotContainer {
 
     JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
     toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
+
+    JoystickButton conductOrchestraButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_BACK);
+    conductOrchestraButton.toggleWhenPressed(new ConductOrchestraCommand(orchestraSubsystem));
+    
     //Operator Controller
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
