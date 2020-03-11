@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
      // get data logging going
      DataLogger robotDataLogger = new DataLogger();
      new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
-     robotDataLogger.setInterval(0.001);
+     robotDataLogger.setInterval(0.25);
      robotDataLogger.start();
      //OperatorView operatorView = new OperatorView();
     // operatorView.operatorViewInit(RobotContainer.amICompBot());
