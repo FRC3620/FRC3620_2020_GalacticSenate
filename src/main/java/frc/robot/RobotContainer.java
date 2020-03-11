@@ -117,6 +117,7 @@ public class RobotContainer {
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static BeltSubsystem beltSubsystem;
+  public static OrchestraSubsystem orchestraSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -179,11 +180,12 @@ public class RobotContainer {
     }
 
     if (shooterSubsystemFalcon3 != null) {
-      imperialOrchestra.addInstrument(shooterSubsystemFalcon3);
-      imperialOrchestra.loadMusic("R2D2.chrp");
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
+
+      imperialOrchestra.addInstrument(shooterSubsystemFalcon3);
+      imperialOrchestra.loadMusic("R2D2.chrp");
     }
 
     if(shooterSubsystemBallFeeder != null) {
@@ -309,6 +311,7 @@ public class RobotContainer {
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
     beltSubsystem = new BeltSubsystem();
+    orchestraSubsystem = new OrchestraSubsystem();
 
   }
 
