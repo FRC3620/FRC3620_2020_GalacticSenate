@@ -186,19 +186,18 @@ public class ShooterSubsystem extends SubsystemBase {
       bottomVoltage = falconBottom.getMotorOutputVoltage();
 
       SmartDashboard.putNumber("Top Velocity", trpm);
-      //SmartDashboard.putNumber("Bottom Velocity", brpm);
+      SmartDashboard.putNumber("Bottom Velocity", brpm);
   
       SmartDashboard.getNumber("anyRPM", anyRPM);
       SmartDashboard.getNumber("anyPosition", anyPosition);
   
-      SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
-      SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
+      //SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
       //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
-      //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
+      //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity() / 2048 * 600);
   
       //SmartDashboard.putNumber("OutputTop%", topPercentOutput);
-      SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-      //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
+      //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+      //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity() / 2048 * 600);
   
       //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
   

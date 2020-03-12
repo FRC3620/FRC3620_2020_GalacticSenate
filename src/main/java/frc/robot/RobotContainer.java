@@ -178,7 +178,7 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
+      shooterSubsystemFalcon3.setInverted(InvertType.None);
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
@@ -289,7 +289,7 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
-      liftRelease = new Solenoid(4,5);
+      liftRelease = new Solenoid(4);
       visionLight = new Solenoid(7);
     }
   }
