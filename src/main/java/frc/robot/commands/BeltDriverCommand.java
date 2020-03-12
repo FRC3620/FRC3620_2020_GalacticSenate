@@ -36,8 +36,9 @@ public class BeltDriverCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
-    if(error >= 0.98 && error <= 1.02) {
+    double topError = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
+    double botError = (shooterSubsystem.getActualBottomShooterVelocity() / shooterSubsystem.getRequestedBottomShooterVelocity());
+    if(topError >= 0.98 && topError <= 1.02 && botError >= 0.98 && botError <= 1.02) {
       beltSubsystem.BeltOn(.4);
       SmartDashboard.putBoolean("Hopper is Active", true);
     } else{

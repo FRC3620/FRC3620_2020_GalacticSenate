@@ -66,10 +66,23 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodIz = 0;
   private double requestedHoodPosition = 0;
 
+  private double hoodCurrent = 0;
+  private double hoodPercentOut = 0;
+  private double hoodVoltage = 0;
+
+  private double topShooterCurrent = 0;
+  private double topPercentOutput = 0;
+  private double topVoltage = 0;
+
+  private double bottomShooterCurrent = 0;
+  private double bottomPercentOutput = 0;
+  private double bottomVoltage = 0;
+
   public double anyRPM;
   public double anyPosition;
 
   private double requestedTopShooterVelocity = 0;
+  private double requestedBottomShooterVelocity = 0;
 
   public ShooterSubsystem() {
     resetEncoder();
@@ -116,7 +129,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
       anglePID.setIZone(hoodIz);
-      anglePID.setOutputRange(-0.3, 0.3);
+      anglePID.setOutputRange(-0.5, 0.5);
     }
   }
   
@@ -159,26 +172,39 @@ public class ShooterSubsystem extends SubsystemBase {
     //trpm = SmartDashboard.getNumber("Top Velocity", 4100);
     //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
+    if(falconTop != null){
+      hoodCurrent = hoodMotor.getOutputCurrent();
+      hoodPercentOut = hoodMotor.getAppliedOutput();
+      hoodVoltage = hoodMotor.getBusVoltage();
 
-    SmartDashboard.putNumber("Top Velocity", trpm);
-    //SmartDashboard.putNumber("Bottom Velocity", brpm);
+      topShooterCurrent = falconTop.getStatorCurrent();
+      topPercentOutput = falconTop.getMotorOutputPercent();
+      topVoltage = falconTop.getMotorOutputVoltage();
 
-    SmartDashboard.getNumber("anyRPM", anyRPM);
-    SmartDashboard.getNumber("anyPosition", anyPosition);
+      bottomShooterCurrent = falconBottom.getStatorCurrent();
+      bottomPercentOutput = falconBottom.getMotorOutputPercent();
+      bottomVoltage = falconBottom.getMotorOutputVoltage();
 
-    SmartDashboard.putNumber("OutputBot%", falconBottom.getMotorOutputPercent());
-    SmartDashboard.putNumber("TopActualRPM", (getActualTopShooterVelocity()) * 2048 / 600);
-    //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
-    //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity());
-
-    //SmartDashboard.putNumber("OutputTop%", falconTop.getMotorOutputPercent());
-    SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-    //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity());
-
-    //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
-
-    //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
-
+      SmartDashboard.putNumber("Top Velocity", trpm);
+      SmartDashboard.putNumber("Bottom Velocity", brpm);
+  
+      SmartDashboard.getNumber("anyRPM", anyRPM);
+      SmartDashboard.getNumber("anyPosition", anyPosition);
+  
+      //SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
+      //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
+      //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity() / 2048 * 600);
+  
+      //SmartDashboard.putNumber("OutputTop%", topPercentOutput);
+      //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
+      //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity() / 2048 * 600);
+  
+      //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
+  
+      //SmartDashboard.putNumber("hoodEncoderInRevs", getActualHoodPosition());
+  
+    }
+  
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if(isHoodLimitDepressed() && !encoderIsValid){
           resetEncoder();
@@ -202,8 +228,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    if(position > 17){
-      requestedHoodPosition = 17;
+    if(position >= 85){
+      requestedHoodPosition = 85;
     }
     requestedHoodPosition = position;
   }
@@ -221,6 +247,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     double bottomTargetVelocity = brpm * 2048 / 600;
+    requestedBottomShooterVelocity = bottomTargetVelocity;
     if (falconBottom != null) {
       falconBottom.set(ControlMode.Velocity, bottomTargetVelocity);
     }
@@ -272,12 +299,60 @@ public class ShooterSubsystem extends SubsystemBase {
     return requestedTopShooterVelocity;
   }
 
+  public double getRequestedBottomShooterVelocity() {
+    return requestedBottomShooterVelocity;
+  }
+
+  public double getTopShooterCurrent() {
+    return topShooterCurrent;
+  }
+
+  public double getBottomShooterCurrent() {
+    return bottomShooterCurrent;
+  }
+
+  public double getHoodPercentOut() {
+    return hoodPercentOut;
+  }
+
+  public double getHoodVoltage() {
+    return hoodVoltage;
+  }
+
+  public double getTopPercentOut() {
+    return topPercentOutput;
+  }
+
+  public double getBottomPercentOut() {
+    return bottomPercentOutput;
+  }
+
+  public double getTopVoltage() {
+    return topVoltage;
+  }
+
+  public double getBottomVoltage() {
+    return bottomVoltage;
+  }
+
   public double getActualTopShooterVelocity() {
     if (falconTop != null) {
     return falconTop.getSelectedSensorVelocity();
     } else {
       return 0;
     }
+  }
+
+  public double getActualBottomShooterVelocity() {
+    if (falconBottom != null) {
+    return falconBottom.getSelectedSensorVelocity();
+    } else {
+      return 0;
+    }
+  }
+
+  public double getHoodCurrent() {
+    return hoodCurrent;
   }
 
   public double getRangeModifier() {

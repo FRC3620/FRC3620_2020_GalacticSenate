@@ -8,17 +8,16 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class LiftBrakeCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class LiftReleaseCommand extends CommandBase {
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
-  public LiftBrakeCommand() {
+  public LiftReleaseCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,13 +30,13 @@ public class LiftBrakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.liftSubsystem.BrakeOff();
+    RobotContainer.liftSubsystem.releaseLiftPin();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.liftSubsystem.BrakeOn();
+    RobotContainer.liftSubsystem.applyLiftPin();
   }
 
   // Returns true when the command should end.
