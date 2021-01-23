@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpiutil.net.PortForwarder;
+import frc.robot.commands.Slalom26Command;
 
 import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -86,6 +87,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
     chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
     chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
+    chooser.addOption("Slalom 2-6", new Slalom26Command(RobotContainer.driveSubsystem));
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 
