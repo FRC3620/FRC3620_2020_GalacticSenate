@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
@@ -179,6 +180,9 @@ public class RobotContainer {
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.None);
+      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
+      shooterSubsystemFalcon3.configStatorCurrentLimit(amprage);
+
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 

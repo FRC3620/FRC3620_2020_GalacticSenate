@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * An example command that uses an example subsystem.
  */
 public class ShootingCommand extends CommandBase {
+  final private boolean doLogging = true;
+
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   IFastDataLogger dataLogger;
@@ -53,23 +55,25 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void initialize() {
     timer.start();
-    dataLogger = new FastDataLoggerCollections();
-    dataLogger.setInterval(0.001);
-    dataLogger.setMaxLength(10.0);
-    if (talonFX != null) {
-      dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
-      dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
-      dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
-      dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
-      dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
-      dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
-      dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
-    } else {
-      dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+    if (doLogging) {
+      dataLogger = new FastDataLoggerCollections();
+      dataLogger.setInterval(0.001);
+      dataLogger.setMaxLength(10.0);
+      if (talonFX != null) {
+        dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
+        dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
+        dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
+      } else {
+        dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+      }
+      dataLogger.setFilename("shooter");
+      dataLogger.setFilenameTimestamp(new Date());
+      dataLogger.start();
     }
-    dataLogger.setFilename("test");
-    dataLogger.setFilenameTimestamp(new Date());
-    //dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,7 +94,9 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    //dataLogger.done();
+    if (dataLogger != null) {
+      dataLogger.done();
+    }
   }
 
   // Returns true when the command should end.
