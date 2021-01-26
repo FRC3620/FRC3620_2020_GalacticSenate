@@ -23,9 +23,11 @@ public class Slalom26Command extends SequentialCommandGroup {
     super();
 
     addCommands (
-      new AutoDriveCommand (1.0, 45, 0.25, 0, driveSubsystem),
-
-      new AutoDriveCommand (1.0, 0, 0.25, 0, driveSubsystem)
+      new AutoDriveCommand (6*12, 0, 1.0, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (6*12, 90, 1.0, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (8.5*12, -135, 1.0, 180, driveSubsystem)
 
     );
   }
