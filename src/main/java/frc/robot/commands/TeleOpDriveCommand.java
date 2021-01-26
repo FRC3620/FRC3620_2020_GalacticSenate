@@ -37,7 +37,7 @@ public class TeleOpDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("Init tod");
+    // logger.info("Init tod");
     desiredHeading = driveSubsystem.getNavXFixedAngle();
     driveSubsystem.setTargetHeading(desiredHeading);
   }

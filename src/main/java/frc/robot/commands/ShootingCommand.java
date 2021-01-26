@@ -15,8 +15,11 @@ import java.util.Date;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,7 +28,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * An example command that uses an example subsystem.
  */
 public class ShootingCommand extends CommandBase {
-  final private boolean doLogging = true;
+  final private boolean doDataLogging = true;
+
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
@@ -55,7 +61,7 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void initialize() {
     timer.start();
-    if (doLogging) {
+    if (doDataLogging) {
       dataLogger = new FastDataLoggerCollections();
       dataLogger.setInterval(0.001);
       dataLogger.setMaxLength(10.0);
@@ -95,6 +101,7 @@ public class ShootingCommand extends CommandBase {
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
     if (dataLogger != null) {
+      logger.info ("being done with datalogger");
       dataLogger.done();
     }
   }

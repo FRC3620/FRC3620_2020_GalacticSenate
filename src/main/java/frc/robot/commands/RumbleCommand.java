@@ -17,6 +17,8 @@ import frc.robot.subsystems.RumbleSubsystem;
  */
 public class RumbleCommand extends CommandBase {
 
+    private final boolean logRumbleDetails = false;
+
     public enum Hand {
         LEFT,
         RIGHT,
@@ -123,18 +125,20 @@ public class RumbleCommand extends CommandBase {
     @Override
     public void initialize() {
         if (!disableChange) {
-            System.out.println("Rumble Init");
+            //System.out.println("Rumble Init");
             //sets the defaults
             if (duration == null) {duration = durationDefault;}
             if (hand == null) {hand = handDefault;}
             if (intensity == null) {intensity = intensityDefault;}
 
             //logs info
-            if (subsystem == RobotContainer.rumbleSubsystemDriver) {
-                logger.info("Rumbling driver controller");
-            }
-            else {
-                logger.info("Rumbling operator controller");
+            if (logRumbleDetails) {
+                if (subsystem == RobotContainer.rumbleSubsystemDriver) {
+                    logger.info("Rumbling driver controller");
+                }
+                else {
+                    logger.info("Rumbling operator controller");
+                }
             }
 
             //Clears the rumble
@@ -156,7 +160,8 @@ public class RumbleCommand extends CommandBase {
     // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-            EventLogging.commandMessage(logger);
+        if (logRumbleDetails) {
+            //EventLogging.commandMessage(logger);
             if (!disabled) {
                 if (!interrupted) {
                     if (subsystem == RobotContainer.rumbleSubsystemDriver)
@@ -165,13 +170,14 @@ public class RumbleCommand extends CommandBase {
                         logger.info("Operator rumble finished");
                 }
                 else {
-                    EventLogging.commandMessage(logger);
+                    //EventLogging.commandMessage(logger);
                     if (subsystem == RobotContainer.rumbleSubsystemDriver)
                         logger.info("Driver rumble interrupted");
                     else
                         logger.info("Operator rumble interrupted");
                 }
             }
+        }
 
         subsystem.clearRumble();
     }
