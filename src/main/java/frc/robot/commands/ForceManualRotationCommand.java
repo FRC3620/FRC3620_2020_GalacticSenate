@@ -8,42 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class SetShooterUpForTenFeetCommand extends CommandBase {
-  ShooterSubsystem shooterSubsystem;
-
-  final double tenFootRPM = 3213;
-  final double tenFootPosition = 11.6;
-
+public class ForceManualRotationCommand extends CommandBase {
+  DriveSubsystem driveSubsystem;
   /**
-   * Creates a new MoveHoodManuallyUpCommand.
+   * Creates a new ForceManualRotationCommand.
    */
-  public SetShooterUpForTenFeetCommand(ShooterSubsystem shooterSubsystem) {
-    this.shooterSubsystem = shooterSubsystem;
+  public ForceManualRotationCommand(DriveSubsystem driveSubsystem) { 
+    this.driveSubsystem = driveSubsystem;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTopRPM(tenFootRPM);
-    shooterSubsystem.setPosition(tenFootPosition);
+    driveSubsystem.setForcedManualModeTrue();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    driveSubsystem.setForcedManualModeFalse();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

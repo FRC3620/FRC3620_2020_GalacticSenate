@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
@@ -91,10 +92,11 @@ public class RobotContainer {
   public static CANSparkMax intakeSubsystemSparkMax;
   public static CANSparkMax liftSubsystemWinch;
   public static CANEncoder liftEncoder;
+
   public static Solenoid solenoidArmUp;
   public static Solenoid intakeSubsystemArmDown;
   public static DoubleSolenoid liftBrake;
-
+  public static Solenoid liftRelease;
   public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
@@ -140,25 +142,25 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
       driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
       driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
       driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(0.3);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.7);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.3);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(0.3);
@@ -177,7 +179,11 @@ public class RobotContainer {
 
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
-      shooterSubsystemFalcon3.setInverted(InvertType.InvertMotorOutput);
+      shooterSubsystemFalcon3.setInverted(InvertType.None);
+      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
+      shooterSubsystemFalcon3.configStatorCurrentLimit(amprage);
+
+      //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
     if(shooterSubsystemBallFeeder != null) {
@@ -234,10 +240,12 @@ public class RobotContainer {
     
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Intake") || iAmACompetitionRobot){
       intakeSubsystemSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+      resetMaxToKnownState(intakeSubsystemSparkMax);
       intakeSubsystemSparkMax.setIdleMode(IdleMode.kCoast);
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
       intakeSubsystemSparkMax.setInverted(false);
+      intakeSubsystemSparkMax.setSmartCurrentLimit(70);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
@@ -246,7 +254,7 @@ public class RobotContainer {
       liftSubsystemWinch.setIdleMode(IdleMode.kBrake);
       liftSubsystemWinch.setOpenLoopRampRate(.3);
       liftSubsystemWinch.setClosedLoopRampRate(.3);
-      liftSubsystemWinch.setSmartCurrentLimit(70);
+      liftSubsystemWinch.setSmartCurrentLimit(80);
       liftSubsystemWinch.setInverted(true);
     }
 
@@ -285,6 +293,7 @@ public class RobotContainer {
       solenoidArmUp = new Solenoid(0);
       intakeSubsystemArmDown = new Solenoid(1);
       liftBrake = new DoubleSolenoid(2,3);
+      liftRelease = new Solenoid(4);
       visionLight = new Solenoid(7);
     }
   }
@@ -315,10 +324,12 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
     SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
-    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem));
-    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem));
+    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
+    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
-
+    
+    SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -354,7 +365,7 @@ public class RobotContainer {
     zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 
     JoystickButton beltDriver = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    beltDriver.toggleWhenPressed(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
+    beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
@@ -367,6 +378,9 @@ public class RobotContainer {
 
     JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
+
+    JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
+    toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
     //Operator Controller
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
@@ -378,7 +392,7 @@ public class RobotContainer {
     shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
 
     JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+    intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
 
     JoystickButton intakeArmButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
@@ -391,6 +405,12 @@ public class RobotContainer {
 
     JoystickButton twentyOneFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
     twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
+
+    JoystickButton reverseIntakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START);
+    reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
+
+    JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
   }
 
   public static double getDriveVerticalJoystick() {
@@ -444,13 +464,13 @@ public class RobotContainer {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
     if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
-    } 
+    }
     return -axisValue;
   }
 
   public static double getColorJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
-    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+    if (axisValue < 0.2 && axisValue > -0.2) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     } 
     return -axisValue;
@@ -462,7 +482,19 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+  public Command getTrenchAuto(){
+    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getMeanMachineAuto(){
+    return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getWaitAndSchootAuto(){
+    return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   /**

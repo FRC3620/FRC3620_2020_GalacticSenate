@@ -8,32 +8,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class SetShooterUpForTenFeetCommand extends CommandBase {
-  ShooterSubsystem shooterSubsystem;
-
-  final double tenFootRPM = 3213;
-  final double tenFootPosition = 11.6;
-
+public class AutoTurnVisionLightOnCommand extends CommandBase {
+  VisionSubsystem visionSubsystem;
   /**
-   * Creates a new MoveHoodManuallyUpCommand.
+   * Creates a new ToggleVisionLightCommand.
    */
-  public SetShooterUpForTenFeetCommand(ShooterSubsystem shooterSubsystem) {
-    this.shooterSubsystem = shooterSubsystem;
+  public AutoTurnVisionLightOnCommand(VisionSubsystem subsystem) {
+    this.visionSubsystem = subsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTopRPM(tenFootRPM);
-    shooterSubsystem.setPosition(tenFootPosition);
+    visionSubsystem.turnVisionLightOn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
   }
 
   // Called once the command ends or is interrupted.
