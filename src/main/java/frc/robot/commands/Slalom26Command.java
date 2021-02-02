@@ -29,6 +29,8 @@ public class Slalom26Command extends SequentialCommandGroup{
       //new AutoDriveCommand (1.0, 45, 0.25, 0, driveSubsystem),
 
       //new AutoDriveCommand (1.0, 0, 0.25, 0, driveSubsystem)
+     
+      /*    Old Driving Pattern
 
       new AutoDriveCommand (9*12, 146.4, 0.25, 180, driveSubsystem)
       ,
@@ -46,8 +48,26 @@ public class Slalom26Command extends SequentialCommandGroup{
       ,
       new AutoDriveCommand (7.4*12, -132.5, 0.25, 180, driveSubsystem)
       ,
-      new AutoDriveCommand (1*12, -90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (1*12, -90, 0.25, 180, driveSubsystem)*/
 
+      
+      new AutoDriveCommand (4*12, 90, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (12*12, 90, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (6*12, 90, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (6*12, -90, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem)
+      ,
+      new AutoDriveCommand (7*12, -90, 0.25, 180, driveSubsystem)
     );
   }
 }
