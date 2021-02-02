@@ -786,7 +786,11 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getDriveMotorPosition(){
-		return rightFrontDriveEncoder.getPosition();
+		if (rightFrontDriveEncoder != null) {
+			return rightFrontDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
 	}
 
 	public void switchFieldRelative(){
