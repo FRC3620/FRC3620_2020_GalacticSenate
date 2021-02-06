@@ -16,8 +16,9 @@ super();
 
 addCommands(
 
+//new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem)
 
-new AutoDriveCommand (4.*12, 90, .25, 180, driveSubsystem)
+new AutoDriveCommand (4*12, 90, .25, 180, driveSubsystem)
 ,
 new AutoDriveCommand (5*12, 180, .25, 180, driveSubsystem)
 ,
