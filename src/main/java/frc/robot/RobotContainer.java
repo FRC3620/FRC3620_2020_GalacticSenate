@@ -7,6 +7,11 @@
 
 package frc.robot;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -127,6 +132,8 @@ public class RobotContainer {
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
+
+    identifyRoboRIO();
 
     makeHardware();
     setupMotors();
@@ -516,5 +523,27 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  void identifyRoboRIO() {
+    try {
+			for (Enumeration<NetworkInterface> e = NetworkInterface
+					.getNetworkInterfaces(); e.hasMoreElements();) {
+				NetworkInterface network = e.nextElement();
+				logger.info("found network {}", network);
+				byte[] mac = network.getHardwareAddress();
+				if (mac != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < mac.length; i++) {
+						sb.append(String.format("%02X%s", mac[i],
+								(i < mac.length - 1) ? "-" : ""));
+					}
+					String macString = sb.toString();
+					logger.info("Current MAC address: {}", macString);
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
   }
 }
