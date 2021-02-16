@@ -51,23 +51,29 @@ public class Slalom26Command extends SequentialCommandGroup{
       new AutoDriveCommand (1*12, -90, 0.25, 180, driveSubsystem)*/
 
       
-      new AutoDriveCommand (4*12, 90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (4*12, 90, 0.25, 180, driveSubsystem)   //alpha
       ,
-      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)  // bravo
       ,
-      new AutoDriveCommand (12*12, 90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (15*12, 90, 0.25, 180, driveSubsystem)  // CHarlie
       ,
-      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem)   // delta
       ,
-      new AutoDriveCommand (6*12, 90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (5*12, 90, 0.25, 180, driveSubsystem)  // echo
       ,
-      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem) // foxtrot
       ,
-      new AutoDriveCommand (6*12, -90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (4.5*12, -90, 0.25, 180, driveSubsystem)  // gamma
       ,
-      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (5*12, 0, 0.25, 180, driveSubsystem) // hotel
       ,
-      new AutoDriveCommand (7*12, -90, 0.25, 180, driveSubsystem)
+      new AutoDriveCommand (15*12, -90, 0.25, 180, driveSubsystem) // india
+      ,
+      new AutoDriveCommand (5*12, 180, 0.25, 180, driveSubsystem)  //juliet
+      ,
+      new AutoDriveCommand (3*12, -90, 0.25, 180, driveSubsystem)  // kilo
+      
+
     );
   }
 }
