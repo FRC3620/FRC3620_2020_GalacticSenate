@@ -147,13 +147,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calcHoodPosition(double cy) {
     double calcHoodPosition;
     if(cy < 224){
-      calcHoodPosition = 6.4178 + -0.00505255*cy + 0.0000798665*cy*cy;
+      calcHoodPosition = 6.4103925926 + -0.003966291*cy + 0.0000750171*cy*cy;
     } else if(cy < 336){
-      calcHoodPosition = 14.022 + -0.052901*cy + 0.000141924*cy*cy;
+      calcHoodPosition = 14.133863791 + -0.053126305*cy + 0.0001405535*cy*cy;
     } else if(cy < 403){
-      calcHoodPosition = 12.25 + -0.020506*cy + 0.000061209*cy*cy;
+      calcHoodPosition = 12.734949433 + -0.022699059*cy + 0.0000623878*cy*cy;
     } else {
-      calcHoodPosition = -74.0174 + 0.41279*cy + -0.000482795*cy*cy;
+      calcHoodPosition = -65.69414925 + 0.3731586827*cy + -0.000436978*cy*cy;
     }
     
     
