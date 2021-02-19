@@ -34,7 +34,7 @@ public class AutoSemiElipseCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
+    initialPosition = driveSubsystem.getDriveMotorPositionRightFront(); //looks at the encoder on one drive motor
     currentHeading = driveSubsystem.getNavXFixedAngle();
     driveSubsystem.setTargetHeading(currentHeading);
     elipseConstant = Math.sqrt((radiusA*radiusA + radiusB*radiusB)/2);
@@ -43,7 +43,7 @@ public class AutoSemiElipseCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPosition() - initialPosition);
+    distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPositionRightFront() - initialPosition);
     double angleSwept = distanceTravelled / elipseConstant; //approximation to the perimeter of an ellipse in radians
 
     double joyX = radiusA*Math.sin(angleSwept); 
