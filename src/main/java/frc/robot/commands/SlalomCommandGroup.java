@@ -23,12 +23,17 @@ abstract public class SlalomCommandGroup extends SequentialCommandGroup implemen
     @Override
     public void initialize() {
         setupLogger();
+        driveSubsystem.resetNavX();
+        driveSubsystem.setDriveToRampSlowly();
+        driveSubsystem.setDriveToBrake();
         super.initialize();
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+        driveSubsystem.setDriveToCoast();
+        driveSubsystem.setDriveToRampQuickly();
         teardownLogger();
     }
 

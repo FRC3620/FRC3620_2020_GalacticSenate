@@ -12,6 +12,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -31,7 +32,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
+    public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
 	public final CANSparkMax rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final CANEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final CANEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
@@ -471,6 +472,33 @@ public class DriveSubsystem extends SubsystemBase {
 
 	}
 
+	public void setWheelsToStrafe(double strafeAngle){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
+
+		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
+		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
+		double vr = 0;
+
+		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
+
+		DriveVectors currentDirections = getCurrentVectors();
+
+		newVectors = sc.fixVectors(newVectors, currentDirections);
+
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			// ignore velocity component of vectors
+			rightFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
+		}
+
+	}
+	
 	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
 		
 		double leftFrontAngle = -160;
@@ -882,6 +910,54 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getAzimuthRightBack() {
 		return getFixedPosition(rightBackAzimuthEncoder);
+	}
+
+	private void setOneDriveClosedLoopRampRate (CANSparkMax d, double secondsToFullThrottle, String name) {
+		if (d != null) {
+			double was = d.getClosedLoopRampRate();
+			d.setClosedLoopRampRate(secondsToFullThrottle);			
+			if (name != null) {
+				logger.info ("Ramp rate for {} was {}", name, was);
+			}
+		}
+	}
+
+	public void setDriveToRampSlowly() {
+		double secondsToFullThrottle = 0.6;
+		setOneDriveClosedLoopRampRate(leftFrontDriveMaster, secondsToFullThrottle, "LF");
+		setOneDriveClosedLoopRampRate(rightFrontDriveMaster, secondsToFullThrottle, "RF");
+		setOneDriveClosedLoopRampRate(leftBackDriveMaster, secondsToFullThrottle, "LB");
+		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, "RB");
+	}
+
+	public void setDriveToRampQuickly() {
+		double secondsToFullThrottle = RobotContainer.DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT;
+		setOneDriveClosedLoopRampRate(leftFrontDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(rightFrontDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(leftBackDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, null);
+	}
+
+	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode, String name) {
+		if (d != null) {
+			d.setIdleMode(idleMode);
+		}
+	}
+
+	public void setDriveToBrake() {
+		IdleMode idleMode = IdleMode.kBrake;
+		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
+		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
+		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
+		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+	}
+
+	public void setDriveToCoast() {
+		IdleMode idleMode = IdleMode.kCoast;
+		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
+		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
+		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
+		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
 	}
 
 }
