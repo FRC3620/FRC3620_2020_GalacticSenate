@@ -14,7 +14,10 @@ public class AutoDriveCommand extends CommandBase {
 
   private DriveSubsystem driveSubsystem;
 
-  private double initialPosition;
+  private double initialPositionRightFront;
+  private double initialPositionLeftFront;
+  private double initialPositionRightBack;
+  private double initialPositionLeftBack;
   private double distanceTravelled;
   private double desiredDistance;
   private double desiredAngle;
@@ -36,7 +39,10 @@ public class AutoDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     driveSubsystem.setAutoSpinMode();
-    initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
+    initialPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront(); //looks at the encoder on one drive motor
+    initialPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
+    initialPositionRightBack = driveSubsystem.getDriveMotorPositionRightBack();
+    initialPositionLeftBack = driveSubsystem.getDriveMotorPositionLeftBack();
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 
@@ -45,11 +51,19 @@ public class AutoDriveCommand extends CommandBase {
   public void execute() {
     double heading = driveSubsystem.getNavXFixedAngle(); 
 
-    double currentPosition = driveSubsystem.getDriveMotorPosition();
+    double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
+    double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
+    double currentPositionRightBack = driveSubsystem.getDriveMotorPositionRightBack();
+    double currentPositionLeftBack = driveSubsystem.getDriveMotorPositionLeftBack();
     double spinX = -driveSubsystem.getSpinPower();
     driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
 
-    distanceTravelled = Math.abs(currentPosition - initialPosition);
+    double distanceTravelledRightFront = Math.abs(currentPositionRightFront - initialPositionRightFront);
+    double distanceTravelledLeftFront = Math.abs(currentPositionLeftFront - initialPositionLeftFront);
+    double distanceTravelledRightBack = Math.abs(currentPositionRightBack - initialPositionRightBack);
+    double distanceTravelledLeftBack = Math.abs(currentPositionLeftBack - initialPositionLeftBack);
+
+    distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack)/4;
   }
 
   // Called once the command ends or is interrupted.

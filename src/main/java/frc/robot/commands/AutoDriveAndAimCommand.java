@@ -38,7 +38,7 @@ public class AutoDriveAndAimCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
+    initialPosition = driveSubsystem.getDriveMotorPositionRightFront(); //looks at the encoder on one drive motor
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 
@@ -47,7 +47,7 @@ public class AutoDriveAndAimCommand extends CommandBase {
   public void execute() {
     double heading = driveSubsystem.getNavXFixedAngle(); 
 
-    double currentPosition = driveSubsystem.getDriveMotorPosition();
+    double currentPosition = driveSubsystem.getDriveMotorPositionRightFront();
     double spinX = -driveSubsystem.getSpinPower();
     if (!visionSubsystem.getShootingTargetCentered()){
       double yaw = visionSubsystem.getShootingTargetYaw();

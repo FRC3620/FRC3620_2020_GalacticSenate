@@ -785,9 +785,33 @@ public class DriveSubsystem extends SubsystemBase {
 		return WHEEL_CIRCUMFERENCE;
 	}
 
-	public double getDriveMotorPosition(){
+	public double getDriveMotorPositionRightFront(){
 		if (rightFrontDriveEncoder != null) {
 			return rightFrontDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionLeftFront(){
+		if (leftFrontDriveEncoder != null) {
+			return leftFrontDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionRightBack(){
+		if (rightBackDriveEncoder != null) {
+			return rightBackDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionLeftBack(){
+		if (leftBackDriveEncoder != null) {
+			return leftBackDriveEncoder.getPosition();
 		} else {
 			return 0.0;
 		}
