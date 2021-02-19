@@ -37,7 +37,7 @@ public class ShootingCommand extends CommandBase {
   private final ShooterSubsystem shooterSubsystem;
   IFastDataLogger dataLogger;
   Timer timer;
-  TalonFX talonFX;
+  TalonFX rightTalonFX, bottomTalonFX, leftTalonFX;
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
   
@@ -45,8 +45,9 @@ public class ShootingCommand extends CommandBase {
     this.shooterSubsystem = subsystem;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    talonFX = RobotContainer.shooterSubsystemFalcon1;
-
+    rightTalonFX = RobotContainer.shooterSubsystemFalcon1;
+    leftTalonFX = RobotContainer.shooterSubsystemFalcon2;
+    bottomTalonFX =RobotContainer.shooterSubsystemFalcon3;
     rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
     1.0, // intensity
     1.0 // duration
@@ -63,16 +64,33 @@ public class ShootingCommand extends CommandBase {
     timer.start();
     if (doDataLogging) {
       dataLogger = new FastDataLoggerCollections();
-      dataLogger.setInterval(0.001);
+      dataLogger.setInterval(0.005);
       dataLogger.setMaxLength(10.0);
-      if (talonFX != null) {
-        dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
-        dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
-        dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
-        dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
-        dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
-        dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
-        dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
+      if (rightTalonFX != null) {
+        dataLogger.addDataProvider("right_setpoint", () -> rightTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("right_rpm", () -> rightTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("right_outputCurrent", () -> rightTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("right_supplyCurrent", () -> rightTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("right_outputVoltage", () -> rightTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("right_supplyVoltage", () -> rightTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("right_outputPercent", () -> rightTalonFX.getMotorOutputPercent());
+
+        dataLogger.addDataProvider("bottom_setpoint", () -> bottomTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("bottm_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("bottom_outputCurrent", () -> bottomTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("bottom_supplyCurrent", () -> bottomTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("bottom_outputVoltage", () -> bottomTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("bottom_supplyVoltage", () -> bottomTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("bottom_outputPercent", () -> bottomTalonFX.getMotorOutputPercent());
+
+        dataLogger.addDataProvider("Left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("Left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("Left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("Left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("Left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("Left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("Left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
+
       } else {
         dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
       }

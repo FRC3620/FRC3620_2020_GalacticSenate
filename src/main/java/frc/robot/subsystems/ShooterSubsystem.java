@@ -47,17 +47,17 @@ public class ShooterSubsystem extends SubsystemBase {
   */
   //top FPID Values
   private final double tFVelocity = 0.045; //0.045
-  private final double tPVelocity = 0.6; //0.60
+  private final double tPVelocity = 0.4; //0.60
   private final double tIVelocity = 0.000003; //0.000003
   private final double tDVelocity = 7; //7.75
   public double trpm = 4100; //5200
 
   //bottom FPID Values
   private final double bFVelocity = 0.0465;
-  private final double bPVelocity = 0.45;
+  private final double bPVelocity = 0.3; //.45
   private final double bIVelocity = 0.0000001;
   private final double bDVelocity = 7.5;
-  private double brpm = 4000;
+  private double brpm = 5000;
 
   //hood PID Values
   private final double hoodP = 0.13;

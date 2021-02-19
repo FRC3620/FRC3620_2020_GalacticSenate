@@ -275,15 +275,15 @@ public class RobotContainer {
       shooterSubsystemHoodMax.setInverted(true);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Right Shooter") || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Pre Shooter") || iAmACompetitionRobot) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Left Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Right Shooter") || iAmACompetitionRobot) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Pre Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
     
