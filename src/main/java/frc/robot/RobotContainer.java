@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
@@ -52,6 +57,9 @@ public class RobotContainer {
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
   final static int DRIVER_JOYSTICK_PORT = 0;
   final static int OPERATOR_JOYSTICK_PORT = 1;
+
+  public final static double DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
+  public final static double AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 
   // need this
   static CANDeviceFinder canDeviceFinder;
@@ -127,6 +135,8 @@ public class RobotContainer {
     canDeviceFinder = new CANDeviceFinder();
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
+    identifyRoboRIO();
+
     makeHardware();
     setupMotors();
     makeSubsystems();
@@ -141,28 +151,28 @@ public class RobotContainer {
     if (driveSubsystemRightFrontDrive != null){
 
       resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setClosedLoopRampRate(0.3);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
-      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(0.3);
+      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(0.3);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
-      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(0.3);
+      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setClosedLoopRampRate(0.3);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
-      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(0.3);
+      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
       resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setClosedLoopRampRate(0.3);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth);
-      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(0.3);
+      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
     }
 
     if (shooterSubsystemFalcon1 != null) {
@@ -179,6 +189,9 @@ public class RobotContainer {
     if (shooterSubsystemFalcon3 != null) {
       shooterSubsystemFalcon3.configFactoryDefault();
       shooterSubsystemFalcon3.setInverted(InvertType.None);
+      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
+      shooterSubsystemFalcon3.configStatorCurrentLimit(amprage);
+
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
@@ -264,15 +277,15 @@ public class RobotContainer {
       shooterSubsystemHoodMax.setInverted(true);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Left Shooter") || iAmACompetitionRobot) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 1, "Right Shooter") || iAmACompetitionRobot) {
       shooterSubsystemFalcon1 = new WPI_TalonFX(1);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Pre Shooter") || iAmACompetitionRobot) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 2, "Left Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon2 = new WPI_TalonFX(2);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Right Shooter") || iAmACompetitionRobot) { 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 3, "Pre Shooter") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon3 = new WPI_TalonFX(3);
     }
     
@@ -512,5 +525,27 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  void identifyRoboRIO() {
+    try {
+			for (Enumeration<NetworkInterface> e = NetworkInterface
+					.getNetworkInterfaces(); e.hasMoreElements();) {
+				NetworkInterface network = e.nextElement();
+				logger.info("found network {}", network);
+				byte[] mac = network.getHardwareAddress();
+				if (mac != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < mac.length; i++) {
+						sb.append(String.format("%02X%s", mac[i],
+								(i < mac.length - 1) ? "-" : ""));
+					}
+					String macString = sb.toString();
+					logger.info("Current MAC address: {}", macString);
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
   }
 }

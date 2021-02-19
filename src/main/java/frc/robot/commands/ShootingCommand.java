@@ -15,8 +15,11 @@ import java.util.Date;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,11 +28,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * An example command that uses an example subsystem.
  */
 public class ShootingCommand extends CommandBase {
+  final private boolean doDataLogging = true;
+
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   IFastDataLogger dataLogger;
   Timer timer;
-  TalonFX talonFX;
+  TalonFX rightTalonFX, bottomTalonFX, leftTalonFX;
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
   
@@ -37,8 +45,9 @@ public class ShootingCommand extends CommandBase {
     this.shooterSubsystem = subsystem;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    talonFX = RobotContainer.shooterSubsystemFalcon1;
-
+    rightTalonFX = RobotContainer.shooterSubsystemFalcon1;
+    leftTalonFX = RobotContainer.shooterSubsystemFalcon2;
+    bottomTalonFX =RobotContainer.shooterSubsystemFalcon3;
     rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
     1.0, // intensity
     1.0 // duration
@@ -53,23 +62,42 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void initialize() {
     timer.start();
-    dataLogger = new FastDataLoggerCollections();
-    dataLogger.setInterval(0.001);
-    dataLogger.setMaxLength(10.0);
-    if (talonFX != null) {
-      dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
-      dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
-      dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
-      dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
-      dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
-      dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
-      dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
-    } else {
-      dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+    if (doDataLogging) {
+      dataLogger = new FastDataLoggerCollections();
+      dataLogger.setInterval(0.005);
+      dataLogger.setMaxLength(10.0);
+      if (rightTalonFX != null) {
+        dataLogger.addDataProvider("right_setpoint", () -> rightTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("right_rpm", () -> rightTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("right_outputCurrent", () -> rightTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("right_supplyCurrent", () -> rightTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("right_outputVoltage", () -> rightTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("right_supplyVoltage", () -> rightTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("right_outputPercent", () -> rightTalonFX.getMotorOutputPercent());
+
+        dataLogger.addDataProvider("bottom_setpoint", () -> bottomTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("bottm_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("bottom_outputCurrent", () -> bottomTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("bottom_supplyCurrent", () -> bottomTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("bottom_outputVoltage", () -> bottomTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("bottom_supplyVoltage", () -> bottomTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("bottom_outputPercent", () -> bottomTalonFX.getMotorOutputPercent());
+
+        dataLogger.addDataProvider("Left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("Left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("Left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("Left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("Left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("Left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("Left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
+
+      } else {
+        dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+      }
+      dataLogger.setFilename("shooter");
+      dataLogger.setFilenameTimestamp(new Date());
+      dataLogger.start();
     }
-    dataLogger.setFilename("test");
-    dataLogger.setFilenameTimestamp(new Date());
-    //dataLogger.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,7 +118,10 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.shooterSubsystem.ShooterOff();
-    //dataLogger.done();
+    if (dataLogger != null) {
+      logger.info ("being done with datalogger");
+      dataLogger.done();
+    }
   }
 
   // Returns true when the command should end.

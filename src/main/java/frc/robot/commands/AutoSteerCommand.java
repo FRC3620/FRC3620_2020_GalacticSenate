@@ -11,37 +11,31 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AutoDriveCommand extends CommandBase {
+public class AutoSteerCommand extends CommandBase {
 
     private DriveSubsystem driveSubsystem;
+
+    private double strafeAngle;
 
     private double initialPositionRightFront;
     private double initialPositionLeftFront;
     private double initialPositionRightBack;
     private double initialPositionLeftBack;
-    private double distanceTravelled;
-    private double desiredDistance;
-    private double desiredAngle;
-    private double desiredHeading;
-    private double pathSpeed;
 
     private Timer timer;
 
     private IAutonomousLogger autonomousLogger;
     private String legName;
 
-    public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
-        this(distance, strafeAngle, speed, heading, driveSubsystem, null, null);
+    public AutoSteerCommand(double strafeAngle, DriveSubsystem driveSubsystem) {
+        this(strafeAngle, driveSubsystem, null, null);
     }
 
-    public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+    public AutoSteerCommand(double strafeAngle, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
 
-        desiredDistance = distance;
-        desiredAngle = strafeAngle;
-        desiredHeading = heading;
-        pathSpeed = speed;
+        this.strafeAngle = strafeAngle;
 
         this.legName = legName;
         this.autonomousLogger = autonomousLogger;
@@ -70,14 +64,14 @@ public class AutoDriveCommand extends CommandBase {
             timer.start();
         }
         driveSubsystem.setAutoSpinMode();
-        driveSubsystem.setTargetHeading(desiredHeading);
+        //driveSubsystem.setTargetHeading(desiredHeading);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double spinX = -driveSubsystem.getSpinPower();
-        driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
+        driveSubsystem.setWheelsToStrafe(strafeAngle);
 
         double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
         double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
@@ -88,8 +82,6 @@ public class AutoDriveCommand extends CommandBase {
         double distanceTravelledLeftFront = Math.abs(currentPositionLeftFront - initialPositionLeftFront);
         double distanceTravelledRightBack = Math.abs(currentPositionRightBack - initialPositionRightBack);
         double distanceTravelledLeftBack = Math.abs(currentPositionLeftBack - initialPositionLeftBack);
-
-        distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack) / 4;
 
         if (autonomousLogger != null) {
           autonomousLogger.setCurrentDrivePositions(currentPositionLeftFront, currentPositionRightFront, currentPositionLeftBack, currentPositionRightBack);
@@ -111,9 +103,6 @@ public class AutoDriveCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (distanceTravelled >= desiredDistance) {
-            return true;
-        }
-        return false;
+        return timer.get() > 0.5;
     }
 }
