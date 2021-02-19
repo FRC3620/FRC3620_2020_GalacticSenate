@@ -103,6 +103,6 @@ public class AutoSteerCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return timer.get() > 1.0;
+        return timer.get() > 0.5;
     }
 }
