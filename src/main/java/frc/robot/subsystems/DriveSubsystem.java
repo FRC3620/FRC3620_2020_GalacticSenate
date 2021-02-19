@@ -646,19 +646,25 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 	public double getFixedPosition(CANEncoder encoder){
-		double azimuth = encoder.getPosition();
-		if(azimuth > 180){
-			azimuth = -360 + azimuth;
+  		if (encoder != null) {
+			double azimuth = encoder.getPosition();
+			if (azimuth > 180) {
+				azimuth = -360 + azimuth;
+			}
+			if (azimuth < -180) {
+				azimuth = 360 + azimuth;
+			}
+
+			if (azimuth == -0) {
+				azimuth = 0;
+			}
+
+			azimuth = Math.round(azimuth);
+
+			return azimuth;
+		} else {
+  			return 0;
 		}
-		if(azimuth < -180){
-			azimuth = 360 + azimuth;
-		} 
-		
-		if(azimuth == -0) {azimuth = 0;}
-		
-		azimuth = Math.round(azimuth);
-		
-		return azimuth;
 	}
 
 	public Vector readModuleEncoders(CANEncoder azimuthEncoder, CANEncoder speedEncoder) { 
@@ -861,4 +867,21 @@ public class DriveSubsystem extends SubsystemBase {
 	public boolean getForcedManualMode(){
 		return forceManualMode;
 	}
+
+	public double getAzimuthLeftFront() {
+  		return getFixedPosition(leftFrontAzimuthEncoder);
+	}
+
+	public double getAzimuthRightFront() {
+		return getFixedPosition(rightFrontAzimuthEncoder);
+	}
+
+	public double getAzimuthLeftBack() {
+		return getFixedPosition(leftBackAzimuthEncoder);
+	}
+
+	public double getAzimuthRightBack() {
+		return getFixedPosition(rightBackAzimuthEncoder);
+	}
+
 }
