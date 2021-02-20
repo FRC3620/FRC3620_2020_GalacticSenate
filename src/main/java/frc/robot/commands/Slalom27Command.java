@@ -18,29 +18,29 @@ public class Slalom27Command extends SlalomCommandGroup {
                 new AutoDriveCommand(3.531 * 12, 90, SPEED, 180, driveSubsystem, "alpha", this), // forward
 
                 new AutoSteerCommand(180, driveSubsystem, "-beta-", this),
-                new AutoDriveCommand(4 * 12, 180, SPEED, 180, driveSubsystem, "beta", this), //  to the left
-                new AutoDriveCommand(4 * 12, 0, SPEED, 180, driveSubsystem, "charlie", this), // to the right
+                new AutoDriveCommand(3.25 * 12, 180, SPEED, 180, driveSubsystem, "beta", this), //  to the left
+                new AutoDriveCommand(3.0 * 12, 0, SPEED, 180, driveSubsystem, "charlie", this), // to the right
 
                 new AutoSteerCommand(90, driveSubsystem, "-delta-", this),
-                new AutoDriveCommand(3.3 * 12, 90, SPEED, 180, driveSubsystem, "delta", this), // forward
+                new AutoDriveCommand(2.1 * 12, 90, SPEED, 180, driveSubsystem, "delta", this), // forward
 
                 new AutoSteerCommand(180, driveSubsystem, "-echo-", this),
-                new AutoDriveCommand(3.61 * 12, 0, SPEED, 180, driveSubsystem, "echo", this), // right 
+               new AutoDriveCommand(4.4 * 12, 0, SPEED, 180, driveSubsystem, "echo", this), // right 
 
                 new AutoSteerCommand(90, driveSubsystem, "-foxtrot-", this),
-                new AutoDriveCommand(3.71 * 12, 90, SPEED, 180, driveSubsystem, "foxtrot", this), // forward
+                new AutoDriveCommand(4.4 * 12, 90, SPEED, 180, driveSubsystem, "foxtrot", this), // forward
 
-                new AutoSteerCommand(180, driveSubsystem, "-golf-", this),
-                new AutoDriveCommand(8 * 12, 180, SPEED, 180, driveSubsystem, "golf", this), // left
-                new AutoDriveCommand(8 * 12, 0, SPEED, 180, driveSubsystem, "hotel", this), // right
+                 new AutoSteerCommand(180, driveSubsystem, "-golf-", this),
+                new AutoDriveCommand(8.2 * 12, 180, SPEED, 180, driveSubsystem, "golf", this), // left
+                new AutoDriveCommand(7.5 * 12, 0, SPEED, 180, driveSubsystem, "hotel", this), // right
 
                 new AutoSteerCommand(90, driveSubsystem, "-india-", this),
-                new AutoDriveCommand(7.54 * 12, 90, SPEED, 180, driveSubsystem, "india", this), // forrard
+                new AutoDriveCommand(7.00 * 12, 90, SPEED, 180, driveSubsystem, "india", this), // forrard
 
                 new AutoSteerCommand(180, driveSubsystem, "-juliet-", this),
-                new AutoDriveCommand(8.1 * 12, 180, SPEED, 180, driveSubsystem, "juliet", this), // left to hit
-                new AutoDriveCommand(3.45 * 12, 0, SPEED, 180, driveSubsystem, "kilo", this), // back to center
-
+                new AutoDriveCommand(8.2 * 12, 180, SPEED, 180, driveSubsystem, "juliet", this), // left to hit
+                new AutoDriveCommand(3.2 * 12, 0, SPEED, 180, driveSubsystem, "kilo", this), // back to center
+     
                 new AutoSteerCommand(90, driveSubsystem, "-lima-", this),
                 new AutoDriveCommand(3.8 * 12, 90, SPEED, 180, driveSubsystem, "lima", this) // foward finish
 
