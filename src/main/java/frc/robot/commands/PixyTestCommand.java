@@ -20,12 +20,11 @@ public class PixyTestCommand extends CommandBase {
   public PixyTestCommand(DriveSubsystem driveSubsystem) {
     super();
     // Use addRequirements() here to declare subsystem dependencies
-    path1 = new PixyTestPath1(driveSubsystem);
-    path2 = new PixyTestPath2(driveSubsystem);
-  };
+    path1Command = new PixyTestPath1Command(driveSubsystem);
+    path2Command = new PixyTestPath2Command(driveSubsystem);
+  }
 
-
-  Command path1, path2;
+  Command path1Command, path2Command;
 
   // Called when the command is initially scheduled.
   @Override
@@ -33,10 +32,10 @@ public class PixyTestCommand extends CommandBase {
     boolean isItThere = RobotContainer.pixySubsystem.isThereAPowerCell();
     if (isItThere) {
       SmartDashboard.putString ("pixy.isThereAPowerCell", "yep");
-      path1.schedule();
+      path1Command.schedule();
     } else {
       SmartDashboard.putString ("pixy.isThereAPowerCell", "nope");
-      path2.schedule();
+      path2Command.schedule();
     }
   }
 
