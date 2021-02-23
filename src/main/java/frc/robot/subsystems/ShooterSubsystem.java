@@ -46,17 +46,17 @@ public class ShooterSubsystem extends SubsystemBase {
   https://docs.google.com/spreadsheets/d/1Ap6Y6N5QLvBdPORXFwbMu-nDgwLP74CkY4iBRznK5PU/edit?usp=sharing
   */
   //top FPID Values
-  private final double tFVelocity = 0.045; //0.045
-  private final double tPVelocity = 0.4; //0.60
-  private final double tIVelocity = 0.000003; //0.000003
-  private final double tDVelocity = 7; //7.75
+  private final double tFVelocity = .049; //0.045
+  private final double tPVelocity = .45; //0.60
+  private final double tIVelocity = .0; //0.000003
+  private final double tDVelocity = 7.75; //7.75
   public double trpm = 4100; //5200
 
   //bottom FPID Values
-  private final double bFVelocity = 0.0465;
-  private final double bPVelocity = 0.3; //.45
-  private final double bIVelocity = 0.0000001;
-  private final double bDVelocity = 7.5;
+  private final double bFVelocity = 0.0495;//.0456
+  private final double bPVelocity = .1; //.45
+  private final double bIVelocity = 0.00;//0.0000001
+  private final double bDVelocity = 0;//7.5
   private double brpm = 5000;
 
   //hood PID Values
@@ -145,20 +145,41 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double calcHoodPosition(double cy) {
+    double calcHoodPosition;
+    if(cy < 224){
+      calcHoodPosition = 6.4103925926 + -0.003966291*cy + 0.0000750171*cy*cy;
+    } else if(cy < 336){
+      calcHoodPosition = 14.133863791 + -0.053126305*cy + 0.0001405535*cy*cy;
+    } else if(cy < 403){
+      calcHoodPosition = 12.734949433 + -0.022699059*cy + 0.0000623878*cy*cy;
+    } else {
+      calcHoodPosition = -65.69414925 + 0.3731586827*cy + -0.000436978*cy*cy;
+    }
+    
+    
     //double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);
     //WORKS double calcposition = 3.7788078 + 0.0272996*cy - 0.0002548*Math.pow((cy-371),2) - 4.5881e-7*Math.pow((cy-371),3);
     // BEFORE ELIMS double calcposition = 3.7806806 + 0.0275988*cy - 0.0002576*Math.pow((cy-366.75),2) - 5.8642e-7*Math.pow((cy-366.75),3);
-    double calcposition = 5.3729344 + 0.0223497*cy - 0.0002213*Math.pow((cy-360.308),2) + 2.2798e-7*Math.pow((cy-360.308),3);
-    return calcposition;
+    //workds most of the time double calcposition = 5.3729344 + 0.0223497*cy - 0.0002213*Math.pow((cy-360.308),2) + 2.2798e-7*Math.pow((cy-360.308),3);
+    //double calcposition = 23.3622 + -0.485745*cy + 0.00524459*cy*cy + -0.0000270027*cy*cy*cy + 0.0000000733328*cy*cy*cy*cy + -9.92152E-11*cy*cy*cy*cy*cy + 5.1978E-14*cy*cy*cy*cy*cy*cy;
+    //double calcposition=13.5; 
+    //double calcposition
+    return calcHoodPosition;
   }
 
   public double calcTopRPM(double cy) {
     double calcTopRPM = 2650;
-    if(cy > 200) {
+    if(cy < 252) {
+      calcTopRPM = 4000;
+    } else {
       //calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
       //WORKS calcTopRPM = 698.02383 + 8.1439319*cy - 0.0288023*Math.pow((cy-371),2) - 0.0001439*Math.pow((cy-371),3); 
       //M79calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3); 
-      calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3);
+      //works most of the time calcTopRPM = 1.3333*(913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3));
+      //workds completely calcTopRPM = 2314.525 - 9.81 *cy + 0.08563*cy*cy - 0.00010841*cy*cy*cy;
+      calcTopRPM = 7711.05 + -118.718*cy + 1.45292*cy*cy + -0.00865716*cy*cy*cy + 0.0000264684*cy*cy*cy*cy + -0.0000000393972*cy*cy*cy*cy*cy + 2.25566E-11*cy*cy*cy*cy*cy*cy;
+      //calcTopRPM= 2314.525 - 9.81 *cy + 0.08563*Math.pow((cy),2) - 0.00010841*Math.pow((cy),3);
+      //calcTopRPM=5360;
     }
     return calcTopRPM;
   }
@@ -176,6 +197,7 @@ public class ShooterSubsystem extends SubsystemBase {
       hoodCurrent = hoodMotor.getOutputCurrent();
       hoodPercentOut = hoodMotor.getAppliedOutput();
       hoodVoltage = hoodMotor.getBusVoltage();
+      double hoodPosition= RobotContainer.shooterSubsystemHoodEncoder.getPosition();
 
       topShooterCurrent = falconTop.getStatorCurrent();
       topPercentOutput = falconTop.getMotorOutputPercent();
@@ -187,7 +209,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
       SmartDashboard.putNumber("Top Velocity", trpm);
       SmartDashboard.putNumber("Bottom Velocity", brpm);
-  
+      SmartDashboard.putNumber("Hood positon", hoodPosition);
       SmartDashboard.getNumber("anyRPM", anyRPM);
       SmartDashboard.getNumber("anyPosition", anyPosition);
   
@@ -195,9 +217,9 @@ public class ShooterSubsystem extends SubsystemBase {
       //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
       //SmartDashboard.putNumber("Bottom RPM", falconBottom.getSelectedSensorVelocity() / 2048 * 600);
   
-      //SmartDashboard.putNumber("OutputTop%", topPercentOutput);
+      SmartDashboard.putNumber("OutputTop%", topPercentOutput);
       //SmartDashboard.putNumber("Top ERROR", falconTop.getClosedLoopError());
-      //SmartDashboard.putNumber("Top RPM", falconTop.getSelectedSensorVelocity() / 2048 * 600);
+      SmartDashboard.putNumber("TopActualRPM", falconTop.getSelectedSensorVelocity() / 2048.0 * 600.0);
   
       //SmartDashboard.putBoolean("hoodLimitSwitch", isHoodLimitDepressed());
   
@@ -230,9 +252,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setPosition(double position) {
     if(position >= 85){
       requestedHoodPosition = 85;
-    }
-    requestedHoodPosition = position;
+    } else if (position < 0) {
+      requestedHoodPosition=0;
+    } else {
+      requestedHoodPosition=position;
+    }   
   }
+  
 
   public void ShootPID(){
     /* converting rev/min to units/rev
@@ -266,7 +292,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void runHoodDownSlowly(){
     if(hoodMotor != null){
-      anglePID.setReference(-0.15, ControlType.kDutyCycle);
+      anglePID.setReference(-0.1, ControlType.kDutyCycle);
     }
   }
 
