@@ -30,7 +30,7 @@ public class Slalom26Command extends SlalomCommandGroup{
       new AutoDriveCommand (4*12, 180, SPEED, 180, driveSubsystem, "bravo", this)  // bravo
       ,
       new AutoSteerCommand(90, driveSubsystem, "-charlie-", this),
-      new AutoDriveCommand (10*12, 90, .7, 180, driveSubsystem, "charlie", this)  // Charlie
+      new AutoDriveCommand (11*12, 90, .7, 180, driveSubsystem, "charlie", this)  // Charlie
       ,
       new AutoDriveCommand(1*12, 90, SPEED, 180, driveSubsystem),
       //new WaitCommand(1.0),
