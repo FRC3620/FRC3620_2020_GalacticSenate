@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.Date;
@@ -21,48 +20,49 @@ import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/**
- * An example command that uses an example subsystem.
- */
-public class ShootingCommand extends CommandBase {
-  final private boolean doDataLogging = true;
-
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-
+abstract class AbstractShootingCommand extends CommandBase {
+  Logger logger;
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
-  IFastDataLogger dataLogger;
-  Timer timer;
   TalonFX rightTalonFX, bottomTalonFX, leftTalonFX;
-  RumbleCommand rumbleCommandOperator;
-  RumbleCommand rumbleCommandDriver;
-  
-  public ShootingCommand(ShooterSubsystem subsystem) {
+
+  double lowerShooterSpeedLimit, upperShooterSpeedLimit;
+
+  IFastDataLogger dataLogger;
+
+  // not public
+  AbstractShootingCommand(ShooterSubsystem subsystem) {
+    // should probably use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = subsystem;
-    timer = new Timer();
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    logger = EventLogging.getLogger(getClass(), getDesiredLoggingLevel());
+
     rightTalonFX = RobotContainer.shooterSubsystemFalcon1;
     leftTalonFX = RobotContainer.shooterSubsystemFalcon2;
-    bottomTalonFX =RobotContainer.shooterSubsystemFalcon3;
-    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
-    1.0, // intensity
-    1.0 // duration
-    );
-    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
-    1.0, // intensity
-    1.0 // duration
-    );
+    bottomTalonFX = RobotContainer.shooterSubsystemFalcon3;
+
+    // get and cache values. don't want to call these a zillion times in execute().
+    lowerShooterSpeedLimit = defineLowerShooterSpeedLimit();
+    upperShooterSpeedLimit = defineUpperShooterSpeedLimit();
+  }
+
+  // can override this in subclass to turn logging off
+  boolean shouldDoDataLogging() {
+    return true;
+  }
+
+  // can override this in subclass for different log level
+  Level getDesiredLoggingLevel() {
+    return Level.INFO;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.start();
-    if (doDataLogging) {
+    if (shouldDoDataLogging()) {
       dataLogger = new FastDataLoggerCollections();
       dataLogger.setInterval(0.005);
       dataLogger.setMaxLength(10.0);
@@ -74,28 +74,27 @@ public class ShootingCommand extends CommandBase {
         dataLogger.addDataProvider("right_outputVoltage", () -> rightTalonFX.getMotorOutputVoltage());
         dataLogger.addDataProvider("right_supplyVoltage", () -> rightTalonFX.getBusVoltage());
         dataLogger.addDataProvider("right_outputPercent", () -> rightTalonFX.getMotorOutputPercent());
-        dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
+        dataLogger.addDataProvider("right_error", () -> rightTalonFX.getClosedLoopError());
+      }
+      if (bottomTalonFX != null) {
         dataLogger.addDataProvider("bottom_setpoint", () -> bottomTalonFX.getClosedLoopTarget());
-        dataLogger.addDataProvider("bottm_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("bottom_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
         dataLogger.addDataProvider("bottom_outputCurrent", () -> bottomTalonFX.getStatorCurrent());
         dataLogger.addDataProvider("bottom_supplyCurrent", () -> bottomTalonFX.getSupplyCurrent());
         dataLogger.addDataProvider("bottom_outputVoltage", () -> bottomTalonFX.getMotorOutputVoltage());
         dataLogger.addDataProvider("bottom_supplyVoltage", () -> bottomTalonFX.getBusVoltage());
         dataLogger.addDataProvider("bottom_outputPercent", () -> bottomTalonFX.getMotorOutputPercent());
         dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
-        dataLogger.addDataProvider("Left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
-        dataLogger.addDataProvider("Left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
-        dataLogger.addDataProvider("Left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
-        dataLogger.addDataProvider("Left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
-        dataLogger.addDataProvider("Left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
-        dataLogger.addDataProvider("Left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
-        dataLogger.addDataProvider("Left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
-        dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
-      } else {
-        dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+      }
+      if (leftTalonFX != null) {
+        dataLogger.addDataProvider("left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
+        dataLogger.addDataProvider("left_error", () -> leftTalonFX.getClosedLoopError());
       }
       dataLogger.setFilename("shooter");
       dataLogger.setFilenameTimestamp(new Date());
@@ -107,15 +106,34 @@ public class ShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
-    if(error >= 0.98 && error <= 1.02) {
-      rumbleCommandOperator.schedule();
-      rumbleCommandDriver.schedule();
+    double a = shooterSubsystem.getActualTopShooterVelocity();
+    double s = shooterSubsystem.getRequestedTopShooterVelocity();
+    double error = Double.NaN;
+    if (s != 0.0) {
+      error = a / s;
     }
-
-    //RobotContainer.shooterSubsystem.Shoot();
-    //RobotContainer.shooterSubsystem.BeltOn();
+    double b = RobotContainer.beltSubsystem.getFeederOutput();
+    logger.debug ("actual = {}, setpoint = {}, error = {}, belt = {}", a, s, error, b);
+    if(error >= lowerShooterSpeedLimit && error <= upperShooterSpeedLimit) {
+      readyToShoot();
+    }
   }
+
+  // override this in subclass if you want different limits.
+  // this is invoked once and the value is cached.
+  double defineLowerShooterSpeedLimit() {
+    return 0.98;
+  }
+
+  // override this in subclass if you want different limits
+  // this is invoked once and the value is cached.
+  double defineUpperShooterSpeedLimit() {
+    return 1.02;
+  }
+
+  // have to override this with whatever code you want to run when the shooter is up to speed.
+  // it may get called multiple times!
+  abstract void readyToShoot();
 
   // Called once the command ends or is interrupted.
   @Override

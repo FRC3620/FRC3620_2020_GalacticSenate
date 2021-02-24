@@ -8,27 +8,46 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
+import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.ShooterSubsystem;
 
-import edu.wpi.first.wpilibj.Timer;
+import java.util.Date;
 
-public class AutoShootingCommand extends AbstractShootingCommand {
-  Timer timer = new Timer();
-  double shootingTime;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.FastDataLoggerCollections;
+import org.usfirst.frc3620.logger.IFastDataLogger;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
+/**
+ * An example command that uses an example subsystem.
+ */
+public class ManualShootingCommand extends AbstractShootingCommand {
+  RumbleCommand rumbleCommandOperator;
+  RumbleCommand rumbleCommandDriver;
   
-  public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
+  public ManualShootingCommand(ShooterSubsystem subsystem) {
     super(subsystem);
-    // should probably addRequirements() here to declare BeltSubsystem dependency.
-    this.shootingTime = duration;
+
+    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+      1.0, // intensity
+      1.0 // duration
+    );
+    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
+     1.0, // intensity
+     1.0 // duration
+    );
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     super.initialize();
-
-    timer.reset();
-    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,20 +58,19 @@ public class AutoShootingCommand extends AbstractShootingCommand {
 
   @Override
   void readyToShoot() {
-    RobotContainer.beltSubsystem.BeltOn(1);
+    rumbleCommandOperator.schedule();
+    rumbleCommandDriver.schedule();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.beltSubsystem.BeltOff();
-
     super.end(interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(shootingTime);
+    return false;
   }
 }

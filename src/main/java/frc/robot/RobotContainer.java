@@ -399,7 +399,7 @@ public class RobotContainer {
     operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
 
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
-    shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
+    shootButton.toggleWhenPressed(new ManualShootingCommand(shooterSubsystem));
 
     JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));

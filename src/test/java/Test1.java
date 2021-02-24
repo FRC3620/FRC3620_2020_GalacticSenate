@@ -32,4 +32,14 @@ public class Test1 {
         System.out.println (540 % 360);
     }
 
+    //@Test
+    public void test04() {
+        double error = Double.NaN;
+        if (error >= 0.98 && error <= 1.02) {
+            System.out.println ("" + error + " in range");
+        } else {
+            System.out.println ("" + error + " out of range");
+        }
+    }
+
 }
