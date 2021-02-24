@@ -12,23 +12,17 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.commands.RumbleCommand.Hand;
-import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoCreateShootingSolutionCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
-  Logger logger;
-  /**
-   * Creates a new MoveHoodManuallyUpCommand.
-   */
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   public AutoCreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2) {
     this.shooterSubsystem = subsystem1;
     this.visionSubsystem = subsystem2;
-    logger = EventLogging.getLogger(getClass(), Level.INFO);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -37,7 +31,7 @@ public class AutoCreateShootingSolutionCommand extends CommandBase {
   public void initialize() {
     if(visionSubsystem.getShootingTargetAcquired() && visionSubsystem.getShootingTargetCentered()){
       double pixelHeight = visionSubsystem.getShootingTargetYCenter();
-      double calcPosition = 5.0 * shooterSubsystem.calcHoodPosition(pixelHeight);
+      double calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
       double calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
       logger.info("pixel Height = {}, calculated Position = {}, calculated RPM = {}", pixelHeight, calcPosition, calcRPM);
       shooterSubsystem.setTopRPM(calcRPM);

@@ -24,10 +24,9 @@ public class BeltSubsystem extends SubsystemBase {
      if(feeder != null){
        feederCurrent = feeder.getStatorCurrent();
        feederOutput = feeder.getMotorOutputPercent();
-       SmartDashboard.putNumber("z.belt", feederOutput);
+       SmartDashboard.putNumber("belt.output", feederOutput);
        feederVoltage = feeder.getMotorOutputVoltage();
      }
-
   }
 
   public double getBeltPower() {
