@@ -12,6 +12,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -31,7 +32,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
+    public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
 	public final CANSparkMax rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final CANEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final CANEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
@@ -83,10 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = 77.9;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = 143.8;//PRACTICE: 140. COMP: -130.3;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = -103.7;//PRACTICE: 91.5. COMP 7.6;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 179.1;//PRACTICE: 42.2. COMP -23.5; 
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -94.1;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = -114.2;//PRACTICE: 140. COMP: -130.3;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 95.7;//PRACTICE: 91.5. COMP 7.6;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 119.3;//PRACTICE: 42.2. COMP -23.5; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -471,6 +472,33 @@ public class DriveSubsystem extends SubsystemBase {
 
 	}
 
+	public void setWheelsToStrafe(double strafeAngle){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
+
+		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
+		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
+		double vr = 0;
+
+		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
+
+		DriveVectors currentDirections = getCurrentVectors();
+
+		newVectors = sc.fixVectors(newVectors, currentDirections);
+
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			// ignore velocity component of vectors
+			rightFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
+		}
+
+	}
+	
 	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
 		
 		double leftFrontAngle = -160;
@@ -646,19 +674,25 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 	public double getFixedPosition(CANEncoder encoder){
-		double azimuth = encoder.getPosition();
-		if(azimuth > 180){
-			azimuth = -360 + azimuth;
+  		if (encoder != null) {
+			double azimuth = encoder.getPosition();
+			if (azimuth > 180) {
+				azimuth = -360 + azimuth;
+			}
+			if (azimuth < -180) {
+				azimuth = 360 + azimuth;
+			}
+
+			if (azimuth == -0) {
+				azimuth = 0;
+			}
+
+			azimuth = Math.round(azimuth);
+
+			return azimuth;
+		} else {
+  			return 0;
 		}
-		if(azimuth < -180){
-			azimuth = 360 + azimuth;
-		} 
-		
-		if(azimuth == -0) {azimuth = 0;}
-		
-		azimuth = Math.round(azimuth);
-		
-		return azimuth;
 	}
 
 	public Vector readModuleEncoders(CANEncoder azimuthEncoder, CANEncoder speedEncoder) { 
@@ -785,9 +819,33 @@ public class DriveSubsystem extends SubsystemBase {
 		return WHEEL_CIRCUMFERENCE;
 	}
 
-	public double getDriveMotorPosition(){
+	public double getDriveMotorPositionRightFront(){
 		if (rightFrontDriveEncoder != null) {
 			return rightFrontDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionLeftFront(){
+		if (leftFrontDriveEncoder != null) {
+			return leftFrontDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionRightBack(){
+		if (rightBackDriveEncoder != null) {
+			return rightBackDriveEncoder.getPosition();
+		} else {
+			return 0.0;
+		}
+	}
+
+	public double getDriveMotorPositionLeftBack(){
+		if (leftBackDriveEncoder != null) {
+			return leftBackDriveEncoder.getPosition();
 		} else {
 			return 0.0;
 		}
@@ -837,4 +895,69 @@ public class DriveSubsystem extends SubsystemBase {
 	public boolean getForcedManualMode(){
 		return forceManualMode;
 	}
+
+	public double getAzimuthLeftFront() {
+  		return getFixedPosition(leftFrontAzimuthEncoder);
+	}
+
+	public double getAzimuthRightFront() {
+		return getFixedPosition(rightFrontAzimuthEncoder);
+	}
+
+	public double getAzimuthLeftBack() {
+		return getFixedPosition(leftBackAzimuthEncoder);
+	}
+
+	public double getAzimuthRightBack() {
+		return getFixedPosition(rightBackAzimuthEncoder);
+	}
+
+	private void setOneDriveClosedLoopRampRate (CANSparkMax d, double secondsToFullThrottle, String name) {
+		if (d != null) {
+			double was = d.getClosedLoopRampRate();
+			d.setClosedLoopRampRate(secondsToFullThrottle);			
+			if (name != null) {
+				logger.info ("Ramp rate for {} was {}", name, was);
+			}
+		}
+	}
+
+	public void setDriveToRampSlowly() {
+		double secondsToFullThrottle = 0.6;
+		setOneDriveClosedLoopRampRate(leftFrontDriveMaster, secondsToFullThrottle, "LF");
+		setOneDriveClosedLoopRampRate(rightFrontDriveMaster, secondsToFullThrottle, "RF");
+		setOneDriveClosedLoopRampRate(leftBackDriveMaster, secondsToFullThrottle, "LB");
+		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, "RB");
+	}
+
+	public void setDriveToRampQuickly() {
+		double secondsToFullThrottle = RobotContainer.DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT;
+		setOneDriveClosedLoopRampRate(leftFrontDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(rightFrontDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(leftBackDriveMaster, secondsToFullThrottle, null);
+		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, null);
+	}
+
+	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode, String name) {
+		if (d != null) {
+			d.setIdleMode(idleMode);
+		}
+	}
+
+	public void setDriveToBrake() {
+		IdleMode idleMode = IdleMode.kBrake;
+		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
+		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
+		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
+		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+	}
+
+	public void setDriveToCoast() {
+		IdleMode idleMode = IdleMode.kCoast;
+		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
+		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
+		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
+		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+	}
+
 }

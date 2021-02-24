@@ -7,6 +7,11 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -20,6 +25,8 @@ public class AutoSemiElipseCommand extends CommandBase {
   double radiusB;
   double elipseConstant;
 
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+  
   /**
    * Creates a new AutoSemicircleCommand.
    */
@@ -34,7 +41,8 @@ public class AutoSemiElipseCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialPosition = driveSubsystem.getDriveMotorPosition(); //looks at the encoder on one drive motor
+    logger.info ("eliipse beginning");
+    initialPosition = driveSubsystem.getDriveMotorPositionRightFront(); //looks at the encoder on one drive motor
     currentHeading = driveSubsystem.getNavXFixedAngle();
     driveSubsystem.setTargetHeading(currentHeading);
     elipseConstant = Math.sqrt((radiusA*radiusA + radiusB*radiusB)/2);
@@ -43,18 +51,20 @@ public class AutoSemiElipseCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPosition() - initialPosition);
-    double angleSwept = distanceTravelled / elipseConstant; //approximation to the perimeter of an ellipse in radians
+    distanceTravelled = Math.abs(driveSubsystem.getDriveMotorPositionRightFront() - initialPosition);
+    double angleSwept = 180 * distanceTravelled / elipseConstant;
 
-    double joyX = radiusA*Math.sin(angleSwept); 
-    double joyY = radiusB*Math.cos(angleSwept);
+    SmartDashboard.putNumber("ellipse.angleSwept", angleSwept);
+    SmartDashboard.putNumber("ellipse.distancetravelled", distanceTravelled);
+    SmartDashboard.putNumber("ellipse.elipseconstant", elipseConstant);
 
-    driveSubsystem.teleOpDrive(joyX, joyY, 0);
+    driveSubsystem.timedDrive(angleSwept, speed, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    logger.info ("eliipse done");
     driveSubsystem.teleOpDrive(0, 0, 0);
   }
 

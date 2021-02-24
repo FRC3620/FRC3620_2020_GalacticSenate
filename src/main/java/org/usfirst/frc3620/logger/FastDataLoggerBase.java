@@ -30,29 +30,36 @@ abstract public class FastDataLoggerBase extends DataLoggerBase implements IFast
 		t0 = getTimeInSeconds();
 
 		timer = new Timer();
-		long interval = Math.max(1, Math.round(intervalInSeconds * 1000));
-		timer.schedule(new FastLoggerTimerTask(), 0, interval);
+		if (intervalInSeconds != 0) {
+			long interval = Math.max(1, Math.round(intervalInSeconds * 1000));
+			timer.schedule(new FastLoggerTimerTask(), 0, interval);
+		}
+	}
+
+	public void doLog() {
+		Object[] row = new Object[namedDataProviders.size()];
+
+		for (int i = 0; i < row.length; i++) {
+			NamedDataProvider namedDataProvider = namedDataProviders.get(i);
+			try {
+				row[i] = namedDataProvider.iDataLoggerDataProvider.get();
+			} catch (Exception e) {
+				row[i] = "ERROR";
+			}
+		}
+
+		logData(getTimeInSeconds() - t0, row);
+
 	}
 
 	class FastLoggerTimerTask extends TimerTask {
 		@Override
 		public void run() {
 			double t = getTimeInSeconds();
-			if (maxLengthInSeconds != null && (t > t0 + maxLengthInSeconds)) {
+			if (maxLengthInSeconds != null && maxLengthInSeconds != 0.0 && (t > t0 + maxLengthInSeconds)) {
 				done();
 			} else {
-				Object[] row = new Object[namedDataProviders.size()];
-
-				for (int i = 0; i < row.length; i++) {
-					NamedDataProvider namedDataProvider = namedDataProviders.get(i);
-					try {
-						row[i] = namedDataProvider.iDataLoggerDataProvider.get();
-					} catch (Exception e) {
-						row[i] = "ERROR";
-					}
-				}
-
-				logData(t - t0, row);
+				doLog();
 			}
 		}
 	}
