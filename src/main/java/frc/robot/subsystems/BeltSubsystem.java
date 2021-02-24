@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.BeltIdleCommand;
@@ -23,9 +24,14 @@ public class BeltSubsystem extends SubsystemBase {
      if(feeder != null){
        feederCurrent = feeder.getStatorCurrent();
        feederOutput = feeder.getMotorOutputPercent();
+       SmartDashboard.putNumber("z.belt", feederOutput);
        feederVoltage = feeder.getMotorOutputVoltage();
      }
 
+  }
+
+  public double getBeltPower() {
+    return feeder.getMotorOutputPercent();
   }
 
   public void BeltOn(double speed){

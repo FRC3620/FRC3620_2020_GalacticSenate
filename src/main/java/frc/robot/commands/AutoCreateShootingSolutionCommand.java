@@ -37,7 +37,7 @@ public class AutoCreateShootingSolutionCommand extends CommandBase {
   public void initialize() {
     if(visionSubsystem.getShootingTargetAcquired() && visionSubsystem.getShootingTargetCentered()){
       double pixelHeight = visionSubsystem.getShootingTargetYCenter();
-      double calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
+      double calcPosition = 5.0 * shooterSubsystem.calcHoodPosition(pixelHeight);
       double calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
       logger.info("pixel Height = {}, calculated Position = {}, calculated RPM = {}", pixelHeight, calcPosition, calcRPM);
       shooterSubsystem.setTopRPM(calcRPM);

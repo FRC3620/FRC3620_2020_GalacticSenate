@@ -210,8 +210,11 @@ public class ShooterSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Top Velocity", trpm);
       SmartDashboard.putNumber("Bottom Velocity", brpm);
       SmartDashboard.putNumber("Hood positon", hoodPosition);
-      SmartDashboard.getNumber("anyRPM", anyRPM);
-      SmartDashboard.getNumber("anyPosition", anyPosition);
+      SmartDashboard.putNumber("anyRPM", anyRPM);
+      SmartDashboard.putNumber("anyPosition", anyPosition);
+
+      SmartDashboard.putNumber("z.actual", getActualTopShooterVelocity());
+      SmartDashboard.putNumber("z.requested", getRequestedTopShooterVelocity());
   
       //SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
       //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());

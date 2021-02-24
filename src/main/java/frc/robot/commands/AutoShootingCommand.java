@@ -12,6 +12,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -24,6 +28,8 @@ public class AutoShootingCommand extends CommandBase {
   Timer timer = new Timer();
   Timer timerPreshooter = new Timer();
   double shootingTime;
+
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
   public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
     this.shootingTime = duration;
@@ -43,7 +49,11 @@ public class AutoShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    double error = (shooterSubsystem.getActualTopShooterVelocity() / shooterSubsystem.getRequestedTopShooterVelocity());
+    double a = shooterSubsystem.getActualTopShooterVelocity();
+    double s = shooterSubsystem.getRequestedTopShooterVelocity();
+    double error = a / s;
+    double b = RobotContainer.beltSubsystem.getFeederOutput();
+    logger.info ("a = {}, s = {}, error = {}, b = {}", a, s, error, b);
     if(error >= 0.98 && error <= 1.02) {
       RobotContainer.beltSubsystem.BeltOn(1);
     }

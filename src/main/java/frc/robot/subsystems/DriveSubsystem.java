@@ -84,10 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -94.1;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = -114.2;//PRACTICE: 140. COMP: -130.3;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 95.7;//PRACTICE: 91.5. COMP 7.6;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 119.3;//PRACTICE: 42.2. COMP -23.5; 
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -99.6;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = -113.8;//PRACTICE: 140. COMP: -130.3;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 95.0;//PRACTICE: 91.5. COMP 7.6;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 154;//PRACTICE: 42.2. COMP -23.5; 
 
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
@@ -229,12 +229,14 @@ public class DriveSubsystem extends SubsystemBase {
 		if (leftFrontDriveEncoder != null) {	
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth", leftFrontAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
 		}
 		if (leftBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth", leftBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
 			SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
 
@@ -242,6 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth", rightBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Right Back Azimuth fixed", getFixedPosition(rightBackAzimuthEncoder));
 			SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());	
 			SmartDashboard.putNumber("Right Back Drive Motor Position", rightBackDriveEncoder.getPosition());
@@ -511,10 +514,10 @@ public class DriveSubsystem extends SubsystemBase {
 		 
 		DriveVectors newVectors = new DriveVectors();
 		
-		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
-		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);//only move the front wheels
-		newVectors.leftBack = new Vector(leftBackAngle, 0);
-		newVectors.rightBack = new Vector(rightBackAngle, 0);
+		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed); // we will fix the velocity below
+		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);
+		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);
+		newVectors.rightBack = new Vector(rightBackAngle, turnSpeed);
 
 		newVectors = sc.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
 		
@@ -676,10 +679,10 @@ public class DriveSubsystem extends SubsystemBase {
 	public double getFixedPosition(CANEncoder encoder){
   		if (encoder != null) {
 			double azimuth = encoder.getPosition();
-			if (azimuth > 180) {
+			while (azimuth > 180) {
 				azimuth = -360 + azimuth;
 			}
-			if (azimuth < -180) {
+			while (azimuth < -180) {
 				azimuth = 360 + azimuth;
 			}
 
