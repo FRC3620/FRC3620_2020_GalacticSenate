@@ -84,11 +84,12 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -94.1;//PRACTICE: 116.9. COMP: -83.3; // reading of the absolute encoders when the wheels are pointed at true 0 degrees (-180 to 180 degrees)
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = -114.2;//PRACTICE: 140. COMP: -130.3;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 95.7;//PRACTICE: 91.5. COMP 7.6;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = 119.3;//PRACTICE: 42.2. COMP -23.5; 
-
+    // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -99.6;
+	private double LEFT_FRONT_ABSOLUTE_OFFSET = -113.8;
+	private double LEFT_BACK_ABSOLUTE_OFFSET = 95.0;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET = 154;
+	
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
 	private double kPositionD = .0;
