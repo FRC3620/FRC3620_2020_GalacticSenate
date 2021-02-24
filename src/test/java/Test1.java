@@ -8,16 +8,28 @@ import org.junit.Test;
  */
 public class Test1 {
 
-    @Test
+    //@Test
     public void test01() {
         assertFalse(false);
         //
         System.out.println ("test01 passed");
     }
     
-    @Test
+    //@Test
     public void test02() {
         System.out.println ("test02 passed");
+    }
+
+    //@Test
+    public void test03() {
+        System.out.println (-540 % 360);
+        System.out.println (-181 % 360);
+        System.out.println (-180 % 360);
+        System.out.println (-179 % 360);
+        System.out.println (179 % 360);
+        System.out.println (180 % 360);
+        System.out.println (181 % 360);
+        System.out.println (540 % 360);
     }
 
 }

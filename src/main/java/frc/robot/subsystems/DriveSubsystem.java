@@ -129,7 +129,6 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors oldVectors;
 
   public DriveSubsystem() {
-
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
 		rightFrontPositionPID = rightFrontAzimuth.getPIDController();
@@ -210,15 +209,12 @@ public class DriveSubsystem extends SubsystemBase {
 	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
 	spinPIDController.setTolerance(3);
 
-	
-
 	fixRelativeEncoders();
   }
 
-  @Override
-  public void periodic() {
-
-    SmartDashboard.putNumber("Conversion Factor", (WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
+	@Override
+	public void periodic() {
+		SmartDashboard.putNumber("Conversion Factor", (WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
 
 		if (rightFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Front Velocity", rightFrontDriveEncoder.getVelocity());
@@ -227,15 +223,17 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
 			SmartDashboard.putNumber("Right Front Drive Current Draw", rightFrontDriveMaster.getOutputCurrent());
 		}
-		if (leftFrontDriveEncoder != null) {	
+		if (leftFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth", leftFrontAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
 		}
 		if (leftBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth", leftBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
 			SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
 
@@ -243,8 +241,9 @@ public class DriveSubsystem extends SubsystemBase {
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth", rightBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Right Back Azimuth fixed", getFixedPosition(rightBackAzimuthEncoder));
 			SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
-			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());	
+			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Back Drive Motor Position", rightBackDriveEncoder.getPosition());
 		}
 
@@ -272,15 +271,14 @@ public class DriveSubsystem extends SubsystemBase {
 				setAutoSpinMode();
 			}
 		}
-		
+
 		if(!autoSpinMode){
 			periodicManualSpinMode();
 		}else{
 			periodicAutoSpinMode();
 		}
 		SmartDashboard.putNumber("Target Heading", targetHeading);
-
-  }
+	}
 
   public void periodicManualSpinMode(){
 		setTargetHeading(currentHeading);
@@ -289,7 +287,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodicAutoSpinMode(){
-
 		spinPIDController.setSetpoint(targetHeading);
 		spinPower = spinPIDController.calculate(currentHeading);
 		double error = spinPIDController.getPositionError();
@@ -297,7 +294,7 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Spin PID error", error);
   }
 
-  public double getStrafeXValue() {
+  	public double getStrafeXValue() {
 		double rv = MAX_VELOCITY_RPM*RobotContainer.getDriveHorizontalJoystick();
 		return rv;
 	}
@@ -341,8 +338,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void azimuthTest(double heading){
-
-		DriveVectors newVectors = new DriveVectors();    
+		DriveVectors newVectors = new DriveVectors();
 		newVectors.leftFront = new Vector(heading, 0);         
 		newVectors.rightFront = new Vector(heading, 0);      
 		newVectors.leftBack = new Vector(heading, 0);        
@@ -360,25 +356,21 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 		SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
 			//SmartDashboard.putBoolean("Change Test Heading", false);
-		
-		
-
 	}
 
 	public void teleOpDrive(double strafeX, double strafeY, double spinX) {
-
 		double vx = strafeX*MAX_VELOCITY_IN_PER_SEC;
 		double vy = strafeY*MAX_VELOCITY_IN_PER_SEC;
 		double vr = spinX*MAX_TURN;
 
 		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
 
-		SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
+		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
 		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
+		//SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
 		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
 
 		newVectors = sc.fixVectors(newVectors, currentDirections);
@@ -396,7 +388,6 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 		
 		if (drivePIDTuning){
-
 			double lbCommandedVel = newVectors.leftBack.getMagnitude();
 			double lbCurrentVel = currentDirections.leftBack.getMagnitude();
 			double lbVelError = lbCommandedVel - lbCurrentVel;
@@ -470,11 +461,9 @@ public class DriveSubsystem extends SubsystemBase {
 			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
 			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
 		}
-
 	}
 
 	public void setWheelsToStrafe(double strafeAngle){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
-
 		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
 		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vr = 0;
@@ -497,11 +486,9 @@ public class DriveSubsystem extends SubsystemBase {
 			leftBackVelPID.setReference(0, ControlType.kVelocity);
 			rightBackVelPID.setReference(0, ControlType.kVelocity);
 		}
-
 	}
 	
 	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
-		
 		double leftFrontAngle = -160;
 		double rightFrontAngle = 160;
 		double leftBackAngle = 90; //should be pointing forward
@@ -511,11 +498,12 @@ public class DriveSubsystem extends SubsystemBase {
 		DriveVectors currentDirections = getCurrentVectors();
 		 
 		DriveVectors newVectors = new DriveVectors();
-		
+
+		// need to have non-zero velocity so that fixVectors actual changes azimuth.
 		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
-		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);//only move the front wheels
-		newVectors.leftBack = new Vector(leftBackAngle, 0);
-		newVectors.rightBack = new Vector(rightBackAngle, 0);
+		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);
+		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);  // we will fix the velocity for rear below
+		newVectors.rightBack = new Vector(rightBackAngle, turnSpeed);
 
 		newVectors = sc.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
 		
@@ -632,29 +620,13 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	}
 
-	public void setAllPID() {
-		/*setPositionTalonPID(leftFrontAzimuth);
-		setVelocityTalonPID(leftFrontDriveMaster);
-
-		setPositionTalonPID(rightFrontAzimuth);
-		setVelocityTalonPID(rightFrontDriveMaster);
-
-		setPositionTalonPID(leftBackAzimuth);
-		setVelocityTalonPID(leftBackDriveMaster);
-
-		setPositionTalonPID(rightBackAzimuth);
-		setVelocityTalonPID(rightBackDriveMaster);*/
-	}
-
 	public double getHomeEncoderHeading(AnalogInput encoder){
-		
 		double heading = encoder.getValue();
 		heading = ((heading+1)*360)/4096; // converting heading from tics (ranging from 0 to 4095) to degrees (ranging from 1 to 0)
 		if(heading>180){
 			heading = heading-360;         // converting from 1-360 degrees to -180 to 180 degrees
 		}
 		return -heading;
-
 	}
 
 	public void zeroRelativeEncoders(){
@@ -677,15 +649,12 @@ public class DriveSubsystem extends SubsystemBase {
 	public double getFixedPosition(CANEncoder encoder){
   		if (encoder != null) {
 			double azimuth = encoder.getPosition();
+			azimuth = azimuth % 360;
 			if (azimuth > 180) {
 				azimuth = -360 + azimuth;
 			}
 			if (azimuth < -180) {
 				azimuth = 360 + azimuth;
-			}
-
-			if (azimuth == -0) {
-				azimuth = 0;
 			}
 
 			azimuth = Math.round(azimuth);
@@ -697,20 +666,14 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public Vector readModuleEncoders(CANEncoder azimuthEncoder, CANEncoder speedEncoder) { 
-
 		if(azimuthEncoder != null) {
 			double azimuth = azimuthEncoder.getPosition();
-			
-
 			if(speedEncoder != null) {
-
 				double wheelSpeed = speedEncoder.getVelocity(); //tics per 100ms
 
 				Vector rv = new Vector(azimuth, wheelSpeed);
 				return rv;
-
 			}
-
 		}
 		return new Vector(0,0);
 	}
@@ -720,14 +683,12 @@ public class DriveSubsystem extends SubsystemBase {
 		double encoderReading = azimuthTics;
 		double azimuth = (360.0*encoderReading)/AZIMUTH_ENCODER_CONVERSION_FACTOR;
 		azimuth = azimuth % 360;
-		if(azimuth > 180){
+		if (azimuth > 180){
 			azimuth = -360 + azimuth;
 		}
-		if(azimuth < -180){
+		if (azimuth < -180){
 			azimuth = 360 + azimuth;
 		} 
-		
-		if(azimuth == -0) {azimuth = 0;}
 		
 		azimuth = Math.round(azimuth);
 		
@@ -735,34 +696,26 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
-
 		double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
-		if(angle > 180){
+		if (angle > 180){
 			angle = -360 + angle;
 		}
-		if(angle < -180){
+		if (angle < -180){
 			angle = 360 + angle;
 		}
 		
-		if(angle == -0) {angle = 0;}
-
 		return angle;
-		
 	}
 
 	public double getNavXAbsoluteAngle(){ //returns raw degrees, can accumulate past 360 or -360 degrees 
-
 		double angle =ahrs.getAngle();
-
 		return angle;
-		
 	}
 	
 	public double convertVelocity(double velocity) { //took this out to make it testable
-
 		double encoderSpeed = velocity; //RPM
 		encoderSpeed = encoderSpeed/60; //Motor Revolutions per second
 
@@ -773,11 +726,9 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public Vector convertSingleVector(Vector v) {
-
 		double speed = v.getMagnitude();
 		speed = speed * WHEEL_CIRCUMFERENCE;
-		speed = speed * WHEEL_TO_ENCODER_RATIO_VELOCITY
-;
+		speed = speed * WHEEL_TO_ENCODER_RATIO_VELOCITY;
 		speed = speed * SPEED_ENCODER_TICS;
 		speed = speed * 10; //converted to tics/100ms
 
@@ -789,7 +740,6 @@ public class DriveSubsystem extends SubsystemBase {
 		Vector rv = new Vector(direction, speed);
 
 		return rv;
-
 	}
 
 	public DriveVectors convertAllVectors(DriveVectors dv) {
@@ -882,8 +832,8 @@ public class DriveSubsystem extends SubsystemBase {
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {
-        if (autoSpinMode){
-           // logger.info("Switching to Auto Spin Mode");
+        if (!autoSpinMode){
+           logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
 	}
