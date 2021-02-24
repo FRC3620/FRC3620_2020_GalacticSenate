@@ -376,12 +376,12 @@ public class DriveSubsystem extends SubsystemBase {
 
 		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
 
-		SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
+		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
 		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
+		//SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
 		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
 
 		newVectors = sc.fixVectors(newVectors, currentDirections);

@@ -74,28 +74,27 @@ public class ShootingCommand extends CommandBase {
         dataLogger.addDataProvider("right_outputVoltage", () -> rightTalonFX.getMotorOutputVoltage());
         dataLogger.addDataProvider("right_supplyVoltage", () -> rightTalonFX.getBusVoltage());
         dataLogger.addDataProvider("right_outputPercent", () -> rightTalonFX.getMotorOutputPercent());
-        dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
+        dataLogger.addDataProvider("right_error", () -> rightTalonFX.getClosedLoopError());
+      }
+      if (bottomTalonFX != null) {
         dataLogger.addDataProvider("bottom_setpoint", () -> bottomTalonFX.getClosedLoopTarget());
-        dataLogger.addDataProvider("bottm_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("bottom_rpm", () -> bottomTalonFX.getSelectedSensorVelocity());
         dataLogger.addDataProvider("bottom_outputCurrent", () -> bottomTalonFX.getStatorCurrent());
         dataLogger.addDataProvider("bottom_supplyCurrent", () -> bottomTalonFX.getSupplyCurrent());
         dataLogger.addDataProvider("bottom_outputVoltage", () -> bottomTalonFX.getMotorOutputVoltage());
         dataLogger.addDataProvider("bottom_supplyVoltage", () -> bottomTalonFX.getBusVoltage());
         dataLogger.addDataProvider("bottom_outputPercent", () -> bottomTalonFX.getMotorOutputPercent());
         dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
-        dataLogger.addDataProvider("Left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
-        dataLogger.addDataProvider("Left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
-        dataLogger.addDataProvider("Left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
-        dataLogger.addDataProvider("Left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
-        dataLogger.addDataProvider("Left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
-        dataLogger.addDataProvider("Left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
-        dataLogger.addDataProvider("Left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
-        dataLogger.addDataProvider("bottom_error", () -> bottomTalonFX.getClosedLoopError());
-
-      } else {
-        dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
+      }
+      if (leftTalonFX != null) {
+        dataLogger.addDataProvider("left_setpoint", () -> leftTalonFX.getClosedLoopTarget());
+        dataLogger.addDataProvider("left_rpm", () -> leftTalonFX.getSelectedSensorVelocity());
+        dataLogger.addDataProvider("left_outputCurrent", () -> leftTalonFX.getStatorCurrent());
+        dataLogger.addDataProvider("left_supplyCurrent", () -> leftTalonFX.getSupplyCurrent());
+        dataLogger.addDataProvider("left_outputVoltage", () -> leftTalonFX.getMotorOutputVoltage());
+        dataLogger.addDataProvider("left_supplyVoltage", () -> leftTalonFX.getBusVoltage());
+        dataLogger.addDataProvider("left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
+        dataLogger.addDataProvider("left_error", () -> leftTalonFX.getClosedLoopError());
       }
       dataLogger.setFilename("shooter");
       dataLogger.setFilenameTimestamp(new Date());
