@@ -13,11 +13,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class GoldenAutoCommand extends SequentialCommandGroup {
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
   DriveSubsystem driveSubsystem;
   ShooterSubsystem shooterSubsystem;
   VisionSubsystem visionSubsystem;
@@ -46,10 +46,15 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new AutoSpinCommand(0.6, -150, driveSubsystem),
       new AutoStartIntakeCommand(intakeSubsystem),
       new WaitCommand(0.4),
+      new MessageCommand (logger, "Aligning..."),
       new DriveAndAlignCommand(driveSubsystem, visionSubsystem),
+      new MessageCommand (logger, "Aligned..."),
       new AutoStopIntakeCommand(intakeSubsystem),
-      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem), 
-      new AutoShootingCommand(shooterSubsystem, 4)
+      new MessageCommand (logger, "Creating Solution..."),
+      new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
+      new MessageCommand (logger, "Shooting..."),
+      new AutoShootingCommand(shooterSubsystem, 4),
+      new MessageCommand (logger, "Done!")
       
     /*new AutoSnapToHeadingCommand(-113, driveSubsystem),
       new WaitCommand(2),

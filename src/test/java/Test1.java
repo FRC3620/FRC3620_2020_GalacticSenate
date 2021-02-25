@@ -3,6 +3,8 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 /**
  * Add your docs here.
  */
@@ -40,6 +42,12 @@ public class Test1 {
         } else {
             System.out.println ("" + error + " out of range");
         }
+    }
+
+    @Test
+    public void test05() {
+        Date date = new Date();
+        System.out.println (date);
     }
 
 }

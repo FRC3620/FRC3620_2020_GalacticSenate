@@ -7,61 +7,115 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.BeltSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj.Timer;
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.IFastDataLogger;
 
-public class AutoShootingCommand extends AbstractShootingCommand {
-  Timer commandTimer = new Timer();
+public class AutoShootingCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+
+  boolean shouldDoDataLogging = true;
+
+  IFastDataLogger dataLogger;
+
+  boolean weGotToSpeed;
+
+  ShooterSubsystem shooterSubsystem;
+  BeltSubsystem beltSubsystem;
+
+  Timer commandTimer;
   Timer spinupTimer;
+
   double shootingTime;
-  boolean loggedBeltOn;
-  
+  boolean weLoggedBeltOn;
+
   public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
-    super(subsystem);
     // should probably addRequirements() here to declare BeltSubsystem dependency.
+    this.shooterSubsystem = subsystem;
     this.shootingTime = duration;
+
+    // this is inconsistent with passing them in
+    this.beltSubsystem = RobotContainer.beltSubsystem;
+
+    commandTimer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
-
     logger.info ("Autoshooting for {} s", shootingTime);
+
+    if (shouldDoDataLogging) {
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_a", this.shootingTime);
+      dataLogger.addDataProvider("we_got_to_speed", () -> weGotToSpeed ? 1 : 0);
+      dataLogger.start();
+    }
+
+    weGotToSpeed = false;
+    weLoggedBeltOn = false;
 
     commandTimer.reset();
     commandTimer.start();
-    loggedBeltOn = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
+    RobotContainer.shooterSubsystem.ShootPID();
 
-    if (spinupTimer != null) {
-      if (! loggedBeltOn) {
-        logger.info("spinup timer = {}, command timer = {}", spinupTimer.get(), commandTimer.get());
-      }
-      if (spinupTimer.hasElapsed(2.0)) {
-        if (! loggedBeltOn) {
-          logger.info ("spinning up belt");
-          loggedBeltOn = true;
-        }
-        RobotContainer.beltSubsystem.BeltOn(1);
+    double ta = shooterSubsystem.getActualTopShooterVelocity();
+    double ts = shooterSubsystem.getRequestedTopShooterVelocity();
+    double terror = Double.NaN;
+    if (ts != 0.0) {
+      terror = ta / ts;
+    }
+
+    double ba = shooterSubsystem.getActualBottomShooterVelocity();
+    double bs = shooterSubsystem.getRequestedBottomShooterVelocity();
+    double berror = Double.NaN;
+    if (ts != 0.0) {
+      berror = ba / bs;
+    }
+
+    double b = RobotContainer.beltSubsystem.getFeederOutput();
+    if (! weGotToSpeed) {
+      double hoodSet = shooterSubsystem.getRequestedHoodPosition();
+      double hoodAct = shooterSubsystem.getActualHoodPosition();
+      logger.info (
+              "tactual = {}, tsetpoint = {}, terror = {}, " +
+                      "bactual = {}, bsetpoint = {}, berror = {}, " +
+                      "hoodset = {}, hoodact = {}, belt = {}",
+              ta, ts, terror,
+              ba, bs, berror,
+              hoodSet, hoodAct, b);
+    }
+    if (terror >= 0.98 && terror <= 1.02 && berror >= 0.98 && berror <= 1.02) {
+      if (!weGotToSpeed) {
+        weGotToSpeed = true;
+
+        logger.info ("up to speed, starting spinup timer");
+        spinupTimer = new Timer();
+        spinupTimer.reset();
+        spinupTimer.start();
       }
     }
-  }
 
-  @Override
-  void readyToShoot() {
-    if (spinupTimer == null) {
-      logger.info ("starting spinup timer");
-      spinupTimer = new Timer();
-      spinupTimer.reset();
-      spinupTimer.start();
+    if (spinupTimer != null) {
+      if (spinupTimer.hasElapsed(2.0)) {
+        if (! weLoggedBeltOn) {
+          weLoggedBeltOn = true;
+          logger.info ("spinning up belt");
+        }
+        RobotContainer.beltSubsystem.BeltOn(1);
+      } else {
+        logger.info("command timer = {}, spinup timer = {}", commandTimer.get(), spinupTimer.get());
+      }
     }
   }
 
@@ -69,12 +123,17 @@ public class AutoShootingCommand extends AbstractShootingCommand {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.beltSubsystem.BeltOff();
+    shooterSubsystem.ShooterOff();
+
+    if (dataLogger != null) {
+      dataLogger.done();
+    }
+
     commandTimer.stop();
     if (spinupTimer != null) {
       spinupTimer.stop();
+      spinupTimer = null;
     }
-
-    super.end(interrupted);
   }
 
   // Returns true when the command should end.

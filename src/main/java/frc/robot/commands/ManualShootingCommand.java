@@ -11,29 +11,30 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.ShooterSubsystem;
 
-import java.util.Date;
-
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/**
- * An example command that uses an example subsystem.
- */
-public class ManualShootingCommand extends AbstractShootingCommand {
+public class ManualShootingCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+  boolean shouldDoDataLogging = true;
+
+  IFastDataLogger dataLogger;
+
+  boolean weGotToSpeed;
+
+  ShooterSubsystem shooterSubsystem;
+
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
-  boolean weRumbled;
-  
+
+
   public ManualShootingCommand(ShooterSubsystem subsystem) {
-    super(subsystem);
+    this.shooterSubsystem = subsystem;
 
     rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
       1.0, // intensity
@@ -48,29 +49,63 @@ public class ManualShootingCommand extends AbstractShootingCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
-    weRumbled = false;
+    if (shouldDoDataLogging) {
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m");
+      dataLogger.addDataProvider("we_got_to_speed", () -> weGotToSpeed ? 1 : 0);
+      dataLogger.start();
+    }
+    weGotToSpeed = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
-  }
+    RobotContainer.shooterSubsystem.ShootPID();
 
-  @Override
-  void readyToShoot() {
-    if (!weRumbled) {
-      rumbleCommandOperator.schedule();
-      rumbleCommandDriver.schedule();
-      weRumbled = true;
+    double ta = shooterSubsystem.getActualTopShooterVelocity();
+    double ts = shooterSubsystem.getRequestedTopShooterVelocity();
+    double terror = Double.NaN;
+    if (ts != 0.0) {
+      terror = ta / ts;
+    }
+
+    double ba = shooterSubsystem.getActualBottomShooterVelocity();
+    double bs = shooterSubsystem.getRequestedBottomShooterVelocity();
+    double berror = Double.NaN;
+    if (ts != 0.0) {
+      berror = ba / bs;
+    }
+
+    double b = RobotContainer.beltSubsystem.getFeederOutput();
+    if (! weGotToSpeed) {
+      double hoodSet = shooterSubsystem.getRequestedHoodPosition();
+      double hoodAct = shooterSubsystem.getActualHoodPosition();
+      logger.info (
+              "tactual = {}, tsetpoint = {}, terror = {}, " +
+                      "bactual = {}, bsetpoint = {}, berror = {}, " +
+                      "hoodset = {}, hoodact = {}, belt = {}",
+              ta, ts, terror,
+              ba, bs, berror,
+              hoodSet, hoodAct, b);
+    }
+    if (terror >= 0.98 && terror <= 1.02 && berror >= 0.98 && berror <= 1.02) {
+      if (!weGotToSpeed) {
+        weGotToSpeed = true;
+        logger.info("up to speed, rumbling...");
+        rumbleCommandOperator.schedule();
+        rumbleCommandDriver.schedule();
+      }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    super.end(interrupted);
+    shooterSubsystem.ShooterOff();
+    if (dataLogger != null) {
+      // dataLogger.done();
+      dataLogger = null;
+    }
   }
 
   // Returns true when the command should end.
