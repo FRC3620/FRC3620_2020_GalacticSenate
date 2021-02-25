@@ -67,21 +67,33 @@ abstract public class FastDataLoggerBase extends DataLoggerBase implements IFast
 	@Override
 	public void done() {
 		timer.cancel();
+		logger.info ("fastLogger.done() called from {}", miniTraceback());
 		if (outputFile != null) {
-			logger.info("fastLogger done, writing to {}", outputFile);
-			try {
-				PrintWriter w = new PrintWriter(new FileWriter(outputFile));
-				writeHeader(w, namedDataProviders, metadata);
-				writeData(w);
-				w.close();
+			if (!isDone) {
+				logger.info("fastLogger done, writing to {}", outputFile);
+				try {
+					PrintWriter w = new PrintWriter(new FileWriter(outputFile));
+					writeHeader(w, namedDataProviders, metadata);
+					writeData(w);
+					w.close();
 
-				isDone = true;
-			} catch (IOException e) {
-				e.printStackTrace(); // NOPMD
+					isDone = true;
+				} catch (IOException e) {
+					e.printStackTrace(); // NOPMD
+				}
+			} else {
+				logger.info("tried to do done multiple times: {}", outputFile);
 			}
 		} else {
 			logger.warn("no output file yet!");
 		}
+	}
+
+	String miniTraceback() {
+		StackTraceElement[] st = Thread.currentThread().getStackTrace();
+		StackTraceElement st1 = st[3];
+		String rv = st1.getClassName() + "." + st1.getMethodName() + ":" + st1.getLineNumber();
+		return rv;
 	}
 
 	abstract void logData(double timestamp, Object[] row);
