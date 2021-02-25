@@ -13,7 +13,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoShootingCommand extends AbstractShootingCommand {
-  Timer timer = new Timer();
+  Timer commandTimer = new Timer();
+  Timer spinupTimer;
   double shootingTime;
   
   public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
@@ -27,25 +28,41 @@ public class AutoShootingCommand extends AbstractShootingCommand {
   public void initialize() {
     super.initialize();
 
-    timer.reset();
-    timer.start();
+    commandTimer.reset();
+    commandTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
+
+    if (spinupTimer != null) {
+      logger.info ("spinup timer = {}", spinupTimer.get());
+      if (spinupTimer.hasElapsed(0.25)) {
+        RobotContainer.beltSubsystem.BeltOn(1);
+      }
+    }
   }
 
   @Override
   void readyToShoot() {
-    RobotContainer.beltSubsystem.BeltOn(1);
+    if (spinupTimer == null) {
+      logger.info ("starting spinup timer");
+      spinupTimer = new Timer();
+      spinupTimer.reset();
+      spinupTimer.start();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     RobotContainer.beltSubsystem.BeltOff();
+    commandTimer.stop();
+    if (spinupTimer != null) {
+      spinupTimer.stop();
+    }
 
     super.end(interrupted);
   }
@@ -53,6 +70,6 @@ public class AutoShootingCommand extends AbstractShootingCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(shootingTime);
+    return commandTimer.hasElapsed(shootingTime);
   }
 }
