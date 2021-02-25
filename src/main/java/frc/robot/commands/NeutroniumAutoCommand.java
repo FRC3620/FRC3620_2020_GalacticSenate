@@ -66,7 +66,7 @@ public class NeutroniumAutoCommand extends SequentialCommandGroup {
             new MessageCommand (logger, "Creating Solution..."),
       new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
             new MessageCommand (logger, "Shooting..."),
-      new AutoShootingCommand(shooterSubsystem, 4),
+      new AutoShootingCommand(shooterSubsystem, 10),
             new MessageCommand (logger, "Done!")
 
       

@@ -68,7 +68,7 @@ abstract class AbstractShootingCommand extends CommandBase {
     if (shouldDoDataLogging()) {
       dataLogger = new FastDataLoggerCollections();
       dataLogger.setInterval(0.005);
-      dataLogger.setMaxLength(10.0);
+      dataLogger.setMaxLength(15.0);
       if (rightTalonFX != null) {
         dataLogger.addDataProvider("right_setpoint", () -> rightTalonFX.getClosedLoopTarget());
         dataLogger.addDataProvider("right_rpm", () -> rightTalonFX.getSelectedSensorVelocity());

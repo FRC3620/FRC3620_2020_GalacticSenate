@@ -16,6 +16,7 @@ public class AutoShootingCommand extends AbstractShootingCommand {
   Timer commandTimer = new Timer();
   Timer spinupTimer;
   double shootingTime;
+  boolean loggedBeltOn;
   
   public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
     super(subsystem);
@@ -28,8 +29,11 @@ public class AutoShootingCommand extends AbstractShootingCommand {
   public void initialize() {
     super.initialize();
 
+    logger.info ("Autoshooting for {} s", shootingTime);
+
     commandTimer.reset();
     commandTimer.start();
+    loggedBeltOn = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,8 +42,14 @@ public class AutoShootingCommand extends AbstractShootingCommand {
     super.execute();
 
     if (spinupTimer != null) {
-      logger.info ("spinup timer = {}", spinupTimer.get());
-      if (spinupTimer.hasElapsed(0.25)) {
+      if (! loggedBeltOn) {
+        logger.info("spinup timer = {}, command timer = {}", spinupTimer.get(), commandTimer.get());
+      }
+      if (spinupTimer.hasElapsed(2.0)) {
+        if (! loggedBeltOn) {
+          logger.info ("spinning up belt");
+          loggedBeltOn = true;
+        }
         RobotContainer.beltSubsystem.BeltOn(1);
       }
     }
