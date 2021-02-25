@@ -31,6 +31,8 @@ abstract class AbstractShootingCommand extends CommandBase {
 
   double lowerShooterSpeedLimit, upperShooterSpeedLimit;
 
+  boolean weGotToSpeed;
+
   IFastDataLogger dataLogger;
 
   // not public
@@ -56,12 +58,13 @@ abstract class AbstractShootingCommand extends CommandBase {
 
   // can override this in subclass for different log level
   Level getDesiredLoggingLevel() {
-    return Level.INFO;
+    return Level.DEBUG;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    weGotToSpeed = false;
     if (shouldDoDataLogging()) {
       dataLogger = new FastDataLoggerCollections();
       dataLogger.setInterval(0.005);
@@ -96,6 +99,13 @@ abstract class AbstractShootingCommand extends CommandBase {
         dataLogger.addDataProvider("left_outputPercent", () -> leftTalonFX.getMotorOutputPercent());
         dataLogger.addDataProvider("left_error", () -> leftTalonFX.getClosedLoopError());
       }
+      dataLogger.addDataProvider("top_shooter_actual", () -> shooterSubsystem.getActualTopShooterVelocity());
+      dataLogger.addDataProvider("top_shooter_requested", () -> shooterSubsystem.getRequestedTopShooterVelocity());
+      dataLogger.addDataProvider("bottom_shooter_actual", () -> shooterSubsystem.getActualBottomShooterVelocity());
+      dataLogger.addDataProvider("bottom_shooter_requested", () -> shooterSubsystem.getRequestedBottomShooterVelocity());
+      dataLogger.addDataProvider("hood_actual", () -> shooterSubsystem.getActualHoodPosition());
+      dataLogger.addDataProvider("hood_setpoint", () -> shooterSubsystem.getRequestedHoodPosition());
+      dataLogger.addDataProvider("belt_power", () -> RobotContainer.beltSubsystem.getBeltPower());
       dataLogger.setFilename("shooter");
       dataLogger.setFilenameTimestamp(new Date());
       dataLogger.start();
@@ -106,16 +116,38 @@ abstract class AbstractShootingCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.ShootPID();
-    double a = shooterSubsystem.getActualTopShooterVelocity();
-    double s = shooterSubsystem.getRequestedTopShooterVelocity();
-    double error = Double.NaN;
-    if (s != 0.0) {
-      error = a / s;
+    double ta = shooterSubsystem.getActualTopShooterVelocity();
+    double ts = shooterSubsystem.getRequestedTopShooterVelocity();
+    double terror = Double.NaN;
+    if (ts != 0.0) {
+      terror = ta / ts;
+    }
+    double ba = shooterSubsystem.getActualBottomShooterVelocity();
+    double bs = shooterSubsystem.getRequestedBottomShooterVelocity();
+    double berror = Double.NaN;
+    if (ts != 0.0) {
+      berror = ba / bs;
     }
     double b = RobotContainer.beltSubsystem.getFeederOutput();
-    logger.debug ("actual = {}, setpoint = {}, error = {}, belt = {}", a, s, error, b);
-    if(error >= lowerShooterSpeedLimit && error <= upperShooterSpeedLimit) {
-      readyToShoot();
+    if (! weGotToSpeed) {
+      double hoodSet = shooterSubsystem.getRequestedHoodPosition();
+      double hoodAct = shooterSubsystem.getActualHoodPosition();
+      logger.info (
+              "tactual = {}, tsetpoint = {}, terror = {}, " +
+              "bactual = {}, bsetpoint = {}, berror = {}, " +
+              "hoodset = {}, hoodact = {}, belt = {}",
+              ta, ts, terror,
+              ba, bs, berror,
+              hoodSet, hoodAct, b);
+    }
+    if(terror >= lowerShooterSpeedLimit && terror <= upperShooterSpeedLimit) {
+      if(berror >= lowerShooterSpeedLimit && berror <= upperShooterSpeedLimit) {
+        readyToShoot();
+        if (!weGotToSpeed) {
+          logger.info("pulling the trigger!");
+        }
+        weGotToSpeed = true;
+      }
     }
   }
 

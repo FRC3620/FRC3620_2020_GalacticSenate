@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Slalom 2-6", new Slalom26Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-7", new Slalom27Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));
+    chooser.addOption("Neutronium Auto", m_robotContainer.getNeutroniumAuto());
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 

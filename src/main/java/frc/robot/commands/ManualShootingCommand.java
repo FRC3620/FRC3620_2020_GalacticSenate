@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class ManualShootingCommand extends AbstractShootingCommand {
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
+  boolean weRumbled;
   
   public ManualShootingCommand(ShooterSubsystem subsystem) {
     super(subsystem);
@@ -48,6 +49,7 @@ public class ManualShootingCommand extends AbstractShootingCommand {
   @Override
   public void initialize() {
     super.initialize();
+    weRumbled = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,8 +60,11 @@ public class ManualShootingCommand extends AbstractShootingCommand {
 
   @Override
   void readyToShoot() {
-    rumbleCommandOperator.schedule();
-    rumbleCommandDriver.schedule();
+    if (!weRumbled) {
+      rumbleCommandOperator.schedule();
+      rumbleCommandDriver.schedule();
+      weRumbled = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
