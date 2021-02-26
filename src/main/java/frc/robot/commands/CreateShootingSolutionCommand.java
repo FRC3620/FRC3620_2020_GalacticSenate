@@ -24,7 +24,7 @@ public class CreateShootingSolutionCommand extends CommandBase {
   RumbleSubsystem rumbleSubsystem;
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public CreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2) {
     this(subsystem1, subsystem2, true);
@@ -51,7 +51,9 @@ public class CreateShootingSolutionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(visionSubsystem.getShootingTargetAcquired() && visionSubsystem.getShootingTargetCentered()){
+    boolean acquired = visionSubsystem.getShootingTargetAcquired();
+    boolean centered = visionSubsystem.getShootingTargetCentered();
+    if (acquired && centered){
       double pixelHeight = visionSubsystem.getShootingTargetYCenter();
       double calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
       double calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
@@ -65,6 +67,8 @@ public class CreateShootingSolutionCommand extends CommandBase {
       if (rumbleCommandDriver != null) {
         rumbleCommandDriver.schedule();
       }
+    } else {
+      logger.error ("no shooting solution! acquired = {}, centered = {}", acquired, centered);
     }
   }
 

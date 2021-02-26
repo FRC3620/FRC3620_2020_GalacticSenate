@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 
+import java.text.DecimalFormat;
+
 public class AutoShootingCommand extends CommandBase {
   Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
 
@@ -91,9 +93,9 @@ public class AutoShootingCommand extends CommandBase {
               "tactual = {}, tsetpoint = {}, terror = {}, " +
                       "bactual = {}, bsetpoint = {}, berror = {}, " +
                       "hoodset = {}, hoodact = {}, belt = {}",
-              ta, ts, terror,
-              ba, bs, berror,
-              hoodSet, hoodAct, b);
+              f2(ta), f2(ts), f2(terror),
+              f2(ba), f2(bs), f2(berror),
+              f2(hoodSet), f2(hoodAct), f2(b));
     }
     if (terror >= 0.98 && terror <= 1.02 && berror >= 0.98 && berror <= 1.02) {
       if (!weGotToSpeed) {
@@ -107,14 +109,14 @@ public class AutoShootingCommand extends CommandBase {
     }
 
     if (spinupTimer != null) {
-      if (spinupTimer.hasElapsed(2.0)) {
+      if (spinupTimer.hasElapsed(1.0)) {
         if (! weLoggedBeltOn) {
           weLoggedBeltOn = true;
           logger.info ("spinning up belt");
         }
-        RobotContainer.beltSubsystem.BeltOn(1);
+        RobotContainer.beltSubsystem.BeltOn(0.3);
       } else {
-        logger.info("command timer = {}, spinup timer = {}", commandTimer.get(), spinupTimer.get());
+        logger.info("command timer = {}, spinup timer = {}", f2(commandTimer.get()), f2(spinupTimer.get()));
       }
     }
   }
@@ -140,5 +142,12 @@ public class AutoShootingCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     return commandTimer.hasElapsed(shootingTime);
+  }
+
+  private DecimalFormat f2Formatter = new DecimalFormat("#.##");
+
+  private String f2(double f) {
+    String rv = f2Formatter.format(f);
+    return rv;
   }
 }

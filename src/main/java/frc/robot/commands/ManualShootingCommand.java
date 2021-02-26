@@ -18,10 +18,12 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import java.text.DecimalFormat;
+
 public class ManualShootingCommand extends CommandBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  boolean shouldDoDataLogging = true;
+  boolean shouldDoDataLogging = false;
 
   IFastDataLogger dataLogger;
 
@@ -84,9 +86,9 @@ public class ManualShootingCommand extends CommandBase {
               "tactual = {}, tsetpoint = {}, terror = {}, " +
                       "bactual = {}, bsetpoint = {}, berror = {}, " +
                       "hoodset = {}, hoodact = {}, belt = {}",
-              ta, ts, terror,
-              ba, bs, berror,
-              hoodSet, hoodAct, b);
+              f2(ta), f2(ts), f2(terror),
+              f2(ba), f2(bs), f2(berror),
+              f2(hoodSet), f2(hoodAct), f2(b));
     }
     if (terror >= 0.98 && terror <= 1.02 && berror >= 0.98 && berror <= 1.02) {
       if (!weGotToSpeed) {
@@ -113,4 +115,12 @@ public class ManualShootingCommand extends CommandBase {
   public boolean isFinished() {
     return false;
   }
+
+  private DecimalFormat f2Formatter = new DecimalFormat("#.##");
+
+  private String f2(double f) {
+    String rv = f2Formatter.format(f);
+    return rv;
+  }
+
 }

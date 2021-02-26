@@ -44,10 +44,29 @@ public class Test1 {
         }
     }
 
-    @Test
+    //@Test
     public void test05() {
         Date date = new Date();
         System.out.println (date);
+    }
+
+    @Test
+    public void test06() {
+        calltest();
+    }
+
+    void calltest() {
+        System.out.println (miniTraceback());
+    }
+
+    String miniTraceback() {
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        for (StackTraceElement st1 : st) {
+            System.out.println(st1.getClassName() + "." + st1.getMethodName() + ":" + st1.getLineNumber());
+        }
+        StackTraceElement st1 = st[3];
+        String rv = st1.getClassName() + "." + st1.getMethodName() + ":" + st1.getLineNumber();
+        return rv;
     }
 
 }

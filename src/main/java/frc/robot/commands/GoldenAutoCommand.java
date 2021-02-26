@@ -33,9 +33,10 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
     this.visionSubsystem = m_visionSubsystem;
     addCommands(
       new ZeroDriveEncodersCommand(driveSubsystem),
+      // new AutoSteerCommand(90, driveSubsystem),
       new DeployIntakeCommand(intakeSubsystem),
       new WaitCommand(.2),
-      new AutoDriveCommand(7.3*12, -90, 0.5, 0, driveSubsystem),
+      new AutoDriveCommand(7.3*12, -90, 0.25, 0, driveSubsystem),
       new WaitCommand(0.3),
       new AutoIntakeArmUpCommand(intakeSubsystem),
       new AutoDriveCommand(2*12, 45, 0.8, 0, driveSubsystem),
@@ -44,16 +45,16 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new AutoTurnVisionLightOnCommand(visionSubsystem),
       new AutoStopIntakeCommand(intakeSubsystem),
       new AutoSpinCommand(0.6, -150, driveSubsystem),
-      new AutoStartIntakeCommand(intakeSubsystem),
+      // new AutoStartIntakeCommand(intakeSubsystem),
       new WaitCommand(0.4),
       new MessageCommand (logger, "Aligning..."),
       new DriveAndAlignCommand(driveSubsystem, visionSubsystem),
       new MessageCommand (logger, "Aligned..."),
-      new AutoStopIntakeCommand(intakeSubsystem),
+      // new AutoStopIntakeCommand(intakeSubsystem),
       new MessageCommand (logger, "Creating Solution..."),
       new AutoCreateShootingSolutionCommand(shooterSubsystem, visionSubsystem),
       new MessageCommand (logger, "Shooting..."),
-      new AutoShootingCommand(shooterSubsystem, 4),
+      new AutoShootingCommand(shooterSubsystem, 8),
       new MessageCommand (logger, "Done!")
       
     /*new AutoSnapToHeadingCommand(-113, driveSubsystem),
