@@ -533,7 +533,8 @@ public class RobotContainer {
     return false;
   }
 
-  void identifyRoboRIO() {
+  public static String identifyRoboRIO() {
+    String rv = "";
     try {
 			for (Enumeration<NetworkInterface> e = NetworkInterface
 					.getNetworkInterfaces(); e.hasMoreElements();) {
@@ -547,11 +548,15 @@ public class RobotContainer {
 								(i < mac.length - 1) ? "-" : ""));
 					}
 					String macString = sb.toString();
-					logger.info("Current MAC address: {}", macString);
+          logger.info("Current MAC address: {}", macString);
+          if (network.getName().equals("eth0")) {
+            rv = macString;
+          }
 				}
 			}
 		} catch (SocketException e) {
 			e.printStackTrace();
-		}
+    }
+    return rv;
   }
 }
