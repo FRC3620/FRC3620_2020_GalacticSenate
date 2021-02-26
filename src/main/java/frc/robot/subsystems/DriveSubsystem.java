@@ -85,12 +85,12 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
     // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
+	// COMPETITION BOT!!!!!!!!!
 	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -99.6;
 	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = -113.8;
 	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = 95.0;
 	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = 154;
-	
-	
+
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// PRACTICE BOT!!!!!!!!!
 	private double PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET = -122.5;
@@ -98,8 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private double PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET = 8.78;
 	private double PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET = -107.36;
 
-	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
-	// PRACTICE BOT!!!!!!!!!
+	// these will get set from one of the above, depending on which roboRIO we are running on.
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET;
 	private double LEFT_FRONT_ABSOLUTE_OFFSET;
 	private double LEFT_BACK_ABSOLUTE_OFFSET;
