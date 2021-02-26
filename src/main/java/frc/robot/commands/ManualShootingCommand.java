@@ -7,63 +7,56 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BeltSubsystem;
+import frc.robot.commands.RumbleCommand.Hand;
 import frc.robot.subsystems.ShooterSubsystem;
 
-import edu.wpi.first.wpilibj.Timer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.IFastDataLogger;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.text.DecimalFormat;
 
-public class AutoShootingCommand extends CommandBase {
-  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+public class ManualShootingCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  boolean shouldDoDataLogging = true;
+  boolean shouldDoDataLogging = false;
 
   IFastDataLogger dataLogger;
 
   boolean weGotToSpeed;
 
   ShooterSubsystem shooterSubsystem;
-  BeltSubsystem beltSubsystem;
 
-  Timer commandTimer;
-  Timer spinupTimer;
+  RumbleCommand rumbleCommandOperator;
+  RumbleCommand rumbleCommandDriver;
 
-  double shootingTime;
-  boolean weLoggedBeltOn;
 
-  public AutoShootingCommand(ShooterSubsystem subsystem, double duration) {
-    // should probably addRequirements() here to declare BeltSubsystem dependency.
+  public ManualShootingCommand(ShooterSubsystem subsystem) {
     this.shooterSubsystem = subsystem;
-    this.shootingTime = duration;
 
-    // this is inconsistent with passing them in
-    this.beltSubsystem = RobotContainer.beltSubsystem;
-
-    commandTimer = new Timer();
+    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+      1.0, // intensity
+      1.0 // duration
+    );
+    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
+     1.0, // intensity
+     1.0 // duration
+    );
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info ("Autoshooting for {} s", shootingTime);
-
     if (shouldDoDataLogging) {
-      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_a", this.shootingTime);
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m");
       dataLogger.addDataProvider("we_got_to_speed", () -> weGotToSpeed ? 1 : 0);
       dataLogger.start();
     }
-
     weGotToSpeed = false;
-    weLoggedBeltOn = false;
-
-    commandTimer.reset();
-    commandTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -100,23 +93,9 @@ public class AutoShootingCommand extends CommandBase {
     if (terror >= 0.98 && terror <= 1.02 && berror >= 0.98 && berror <= 1.02) {
       if (!weGotToSpeed) {
         weGotToSpeed = true;
-
-        logger.info ("up to speed, starting spinup timer");
-        spinupTimer = new Timer();
-        spinupTimer.reset();
-        spinupTimer.start();
-      }
-    }
-
-    if (spinupTimer != null) {
-      if (spinupTimer.hasElapsed(1.0)) {
-        if (! weLoggedBeltOn) {
-          weLoggedBeltOn = true;
-          logger.info ("spinning up belt");
-        }
-        RobotContainer.beltSubsystem.BeltOn(0.3);
-      } else {
-        logger.info("command timer = {}, spinup timer = {}", f2(commandTimer.get()), f2(spinupTimer.get()));
+        logger.info("up to speed, rumbling...");
+        rumbleCommandOperator.schedule();
+        rumbleCommandDriver.schedule();
       }
     }
   }
@@ -124,24 +103,17 @@ public class AutoShootingCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.beltSubsystem.BeltOff();
     shooterSubsystem.ShooterOff();
-
     if (dataLogger != null) {
-      dataLogger.done();
-    }
-
-    commandTimer.stop();
-    if (spinupTimer != null) {
-      spinupTimer.stop();
-      spinupTimer = null;
+      // dataLogger.done();
+      dataLogger = null;
     }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return commandTimer.hasElapsed(shootingTime);
+    return false;
   }
 
   private DecimalFormat f2Formatter = new DecimalFormat("#.##");
@@ -150,4 +122,5 @@ public class AutoShootingCommand extends CommandBase {
     String rv = f2Formatter.format(f);
     return rv;
   }
+
 }

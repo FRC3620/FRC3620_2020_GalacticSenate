@@ -164,7 +164,7 @@ public class ShooterSubsystem extends SubsystemBase {
     //double calcposition = 23.3622 + -0.485745*cy + 0.00524459*cy*cy + -0.0000270027*cy*cy*cy + 0.0000000733328*cy*cy*cy*cy + -9.92152E-11*cy*cy*cy*cy*cy + 5.1978E-14*cy*cy*cy*cy*cy*cy;
     //double calcposition=13.5; 
     //double calcposition
-    return calcHoodPosition;
+    return 5.0 * calcHoodPosition;
   }
 
   public double calcTopRPM(double cy) {
@@ -210,8 +210,11 @@ public class ShooterSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Top Velocity", trpm);
       SmartDashboard.putNumber("Bottom Velocity", brpm);
       SmartDashboard.putNumber("Hood positon", hoodPosition);
-      SmartDashboard.getNumber("anyRPM", anyRPM);
-      SmartDashboard.getNumber("anyPosition", anyPosition);
+      SmartDashboard.putNumber("anyRPM", anyRPM);
+      SmartDashboard.putNumber("anyPosition", anyPosition);
+
+      SmartDashboard.putNumber("z.actual", getActualTopShooterVelocity());
+      SmartDashboard.putNumber("z.requested", getRequestedTopShooterVelocity());
   
       //SmartDashboard.putNumber("OutputBot%", bottomPercentOutput);
       //SmartDashboard.putNumber("Bottom ERROR", falconBottom.getClosedLoopError());
@@ -304,10 +307,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getActualHoodPosition() {
     if(checkForHoodEncoder()) {
-        double revs = hoodEncoder.getPosition();
-        return revs;
+      double revs = hoodEncoder.getPosition();
+      return revs;
     } else {
-        return(0);
+      return(0);
     }
   }
 
@@ -363,7 +366,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getActualTopShooterVelocity() {
     if (falconTop != null) {
-    return falconTop.getSelectedSensorVelocity();
+      return falconTop.getSelectedSensorVelocity();
     } else {
       return 0;
     }
@@ -371,7 +374,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getActualBottomShooterVelocity() {
     if (falconBottom != null) {
-    return falconBottom.getSelectedSensorVelocity();
+      return falconBottom.getSelectedSensorVelocity();
     } else {
       return 0;
     }

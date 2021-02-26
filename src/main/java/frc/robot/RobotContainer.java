@@ -327,7 +327,8 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
-    
+    SmartDashboard.putData(new SetHoodPositionCommand());
+
     SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
     SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
     SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
@@ -378,7 +379,7 @@ public class RobotContainer {
     beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem));
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
@@ -399,7 +400,7 @@ public class RobotContainer {
     operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
 
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
-    shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
+    shootButton.toggleWhenPressed(new ManualShootingCommand(shooterSubsystem));
 
     JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
@@ -501,6 +502,10 @@ public class RobotContainer {
 
   public Command getMeanMachineAuto(){
     return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
+  public Command getNeutroniumAuto() {
+    return new NeutroniumAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
   public Command getWaitAndSchootAuto(){

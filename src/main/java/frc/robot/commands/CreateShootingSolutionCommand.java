@@ -24,47 +24,57 @@ public class CreateShootingSolutionCommand extends CommandBase {
   RumbleSubsystem rumbleSubsystem;
   RumbleCommand rumbleCommandOperator;
   RumbleCommand rumbleCommandDriver;
-  Logger logger;
-  /**
-   * Creates a new MoveHoodManuallyUpCommand.
-   */
-  public CreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2, RumbleSubsystem subsystem3) {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+  public CreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2) {
+    this(subsystem1, subsystem2, true);
+  }
+
+  // deliberately not public
+  CreateShootingSolutionCommand(ShooterSubsystem subsystem1, VisionSubsystem subsystem2, boolean doRumble) {
     this.shooterSubsystem = subsystem1;
     this.visionSubsystem = subsystem2;
-    this.rumbleSubsystem = subsystem3;
-    logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-    rumbleCommandOperator = new RumbleCommand (RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
-    1.0, // intensity
-    1.0 // duration
-    );
-    rumbleCommandDriver = new RumbleCommand (RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
-    1.0, // intensity
-    1.0 // duration
-    );
+    if (doRumble) {
+      rumbleCommandOperator = new RumbleCommand(RobotContainer.rumbleSubsystemOperator, Hand.RIGHT, //
+              1.0, // intensity
+              1.0 // duration
+      );
+      rumbleCommandDriver = new RumbleCommand(RobotContainer.rumbleSubsystemDriver, Hand.RIGHT, //
+              1.0, // intensity
+              1.0 // duration
+      );
+    }
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(visionSubsystem.getShootingTargetAcquired() && visionSubsystem.getShootingTargetCentered()){
+    boolean acquired = visionSubsystem.getShootingTargetAcquired();
+    boolean centered = visionSubsystem.getShootingTargetCentered();
+    if (acquired && centered){
       double pixelHeight = visionSubsystem.getShootingTargetYCenter();
-      double calcPosition = 5.0 * shooterSubsystem.calcHoodPosition(pixelHeight);
+      double calcPosition = shooterSubsystem.calcHoodPosition(pixelHeight);
       double calcRPM = shooterSubsystem.calcTopRPM(pixelHeight);
       logger.info("pixel Height = {}, calculated Position = {}, calculated RPM = {}", pixelHeight, calcPosition, calcRPM);
       shooterSubsystem.setTopRPM(calcRPM);
       shooterSubsystem.setPosition(calcPosition);
-      //rumbleSubsystem.setRumble(Hand.BOTH, 0.5);
-      rumbleCommandOperator.schedule();
-      rumbleCommandDriver.schedule();
+
+      if (rumbleCommandOperator != null) {
+        rumbleCommandOperator.schedule();
+      }
+      if (rumbleCommandDriver != null) {
+        rumbleCommandDriver.schedule();
+      }
+    } else {
+      logger.error ("no shooting solution! acquired = {}, centered = {}", acquired, centered);
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
   }
 
   // Called once the command ends or is interrupted.
