@@ -27,7 +27,7 @@ public class Test1 {
         System.out.println ("test02 passed");
     }
 
-    @Test
+    //@Test
     public void pixyGsonTest() {
         String s;
         Gson gson = new Gson();

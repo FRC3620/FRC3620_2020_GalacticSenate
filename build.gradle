@@ -61,7 +61,13 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation fileTree (dir: 'lib', include: ['*.jar'])    
+    implementation fileTree (dir: 'lib', include: ['*.jar'])
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14
+    testImplementation group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
+
 
     testImplementation 'junit:junit:4.12'
 
