@@ -26,17 +26,18 @@ public class Slalom25Command extends SequentialCommandGroup {
       new AutoSemiElipseCommand(5, 3, 0.01, driveSubsystem)
       */
 
-      new AutoDriveCommand (11.5*12, 90, .30, 180, driveSubsystem), //foward new barrel
-      new AutoDriveCommand(4.1*12, 0, .30, 180, driveSubsystem),    //right
-      new AutoDriveCommand (4.3*12, -90, .30, 180, driveSubsystem), //back
-      new AutoDriveCommand (4*12, -180, .30, 180, driveSubsystem), //left
-      new AutoDriveCommand (12.5*12, 90, .30, 180, driveSubsystem), //foward new barrel
-      new AutoDriveCommand (4*12, -180, .30, 180, driveSubsystem), // left
-      new AutoDriveCommand (5.5*12, -90, .30, 180, driveSubsystem), // back
-      new AutoDriveCommand (8.5*12, 0, .30, 180, driveSubsystem), //right new barrel
-      new AutoDriveCommand (4.5*12, 90, .30, 180, driveSubsystem), //foward 
-      new AutoDriveCommand (5*12, -180, .30, 180, driveSubsystem), //left
-      new AutoDriveCommand (18*12, -90, .40, 180, driveSubsystem) //return back
+      new AutoSteerCommand(90, driveSubsystem),
+      new AutoDriveCommand (10.5*12, 90, .40, 180, driveSubsystem), //foward new barrel
+      new AutoDriveCommand(4.1*12, 0, .35, 180, driveSubsystem),    //right
+      new AutoDriveCommand (4.3*12, -90, .35, 180, driveSubsystem), //back
+      new AutoDriveCommand (4.1*12, -180, .30, 180, driveSubsystem), //left
+      new AutoDriveCommand (12*12, 90, .40, 180, driveSubsystem), //foward new barrel
+      new AutoDriveCommand (4.5*12, -180, .40, 180, driveSubsystem), // left
+      new AutoDriveCommand (5.5*12, -90, .35, 180, driveSubsystem), // back
+      new AutoDriveCommand (8.5*12, 0, .35, 180, driveSubsystem), //right new barrel
+      new AutoDriveCommand (10*12, 90, .40, 180, driveSubsystem), //foward 
+      new AutoDriveCommand (3.7*12, -180, .35, 180, driveSubsystem), //left
+      new AutoDriveCommand (21*12, -90, .40, 180, driveSubsystem) //return back
       
     );
   }
