@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -191,7 +192,7 @@ public class RobotContainer {
       shooterSubsystemFalcon3.setInverted(InvertType.None);
       StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
       shooterSubsystemFalcon3.configStatorCurrentLimit(amprage);
-
+      shooterSubsystemFalcon3.setNeutralMode(NeutralMode.Coast);
       //shooterSubsystemFalcon3.configClosedloopRamp(1);
     }
 
@@ -326,7 +327,8 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
-    
+    SmartDashboard.putData(new SetHoodPositionCommand());
+
     SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
     SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
     SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
@@ -377,7 +379,7 @@ public class RobotContainer {
     beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 
     JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem, rumbleSubsystemDriver));
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem));
 
     JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
@@ -398,7 +400,7 @@ public class RobotContainer {
     operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
 
     JoystickButton shootButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
-    shootButton.toggleWhenPressed(new ShootingCommand(shooterSubsystem));
+    shootButton.toggleWhenPressed(new ManualShootingCommand(shooterSubsystem));
 
     JoystickButton intakeButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     intakeButton.whileHeld(new IntakeCommand(intakeSubsystem));
@@ -502,6 +504,10 @@ public class RobotContainer {
     return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
 
+  public Command getNeutroniumAuto() {
+    return new NeutroniumAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  }
+
   public Command getWaitAndSchootAuto(){
     return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
@@ -527,7 +533,8 @@ public class RobotContainer {
     return false;
   }
 
-  void identifyRoboRIO() {
+  public static String identifyRoboRIO() {
+    String rv = "";
     try {
 			for (Enumeration<NetworkInterface> e = NetworkInterface
 					.getNetworkInterfaces(); e.hasMoreElements();) {
@@ -541,11 +548,15 @@ public class RobotContainer {
 								(i < mac.length - 1) ? "-" : ""));
 					}
 					String macString = sb.toString();
-					logger.info("Current MAC address: {}", macString);
+          logger.info("Current MAC address: {}", macString);
+          if (network.getName().equals("eth0")) {
+            rv = macString;
+          }
 				}
 			}
 		} catch (SocketException e) {
 			e.printStackTrace();
-		}
+    }
+    return rv;
   }
 }
