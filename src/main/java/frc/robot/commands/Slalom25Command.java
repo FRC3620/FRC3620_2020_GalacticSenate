@@ -39,8 +39,8 @@ public class Slalom25Command extends SequentialCommandGroup {
       new AutoSteerCommand(45, driveSubsystem), //steer 45
       new AutoDriveCommand(8*12, 45, .45, 180, driveSubsystem), // diagnol
       new AutoDriveCommand(5*12, 90, .35, 180, driveSubsystem), //foward
-      new AutoDriveCommand (3.6*12, -180, .35, 180, driveSubsystem), //left
-      new AutoDriveCommand (20*12, -90, .70, 180, driveSubsystem) //return back
+      new AutoDriveCommand (3.4*12, -180, .35, 180, driveSubsystem), //left
+      new AutoDriveCommand (21*12, -90, .70, 180, driveSubsystem) //return back
     );
   }
 }
