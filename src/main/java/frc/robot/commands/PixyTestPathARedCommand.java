@@ -2,11 +2,11 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.DriveSubsystem;
 
-public class PixyTestPath1Command extends SlalomCommandGroup {
+public class PixyTestPathARedCommand extends SlalomCommandGroup {
 
   private static final double SPEED = 0.25;
 
-  public PixyTestPath1Command(DriveSubsystem driveSubsystem) {
+  public PixyTestPathARedCommand(DriveSubsystem driveSubsystem) {
     super(driveSubsystem);
 
     addCommands (
