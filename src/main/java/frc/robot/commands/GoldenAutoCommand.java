@@ -39,7 +39,8 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new AutoDriveCommand(7.3*12, -90, 0.25, 0, driveSubsystem),
       new WaitCommand(0.3),
       new AutoIntakeArmUpCommand(intakeSubsystem),
-      new AutoDriveCommand(2*12, 45, 0.8, 0, driveSubsystem),
+      new AutoDriveCommand(1.5*12, 90, .30, 0, driveSubsystem), // added back command to reach white line for accuracy
+      new AutoDriveCommand(3*12, 45, 0.8, 0, driveSubsystem), // added a foot 2/27/21 3:03
       new WaitCommand(.3),
       new AutoDriveCommand(8*12, 7, 0.65, 0, driveSubsystem),
       new AutoTurnVisionLightOnCommand(visionSubsystem),
@@ -57,7 +58,7 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       new AutoShootingCommand(shooterSubsystem, 8),
       new MessageCommand (logger, "Done!")
       
-    /*new AutoSnapToHeadingCommand(-113, driveSubsystem),
+    /*new AutoSnapToHeadingCommand(-113, driveSubsystem)
       new WaitCommand(2),
       new AutoSnapToHeadingCommand(0, driveSubsystem),
       new WaitCommand(.1),
