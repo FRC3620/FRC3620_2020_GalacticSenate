@@ -8,7 +8,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Slalom25Command extends SequentialCommandGroup {
  
   public Slalom25Command(DriveSubsystem driveSubsystem) {
-   
+  
+
 
     super();
     //AutoSemiElipseCommand(double a, double b, double speed, DriveSubsystem driveSubsystem)
@@ -25,20 +26,21 @@ public class Slalom25Command extends SequentialCommandGroup {
       new AutoDriveCommand(3 * 12, 90, .15, 180, driveSubsystem),
       new AutoSemiElipseCommand(5, 3, 0.01, driveSubsystem)
       */
-
+      
       new AutoSteerCommand(90, driveSubsystem),
       new AutoDriveCommand (10.5*12, 90, .40, 180, driveSubsystem), //foward new barrel
       new AutoDriveCommand(4.1*12, 0, .35, 180, driveSubsystem),    //right
       new AutoDriveCommand (4.3*12, -90, .35, 180, driveSubsystem), //back
-      new AutoDriveCommand (4.1*12, -180, .30, 180, driveSubsystem), //left
-      new AutoDriveCommand (12*12, 90, .40, 180, driveSubsystem), //foward new barrel
+      new AutoDriveCommand (4.25*12, -180, .30, 180, driveSubsystem), //left
+      new AutoDriveCommand (12*12, 90, .45, 180, driveSubsystem), //foward new barrel
       new AutoDriveCommand (4.5*12, -180, .40, 180, driveSubsystem), // left
-      new AutoDriveCommand (5.5*12, -90, .35, 180, driveSubsystem), // back
-      new AutoDriveCommand (8.5*12, 0, .35, 180, driveSubsystem), //right new barrel
-      new AutoDriveCommand (10*12, 90, .40, 180, driveSubsystem), //foward 
-      new AutoDriveCommand (3.7*12, -180, .35, 180, driveSubsystem), //left
-      new AutoDriveCommand (21*12, -90, .40, 180, driveSubsystem) //return back
-      
+      new AutoDriveCommand (6.5*12, -90, .40, 180, driveSubsystem), // back
+      new AutoDriveCommand(3*12, 0, .35, 180, driveSubsystem), //right
+      new AutoSteerCommand(45, driveSubsystem), //steer 45
+      new AutoDriveCommand(8*12, 45, .45, 180, driveSubsystem), // diagnol
+      new AutoDriveCommand(5*12, 90, .35, 180, driveSubsystem), //foward
+      new AutoDriveCommand (3.6*12, -180, .35, 180, driveSubsystem), //left
+      new AutoDriveCommand (20*12, -90, .70, 180, driveSubsystem) //return back
     );
   }
 }
