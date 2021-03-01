@@ -29,7 +29,7 @@ public class TestPixyFromRoboRIOData {
 
     @Test
     public void test_20210301() {
-        runAgainstTestData("pixy_test_data/20210301", PixyPathFinder::sillyPathFinder);
+        runAgainstTestData("pixy_test_data/20210301", PixyPathFinder::testFindPath);
     }
 
     boolean runAgainstTestData(String directoryName, I i) {

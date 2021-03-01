@@ -16,9 +16,9 @@ public class PixyTest {
 
     @Test
     public void t1() {
-        List<PixySubsystem.PixyBlockPlus> bb = parse("[{\"block\":{\"signature\":1,\"x\":110,\"y\":111,\"width\":20,\"height\":9,\"angle\":0,\"index\":122,\"age\":192},\"aspectRatio\":2.2222222222222223,\"area\":180},{\"block\":{\"signature\":1,\"x\":24,\"y\":74,\"width\":44,\"height\":6,\"angle\":0,\"index\":215,\"age\":26},\"aspectRatio\":7.333333333333333,\"area\":264},{\"block\":{\"signature\":1,\"x\":215,\"y\":67,\"width\":50,\"height\":53,\"angle\":0,\"index\":120,\"age\":192},\"aspectRatio\":0.9433962264150944,\"area\":2650},{\"block\":{\"signature\":1,\"x\":30,\"y\":38,\"width\":40,\"height\":3,\"angle\":0,\"index\":134,\"age\":175},\"aspectRatio\":13.333333333333334,\"area\":120},{\"block\":{\"signature\":1,\"x\":203,\"y\":5,\"width\":6,\"height\":10,\"angle\":0,\"index\":228,\"age\":0},\"aspectRatio\":0.6,\"area\":60}]");
+        List<PixySubsystem.PixyBlockPlus> bb = parse("[{\"block\":{\"signature\":2,\"x\":165,\"y\":54,\"width\":86,\"height\":56,\"angle\":0,\"index\":60,\"age\":255},\"aspectRatio\":1.5357142857142858,\"area\":4816,\"bottom\":82.0,\"tags\":[\"o:1\"]},{\"block\":{\"signature\":1,\"x\":276,\"y\":93,\"width\":56,\"height\":59,\"angle\":0,\"index\":25,\"age\":255},\"aspectRatio\":0.9491525423728814,\"area\":3304,\"bottom\":122.5,\"tags\":[\"o:2\",\"big_enough\",\"aspectOk\",\"decider\"]}]");
         printBlocks("** t1 raw", bb);
-        Assert.assertEquals("raw block size", bb.size(), 5);
+        Assert.assertEquals("raw block size", 2, bb.size());
 
         List<PixySubsystem.PixyBlockPlus> b1 = new ArrayList<>();
         List<PixySubsystem.PixyBlockPlus> b2 = new ArrayList<>();
@@ -37,11 +37,11 @@ public class PixyTest {
 
     @Test
     public void t2() {
-        String s = "[{\"block\":{\"signature\":1,\"x\":14,\"y\":137,\"width\":28,\"height\":7,\"angle\":0,\"index\":49,\"age\":11},\"aspectRatio\":4.0,\"area\":196},{\"block\":{\"signature\":1,\"x\":109,\"y\":112,\"width\":18,\"height\":9,\"angle\":0,\"index\":122,\"age\":255},\"aspectRatio\":2.0,\"area\":162},{\"block\":{\"signature\":1,\"x\":34,\"y\":92,\"width\":24,\"height\":3,\"angle\":0,\"index\":51,\"age\":4},\"aspectRatio\":8.0,\"area\":72},{\"block\":{\"signature\":1,\"x\":219,\"y\":68,\"width\":46,\"height\":54,\"angle\":0,\"index\":120,\"age\":255},\"aspectRatio\":0.8518518518518519,\"area\":2484},{\"block\":{\"signature\":1,\"x\":45,\"y\":65,\"width\":34,\"height\":9,\"angle\":0,\"index\":34,\"age\":51},\"aspectRatio\":3.7777777777777777,\"area\":306},{\"block\":{\"signature\":1,\"x\":26,\"y\":36,\"width\":48,\"height\":7,\"angle\":0,\"index\":201,\"age\":255},\"aspectRatio\":6.857142857142857,\"area\":336},{\"block\":{\"signature\":1,\"x\":201,\"y\":10,\"width\":6,\"height\":7,\"angle\":0,\"index\":33,\"age\":52},\"aspectRatio\":0.8571428571428571,\"area\":42}]";
+        String s = "[{\"block\":{\"signature\":2,\"x\":165,\"y\":54,\"width\":86,\"height\":56,\"angle\":0,\"index\":60,\"age\":255},\"aspectRatio\":1.5357142857142858,\"area\":4816,\"bottom\":82.0,\"tags\":[\"o:1\"]},{\"block\":{\"signature\":1,\"x\":276,\"y\":93,\"width\":56,\"height\":59,\"angle\":0,\"index\":25,\"age\":255},\"aspectRatio\":0.9491525423728814,\"area\":3304,\"bottom\":122.5,\"tags\":[\"o:2\",\"big_enough\",\"aspectOk\",\"decider\"]}]";
         System.out.println(s);
         List<PixySubsystem.PixyBlockPlus> bb = parse(s);
         printBlocks("** t2 raw", bb);
-        Assert.assertEquals("raw block size", bb.size(), 7);
+        Assert.assertEquals("raw block size", 2, bb.size());
 
         List<PixySubsystem.PixyBlockPlus> b1 = new ArrayList<>();
         List<PixySubsystem.PixyBlockPlus> b2 = new ArrayList<>();

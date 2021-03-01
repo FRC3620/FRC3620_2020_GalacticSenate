@@ -15,6 +15,10 @@ public class PixyPathFinder {
         return sillyPathFinder(blocks);
     }
 
+    public static GalacticSearchPath testFindPath (List<PixySubsystem.PixyBlockPlus> blocks) {
+        return sillyPathFinder(blocks);
+    }
+
     public static GalacticSearchPath sillyPathFinder(List<PixySubsystem.PixyBlockPlus> blocks) {
         logger.info ("using pathFinderA");
         if (blocks.size() == 0) return GalacticSearchPath.UNKNOWN;

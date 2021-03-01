@@ -1,0 +1,42 @@
+{
+  "blocks": [
+    {
+      "block": {
+        "signature": 1,
+        "x": 291,
+        "y": 104,
+        "width": 14,
+        "height": 9,
+        "angle": 0,
+        "index": 50,
+        "age": 255
+      },
+      "aspectRatio": 1.5555555555555556,
+      "area": 126,
+      "bottom": 108.5,
+      "tags": [
+        "o:1"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 128,
+        "y": 92,
+        "width": 12,
+        "height": 6,
+        "angle": 0,
+        "index": 198,
+        "age": 255
+      },
+      "aspectRatio": 2.0,
+      "area": 72,
+      "bottom": 95.0,
+      "tags": [
+        "o:2"
+      ]
+    }
+  ],
+  "path": "UNKNOWN",
+  "when": "20210301-131848"
+}
