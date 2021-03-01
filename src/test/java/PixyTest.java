@@ -75,7 +75,6 @@ public class PixyTest {
         testOneSillyCase(
                 "[{\"block\":{\"signature\":2,\"x\":101,\"y\":94,\"width\":46,\"height\":9,\"angle\":0,\"index\":52,\"age\":170},\"aspectRatio\":5.111111111111111,\"area\":414,\"bottom\":98.5,\"tags\":[\"o:1\"]},{\"block\":{\"signature\":2,\"x\":115,\"y\":129,\"width\":18,\"height\":6,\"angle\":0,\"index\":98,\"age\":2},\"aspectRatio\":3.0,\"area\":108,\"bottom\":132.0,\"tags\":[\"o:2\"]},{\"block\":{\"signature\":1,\"x\":168,\"y\":126,\"width\":12,\"height\":6,\"angle\":0,\"index\":93,\"age\":16},\"aspectRatio\":2.0,\"area\":72,\"bottom\":129.0,\"tags\":[\"o:3\"]}]",
                 GalacticSearchPath.UNKNOWN);
-        );
     }
 
     void testOneSillyCase(String s, GalacticSearchPath desiredResult) {
