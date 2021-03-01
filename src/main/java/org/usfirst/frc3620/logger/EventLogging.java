@@ -215,9 +215,9 @@ public class EventLogging {
                             File logFile = new File(logDirectory,
                                     timestampString + ".log");
                             try {
-                                fileOutputStream = new FileOutputStream(
-                                        logFile);
+                                fileOutputStream = new FileOutputStream(logFile);
                                 setOutputStream(fileOutputStream);
+                                System.out.println ("event logging to " + logFile.getAbsoluteFile());
                             } catch (IOException ex) {
                                 ex.printStackTrace(System.err);
                             }
