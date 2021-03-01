@@ -9,8 +9,8 @@ import frc.robot.subsystems.VisionSubsystem;
 
 
 
-public class Figure24 extends SequentialCommandGroup{
-public class Figure24 extends intakeSubsystem{
+public@ Figure24 (SequentialCommandGroup.ShooterSubsystem) {
+
 
 
 

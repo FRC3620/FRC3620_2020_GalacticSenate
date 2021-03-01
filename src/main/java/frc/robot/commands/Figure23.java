@@ -9,15 +9,15 @@ import frc.robot.subsystems.VisionSubsystem;
 
 
 
-public class Figure23 extends SequentialCommandGroup{
-public class Figure23 extends intakeSubsystem{
+public class Figure23  extends SequentialCommandGroup {
+
+    public Figure23(IntakeSubsystem intakeSubsystem, DriveSubsystem driveSubsystem) 
 
 
 
-
-public Figure23(DriveSubsystem driveSubsystem){ 
 
 super();
+
 if(
 //blue
 addCommands(
@@ -36,11 +36,10 @@ new AutoDriveCommand(5*12, 180, .25, 180, driveSubsystem)
 ,
 new AutoDriveCommand(2.5*12, 0, .25, 180, driveSubsystem),
 new AutoDriveCommand(5.5*12, 0, .25, 180, driveSubsystem),
-new AutoIntakeArmUPCommand(intakeSubsystem),
-new AutoStopIntakeCommand(intakeSubsystem)
+,
+new AutoStopIntakeCommand(intakeSubsystem),
 
 //red ball
-else 
 new ZeroDriveEncodersCommand(driveSubsystem),
     new DeployIntakeCommand(intakeSubsystem),
     new WaitCommand(.2),
@@ -55,12 +54,8 @@ new AutoDriveCommand(5*12, 90, .25, 180, driveSubsystem)
 new AutoDriveCommand(7.5*12, 180, .25, 180, driveSubsystem)
 ,
 new AutoDriveCommand(20*12, 90, .25, 180, driveSubsystem),
+
 new AutoIntakeArmUPCommand(intakeSubsystem),
 new AutoStopIntakeCommand(intakeSubsystem)
 
-)
-);
 }
-}
-}
-
