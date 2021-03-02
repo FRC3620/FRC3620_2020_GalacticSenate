@@ -21,14 +21,14 @@ public class PixyPathFinder {
     public static GalacticSearchPath findPathVersion20210301  (List<PixySubsystem.PixyBlockPlus> blocks) {
         logger.info("using findPathVersion20210301");
 
-        /*
-         * this code gets the two "closest" (lowest in the frame) blocks.
-         */
         if (blocks.size() == 0) return GalacticSearchPath.UNKNOWN;
 
-        // keep signature 1
-        // keep blocks whose centers are in the lowest 60% of the frame
-        // put the lowest bottom first
+        /*
+         * this code gets the two "closest" (lowest in the frame) blocks.
+         * keep signature 1
+         * keep blocks whose centers are in the lowest 60% of the frame
+         * put the lowest bottom first
+         */
         List<PixySubsystem.PixyBlockPlus> bbb = blocks.stream()
                 .filter(b -> b.getSignature() == 1)  // signature 1
                 .filter(b -> b.getY() > 0.4 * HEIGHT) // in bottom 60% of frame
