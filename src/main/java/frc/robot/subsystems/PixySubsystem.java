@@ -16,8 +16,11 @@ import io.github.pseudoresonance.pixy2api.Pixy2;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import io.github.pseudoresonance.pixy2api.links.SPILink;
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 
 public class PixySubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
 
   private Pixy2 pixy;
   private Pixy2CCC ccc;
@@ -140,13 +143,6 @@ public class PixySubsystem extends SubsystemBase {
 
   public PixySubsystem() {
     super();
-
-    pixy = Pixy2.createInstance(new SPILink()); // Creates a new Pixy2 camera using SPILink
-    ccc = pixy.getCCC();
-    pixy.init(); // Initializes the camera and prepares to send/receive data
-    pixy.setLamp((byte) 0, (byte) 0); // Turns the LEDs off
-    // pixy.setLED(255, 255, 255); // Sets the RGB LED to full white
-
     // get ready to run the update periodically, waiting for pixy data
     Notifier follower = new Notifier(() -> {
       update(true);
@@ -160,6 +156,29 @@ public class PixySubsystem extends SubsystemBase {
   }
 
   public int update(boolean wait) {
+    /*
+     * do initialization here (in Notifier thread) instead of in init().
+     * this can take a few seconds if the Pixy is not present, and we do not want to hold
+     * up the main thread.
+     */
+    if (pixy == null) {
+      pixy = Pixy2.createInstance(new SPILink()); // Creates a new Pixy2 camera using SPILink
+
+      ccc = pixy.getCCC();
+      logger.info ("initializing Pixy2");
+      pixy.init(); // Initializes the camera and prepares to send/receive data
+      logger.info ("Pixy2 initialized. Hitting LEDs and getting version");
+      pixy.setLamp((byte) 0, (byte) 0); // Turns the LEDs off
+      // pixy.setLED(255, 255, 255); // Sets the RGB LED to full white
+      Pixy2.Version v = pixy.getVersionInfo();
+      if (v != null) {
+        logger.info("Pixy HW = {}, SW = {} {}.{}({})", v.getHardware(),
+          v.getFirmwareTypeString(), v.getFirmwareMajor(), v.getFirmwareMinor(), v.getFirmwareBuild());
+      } else {
+        logger.error ("looks like the Pixy2 is missing");
+      }
+    }
+
     // Gets the number of "blocks", identified targets, that match signature 1 on
     // the Pixy2,
     // wait for new data if asked to,
