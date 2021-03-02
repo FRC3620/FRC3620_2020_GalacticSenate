@@ -11,15 +11,17 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class Figure23  extends SequentialCommandGroup {
 
-    public Figure23(IntakeSubsystem intakeSubsystem, DriveSubsystem driveSubsystem) 
+    public Figure23(IntakeSubsystem intakeSubsystem, DriveSubsystem driveSubsystem) { 
 
 
 
 
 super();
-
-if(
 //blue
+if(
+    PixyTestPath1Command = true) {
+
+
 addCommands(
     new ZeroDriveEncodersCommand(driveSubsystem),
     new DeployIntakeCommand(intakeSubsystem),
@@ -55,7 +57,9 @@ new AutoDriveCommand(7.5*12, 180, .25, 180, driveSubsystem)
 ,
 new AutoDriveCommand(20*12, 90, .25, 180, driveSubsystem),
 
-new AutoIntakeArmUPCommand(intakeSubsystem),
-new AutoStopIntakeCommand(intakeSubsystem)
 
+new AutoStopIntakeCommand(intakeSubsystem)
+);
+    }
+}
 }

@@ -9,13 +9,13 @@ import frc.robot.subsystems.VisionSubsystem;
 
 
 
-public@ Figure24 (SequentialCommandGroup.ShooterSubsystem) {
+public class figure24 extends SequentialCommandGroup {
 
 
 
 
 
-public Figure23(DriveSubsystem driveSubsystem){ 
+public figure24(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem){ 
 
 super();
 if(
@@ -45,7 +45,7 @@ if(
 
 
     //red
-    new AutoDriveCommand(5*12, 90, .25, 180, driveSubsystem)
+    /*new AutoDriveCommand(5*12, 90, .25, 180, driveSubsystem)
     ,
     new AutoDriveCommand(2.5*12, 180, .25, 180, driveSubsystem)
     ,
@@ -59,7 +59,10 @@ if(
     ,
     new AutoDriveCommand(10*12, 90, .25, 180, driveSubsystem)
     )
+    );    */
+    )
     );
+
 }
 }
-}
+ 
