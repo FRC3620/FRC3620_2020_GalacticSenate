@@ -1,0 +1,60 @@
+{
+  "blocks": [
+    {
+      "block": {
+        "signature": 1,
+        "x": 231,
+        "y": 101,
+        "width": 14,
+        "height": 7,
+        "angle": 0,
+        "index": 50,
+        "age": 255
+      },
+      "aspectRatio": 2.0,
+      "area": 98,
+      "bottom": 104.5,
+      "tags": [
+        "o:1"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 136,
+        "y": 87,
+        "width": 12,
+        "height": 7,
+        "angle": 0,
+        "index": 64,
+        "age": 255
+      },
+      "aspectRatio": 1.7142857142857142,
+      "area": 84,
+      "bottom": 90.5,
+      "tags": [
+        "o:2"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 86,
+        "y": 66,
+        "width": 28,
+        "height": 3,
+        "angle": 0,
+        "index": 169,
+        "age": 4
+      },
+      "aspectRatio": 9.333333333333334,
+      "area": 84,
+      "bottom": 67.5,
+      "tags": [
+        "o:3"
+      ]
+    }
+  ],
+  "path": "UNKNOWN",
+  "when": "20210301-131547"
+}

@@ -1,0 +1,89 @@
+<Pixy_parameters>
+ <data type="INT8_ARRAY" value="gSsAgSAAAADhCAAASw0AABYLAABz6f//T+z//+Dq//9vsswAAAAAAA==" key="signature1"/>
+ <data type="FLOAT32" value="8.2" key="Signature 1 range"/>
+ <data type="STRING" value="" key="Signature label 1"/>
+ <data type="INT8_ARRAY" value="gSsAgSAAAAD/////Jw4AABIHAAAx6f//4/H//4rt//97wdoAAAAAAA==" key="signature2"/>
+ <data type="FLOAT32" value="0" key="Signature 2 range"/>
+ <data type="STRING" value="" key="Signature label 2"/>
+ <data type="INT8_ARRAY" value="gQAAgSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" key="signature3"/>
+ <data type="FLOAT32" value="3.5" key="Signature 3 range"/>
+ <data type="STRING" value="" key="Signature label 3"/>
+ <data type="INT8_ARRAY" value="gQAAgSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" key="signature4"/>
+ <data type="FLOAT32" value="3.5" key="Signature 4 range"/>
+ <data type="STRING" value="" key="Signature label 4"/>
+ <data type="INT8_ARRAY" value="gQAAgSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" key="signature5"/>
+ <data type="FLOAT32" value="3.5" key="Signature 5 range"/>
+ <data type="STRING" value="" key="Signature label 5"/>
+ <data type="INT8_ARRAY" value="gQAAgSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" key="signature6"/>
+ <data type="FLOAT32" value="3.5" key="Signature 6 range"/>
+ <data type="STRING" value="" key="Signature label 6"/>
+ <data type="INT8_ARRAY" value="gQAAgSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" key="signature7"/>
+ <data type="FLOAT32" value="3.5" key="Signature 7 range"/>
+ <data type="STRING" value="" key="Signature label 7"/>
+ <data type="FLOAT32" value="0.2" key="Min brightness"/>
+ <data type="INT8" value="1" key="Color code mode"/>
+ <data type="INT32" value="3700" key="Signature teach threshold"/>
+ <data type="INT16" value="750" key="LED brightness"/>
+ <data type="INT16" value="100" key="Max blocks"/>
+ <data type="INT16" value="100" key="Max blocks per signature"/>
+ <data type="INT32" value="20" key="Min block area"/>
+ <data type="INT16" value="7" key="Max merge dist"/>
+ <data type="INT8" value="3" key="Block filtering"/>
+ <data type="INT16" value="65" key="Max tracking velocity"/>
+ <data type="INT8" value="0" key="Data out port"/>
+ <data type="INT8" value="84" key="I2C address"/>
+ <data type="INT32" value="19200" key="UART baudrate"/>
+ <data type="INT8" value="0" key="Pixy 1.0 compatibility mode"/>
+ <data type="INT8" value="104" key="Camera brightness"/>
+ <data type="INT8" value="1" key="Auto Exposure Correction"/>
+ <data type="INT32" value="0" key="AEC Value"/>
+ <data type="INT8" value="130" key="Color saturation"/>
+ <data type="INT8" value="0" key="Auto White Balance"/>
+ <data type="INT8" value="1" key="Auto White Balance on power-up"/>
+ <data type="INT8" value="0" key="Flicker avoidance"/>
+ <data type="INT32" value="0" key="AWB Value"/>
+ <data type="INT8" value="61" key="Min frames per second"/>
+ <data type="INT16" value="-200" key="S0 lower limit"/>
+ <data type="INT16" value="200" key="S0 upper limit"/>
+ <data type="INT16" value="-200" key="S1 lower limit"/>
+ <data type="INT16" value="200" key="S1 upper limit"/>
+ <data type="INT16" value="60" key="Servo frequency"/>
+ <data type="INT16" value="4" key="Edge distance"/>
+ <data type="INT16" value="35" key="Edge threshold"/>
+ <data type="INT16" value="0" key="Minimum line width"/>
+ <data type="INT16" value="100" key="Maximum line width"/>
+ <data type="INT16" value="13" key="Line extraction distance"/>
+ <data type="INT16" value="6" key="Maximum merge distance"/>
+ <data type="INT16" value="10" key="Minimum line length"/>
+ <data type="INT32" value="5000" key="Maximum line compare"/>
+ <data type="INT8" value="0" key="White line"/>
+ <data type="INT8" value="1" key="Line filtering"/>
+ <data type="INT8" value="1" key="Intersection filtering"/>
+ <data type="INT8" value="1" key="Barcode filtering"/>
+ <data type="INT16" value="0" key="Default turn angle"/>
+ <data type="INT8" value="0" key="Delayed turn"/>
+ <data type="INT8" value="0" key="Manual vector select"/>
+ <data type="INT8" value="0" key="Go"/>
+ <data type="INT8" value="0" key="Repeat"/>
+ <data type="STRING" value="" key="Barcode label 0"/>
+ <data type="STRING" value="" key="Barcode label 1"/>
+ <data type="STRING" value="" key="Barcode label 2"/>
+ <data type="STRING" value="" key="Barcode label 3"/>
+ <data type="STRING" value="" key="Barcode label 4"/>
+ <data type="STRING" value="" key="Barcode label 5"/>
+ <data type="STRING" value="" key="Barcode label 6"/>
+ <data type="STRING" value="" key="Barcode label 7"/>
+ <data type="STRING" value="" key="Barcode label 8"/>
+ <data type="STRING" value="" key="Barcode label 9"/>
+ <data type="STRING" value="" key="Barcode label 10"/>
+ <data type="STRING" value="" key="Barcode label 11"/>
+ <data type="STRING" value="" key="Barcode label 12"/>
+ <data type="STRING" value="" key="Barcode label 13"/>
+ <data type="STRING" value="" key="Barcode label 14"/>
+ <data type="STRING" value="" key="Barcode label 15"/>
+ <data type="INT8" value="0" key="Default program"/>
+ <data type="INT8" value="0" key="Program select on power-up"/>
+ <data type="INT8" value="0" key="Debug"/>
+ <data type="INT16" value="0" key="fwver"/>
+ <data type="STRING" value="general" key="fwtype"/>
+</Pixy_parameters>

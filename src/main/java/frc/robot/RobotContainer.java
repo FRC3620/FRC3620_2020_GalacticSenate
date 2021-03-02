@@ -328,7 +328,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
-    SmartDashboard.putData(new PixyTestCommand(driveSubsystem));
+    SmartDashboard.putData(new PixyTestCommand(pixySubsystem));
     
     SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
     SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
