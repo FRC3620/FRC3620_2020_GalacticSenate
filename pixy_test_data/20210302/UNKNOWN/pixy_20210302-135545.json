@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    {
+      "block": {
+        "signature": 1,
+        "x": 220,
+        "y": 12,
+        "width": 16,
+        "height": 5,
+        "angle": 0,
+        "index": 212,
+        "age": 255
+      },
+      "aspectRatio": 3.2,
+      "area": 80,
+      "bottom": 14.5,
+      "tags": []
+    }
+  ],
+  "path": "UNKNOWN",
+  "when": "20210302-135545"
+}

@@ -1,0 +1,77 @@
+{
+  "blocks": [
+    {
+      "block": {
+        "signature": 1,
+        "x": 166,
+        "y": 143,
+        "width": 20,
+        "height": 16,
+        "angle": 0,
+        "index": 4,
+        "age": 255
+      },
+      "aspectRatio": 1.25,
+      "area": 320,
+      "bottom": 151.0,
+      "tags": [
+        "low",
+        "decider"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 226,
+        "y": 115,
+        "width": 12,
+        "height": 7,
+        "angle": 0,
+        "index": 5,
+        "age": 255
+      },
+      "aspectRatio": 1.7142857142857142,
+      "area": 84,
+      "bottom": 118.5,
+      "tags": [
+        "low"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 69,
+        "y": 111,
+        "width": 14,
+        "height": 6,
+        "angle": 0,
+        "index": 13,
+        "age": 255
+      },
+      "aspectRatio": 2.3333333333333335,
+      "area": 84,
+      "bottom": 114.0,
+      "tags": [
+        "low"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 220,
+        "y": 13,
+        "width": 12,
+        "height": 7,
+        "angle": 0,
+        "index": 91,
+        "age": 255
+      },
+      "aspectRatio": 1.7142857142857142,
+      "area": 84,
+      "bottom": 16.5,
+      "tags": []
+    }
+  ],
+  "path": "A_RED",
+  "when": "20210302-134947"
+}
