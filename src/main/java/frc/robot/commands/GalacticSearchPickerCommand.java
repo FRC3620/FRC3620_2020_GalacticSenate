@@ -10,18 +10,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PixySubsystem;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import java.util.List;
 
-public class PixyTestCommand extends CommandBase {
+public class GalacticSearchPickerCommand extends CommandBase {
   Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
 
   PixySubsystem pixySubsystem;
+  DriveSubsystem driveSubsystem;
+  IntakeSubsystem intakeSubsystem;
 
-  public PixyTestCommand(PixySubsystem pixySubsystem) {
+  public GalacticSearchPickerCommand(PixySubsystem pixySubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem) {
     super();
+    this.driveSubsystem = driveSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
     this.pixySubsystem = pixySubsystem;
   }
 
@@ -33,6 +39,27 @@ public class PixyTestCommand extends CommandBase {
     GalacticSearchPath whichPathToTake = PixyPathFinder.findPath(blocks);
 
     pixySubsystem.saveBlocksForDebugging(blocks, whichPathToTake);
+
+    Command whichCommand = null;
+    switch (whichPathToTake) {
+      case A_BLUE:
+        whichCommand = new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem);
+        break;
+      case A_RED:
+        whichCommand = new Figure23PathARedCommand(driveSubsystem, intakeSubsystem);
+        break;
+      case B_BLUE:
+        whichCommand = new Figure24PathBBlueCommand(driveSubsystem, intakeSubsystem);
+        break;
+      case B_RED:
+        whichCommand = new Figure24PathBRedCommand(driveSubsystem, intakeSubsystem);
+        break;
+      default:
+        break;
+    }
+    if (whichCommand != null) {
+      whichCommand.schedule();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,10 +77,4 @@ public class PixyTestCommand extends CommandBase {
   public boolean isFinished() {
     return true;
   }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
-  }
-
 }

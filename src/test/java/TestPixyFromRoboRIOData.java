@@ -27,9 +27,9 @@ public class TestPixyFromRoboRIOData {
         public GalacticSearchPath pick(List<PixySubsystem.PixyBlockPlus> c);
     }
 
-    @Test
+    //@Test
     public void test_20210301() {
-        runAgainstTestData("pixy_test_data/20210301", PixyPathFinder::testFindPath);
+        runAgainstTestData("pixy_test_data/20210301", PixyPathFinder::findPathVersion20210301);
     }
 
     boolean runAgainstTestData(String directoryName, I i) {

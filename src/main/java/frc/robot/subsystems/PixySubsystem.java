@@ -7,17 +7,26 @@
 
 package frc.robot.subsystems;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.GalacticSearchPath;
 import io.github.pseudoresonance.pixy2api.Pixy2;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import io.github.pseudoresonance.pixy2api.links.SPILink;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 public class PixySubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
@@ -143,6 +152,10 @@ public class PixySubsystem extends SubsystemBase {
 
   public PixySubsystem() {
     super();
+
+    // update dashboard
+    SmartDashboard.putString (DASHBOARD_GALACTICSEARCH_PATH, GalacticSearchPath.NOT_RUN.toString());
+
     // get ready to run the update periodically, waiting for pixy data
     Notifier follower = new Notifier(() -> {
       update(true);
@@ -221,46 +234,40 @@ public class PixySubsystem extends SubsystemBase {
     return rv;
   }
 
-public double getx (){
-  return lastBlock.x;
-}
+  private static final String DASHBOARD_GALACTICSEARCH_PATH = "galacticsearch.path";
+  private static final String DASHBOARD_GALACTICSEARCH_JSON = "galacticsearch.json";
+  private static final String DASHBOARD_GALACTICSEARCH_FILE = "galacticsearch.file";
+  private static final String DASHBOARD_GALACTICSEARCH_COUNT = "galacticsearch.count";
 
-public double gety(){
-  return lastBlock.y;
-}
+  private Gson gson = new Gson();
+  private Gson gsonPretty = new GsonBuilder().setPrettyPrinting().create();
 
-public boolean bBlue(double x, double y){
-  boolean validPath = false;
-  if (x <= 115 && x >= 75) { 
-    if (y <= 115 && y >= 75) {}
-   }
-  return validPath;
+  public void saveBlocksForDebugging (List<PixyBlockPlus> blocks, GalacticSearchPath whichPathToTake) {
+    String json = gson.toJson(blocks);
+    SmartDashboard.putString(DASHBOARD_GALACTICSEARCH_JSON, json);
+    SmartDashboard.putNumber(DASHBOARD_GALACTICSEARCH_COUNT, blocks.size());
 
-}
+    logger.info("we recognize this as {}", whichPathToTake);
+    SmartDashboard.putString(DASHBOARD_GALACTICSEARCH_PATH, whichPathToTake.toString());
 
-public boolean bRed(double x, double y){
-  boolean validPath = false;
-  if (x <= 106 && x >= 66){  
-    if (y <=106 && y >=66 ){}
+    File loggingDirectory = LoggingMaster.getLoggingDirectory();
+    // String ts = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
+    String ts = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").format(LocalDateTime.now());
+
+    File jsonFile = new File(loggingDirectory, "pixy_" + ts + ".json");
+    logger.info("logging Pixy2 JSON to {}", jsonFile.getAbsoluteFile().toString());
+    SmartDashboard.putString(DASHBOARD_GALACTICSEARCH_FILE, jsonFile.getAbsoluteFile().toString());
+    PrintWriter w = null;
+    try {
+      w = new PrintWriter(new FileWriter(jsonFile));
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    Map<String, Object> mm = new LinkedHashMap<>();
+    mm.put("blocks", blocks);
+    mm.put("path", whichPathToTake.toString());
+    mm.put("when", ts);
+    w.println(gsonPretty.toJson(mm));
+    w.close();
   }
-  return validPath;
-}
-
-public boolean aBlue(double x, double y){
-  boolean validPath = false;
-  if (x <= 288 && x >= 244){ 
-
-    if (y <= 288 && y >= 244){}
-  }
-  return validPath;
-}
-
-public boolean aRed(double x, double y){
-boolean validPath = false;
-if(x <= 184 && x >= 144){ 
-  if(y <= 184 && y >= 144){}
- }
- return validPath;
-}
-
 }
