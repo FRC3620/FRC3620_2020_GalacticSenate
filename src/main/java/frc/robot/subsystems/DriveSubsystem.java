@@ -86,17 +86,17 @@ public class DriveSubsystem extends SubsystemBase {
 
     // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// COMPETITION BOT!!!!!!!!!
-	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -99.6;
-	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = -113.8;
-	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = 95.0;
-	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = 154;
+	private final double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -101.3;
+	private final double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = -115.7;
+	private final double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = 94.5;
+	private final double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = 160.9;
 
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// PRACTICE BOT!!!!!!!!!
-	private double PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET = -122.5;
-	private double PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET = -116.2;
-	private double PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET = 8.78;
-	private double PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET = -107.36;
+	private final double PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET = -122.5;
+	private final double PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET = -116.2;
+	private final double PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET = 8.78;
+	private final double PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET = -107.36;
 
 	// these will get set from one of the above, depending on which roboRIO we are running on.
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET;
