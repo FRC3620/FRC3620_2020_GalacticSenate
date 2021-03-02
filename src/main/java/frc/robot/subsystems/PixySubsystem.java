@@ -95,4 +95,47 @@ public class PixySubsystem extends SubsystemBase {
     if (lastBlock.y < 120) return false;
     return true;
   }
+
+public double getx (){
+  return lastBlock.x;
+}
+
+public double gety(){
+  return lastBlock.y;
+}
+
+public boolean bBlue(double x, double y){
+  boolean validPath = false;
+  if (x <= 115 && x >= 75) { 
+    if (y <= 115 && y >= 75) {}
+   }
+  return validPath;
+
+}
+
+public boolean bRed(double x, double y){
+  boolean validPath = false;
+  if (x <= 106 && x >= 66){  
+    if (y <=106 && y >=66 ){}
+  }
+  return validPath;
+}
+
+public boolean aBlue(double x, double y){
+  boolean validPath = false;
+  if (x <= 288 && x >= 244){ 
+
+    if (y <= 288 && y >= 244){}
+  }
+  return validPath;
+}
+
+public boolean aRed(double x, double y){
+boolean validPath = false;
+if(x <= 184 && x >= 144){ 
+  if(y <= 184 && y >= 144){}
+ }
+ return validPath;
+}
+
 }
