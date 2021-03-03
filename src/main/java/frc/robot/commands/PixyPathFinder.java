@@ -46,8 +46,9 @@ public class PixyPathFinder {
         // make decision based on the closest block
         double x = closestBlock.getX();
         double y = closestBlock.getY();
-
+        
         // will probably need to look at 'Y' to tell differences between red and blue?
+        //Tests X and Y cords of balls seen to determine corresponding paths
         if (x >= 66 && x <= 106) {
             if(y >= 104 && y <= 144){
                 return GalacticSearchPath.B_RED;
@@ -61,7 +62,7 @@ public class PixyPathFinder {
         }
 
         if (x >= 244 && x <= 288) {
-            if(y >= 117 && y <= 77) {
+            if(y >= 77 && y <= 117) {
                 return GalacticSearchPath.B_BLUE;
             }
         }
@@ -71,7 +72,7 @@ public class PixyPathFinder {
                  return GalacticSearchPath.A_RED;
                 }
         }
-
+        
         // nothing matched!
         return GalacticSearchPath.UNKNOWN;
     }
