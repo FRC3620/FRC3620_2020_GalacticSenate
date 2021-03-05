@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpiutil.net.PortForwarder;
+import frc.robot.commands.QuarterTurnTestCommand;
 import frc.robot.commands.Slalom25Command;
 import frc.robot.commands.Slalom26Command;
 import frc.robot.commands.Slalom27Command;
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Slalom 2-7", new Slalom27Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));
     chooser.addOption("Neutronium Auto", m_robotContainer.getNeutroniumAuto());
+    chooser.addOption("QuarterTurnTest", new QuarterTurnTestCommand(RobotContainer.driveSubsystem));
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 
