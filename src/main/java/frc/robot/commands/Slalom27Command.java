@@ -22,7 +22,7 @@ public class Slalom27Command extends SlalomCommandGroup {
                 new AutoDriveCommand(3.0 * 12, 0, SPEED, 180, driveSubsystem, "charlie", this), // to the right
 
                 new AutoSteerCommand(90, driveSubsystem, "-delta-", this),
-                new AutoDriveCommand(2.1 * 12, 90, SPEED, 180, driveSubsystem, "delta", this), // forward
+                new AutoDriveCommand(2.9 * 12, 90, SPEED, 180, driveSubsystem, "delta", this), // forward
 
                 new AutoSteerCommand(180, driveSubsystem, "-echo-", this),
                new AutoDriveCommand(4.4 * 12, 0, SPEED, 180, driveSubsystem, "echo", this), // right 
