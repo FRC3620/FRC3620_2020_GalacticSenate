@@ -338,7 +338,8 @@ public class RobotContainer {
     SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
-    
+    SmartDashboard.putData("Figure 23 Path A Blue", new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem));
+    //SmartDashboard.putData();
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
     SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
   }
@@ -499,6 +500,11 @@ public class RobotContainer {
   public Command getTrenchAuto(){
     return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
+
+  public Command getFigure23PathABlue(){
+    return new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem);
+  }
+
 
   public Command getMeanMachineAuto(){
     return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);

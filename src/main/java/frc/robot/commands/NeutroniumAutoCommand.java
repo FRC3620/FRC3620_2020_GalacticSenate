@@ -56,6 +56,8 @@ new WaitCommand(.2)
       new AutoDriveCommand(2*12,150,75,180, driveSubsystem)
       ,
       new AutoDriveCommand(14*12, 85,75,180, driveSubsystem)
+      ,
+      new AutoIntakeArmUpCommand (intakeSubsystem)
 
 
 
