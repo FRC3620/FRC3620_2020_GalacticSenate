@@ -22,10 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpiutil.net.PortForwarder;
-import frc.robot.commands.Figure23PathABlueCommand;
-import frc.robot.commands.Figure23PathBblueCommand;
-import frc.robot.commands.Figure23PathARedCommand;
-import frc.robot.commands.Figure23PathBRedCommand;
 
 
 import frc.robot.commands.Slalom25Command;
@@ -92,7 +88,7 @@ public class Robot extends TimedRobot {
       }
     });
     
-    //chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
+    chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
     chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
     chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
     chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
@@ -101,15 +97,16 @@ public class Robot extends TimedRobot {
     chooser.addOption("Slalom 2-7", new Slalom27Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));
     chooser.addOption("Neutronium Auto", m_robotContainer.getNeutroniumAuto());
-    chooser.addOption("figure 23 path A Blue", new Figure23PathABlueCommand(RobotContainer.driveSubsystem, null));
-    chooser.addOption("figure 23 path B blue", new Figure23PathBblueCommand(RobotContainer.driveSubsystem, null));
-    chooser.addOption("figure 23 path B Red", new Figure23PathBRedCommand(RobotContainer.driveSubsystem, null));
-    chooser.addOption("figure 23 path A Red", new Figure23PathARedCommand(RobotContainer.driveSubsystem, null));
+    chooser.addOption("figure 23 path A Blue", m_robotContainer.getFigure23PathABlue()); // don't null
+    chooser.addOption("figure 23 path B blue", m_robotContainer.getFigure23PathBblueCommand()); // for method drew did with the new command " get _" must do m_robotContainer
+    chooser.addOption("figure 23 path B Red", m_robotContainer.getFigure23PathBRedCommand()); // don't need to import through m_robotContainer
+    chooser.addOption("figure 23 path A Red", m_robotContainer.getFigure23PathARedCommand());
+    
     
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 
-    
+
      // get data logging going
      DataLogger robotDataLogger = new DataLogger();
      new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);

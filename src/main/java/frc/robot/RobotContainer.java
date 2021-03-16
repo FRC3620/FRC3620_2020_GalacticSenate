@@ -339,6 +339,7 @@ public class RobotContainer {
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
     SmartDashboard.putData("Figure 23 Path A Blue", new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem));
+    
     //SmartDashboard.putData();
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
     SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
