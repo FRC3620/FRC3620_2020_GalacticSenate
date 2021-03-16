@@ -23,6 +23,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpiutil.net.PortForwarder;
 import frc.robot.commands.Figure23PathABlueCommand;
+import frc.robot.commands.Figure23PathBblueCommand;
+import frc.robot.commands.Figure23PathARedCommand;
+import frc.robot.commands.Figure23PathBRedCommand;
+
+
 import frc.robot.commands.Slalom25Command;
 import frc.robot.commands.Slalom26Command;
 import frc.robot.commands.Slalom27Command;
@@ -97,6 +102,10 @@ public class Robot extends TimedRobot {
     chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));
     chooser.addOption("Neutronium Auto", m_robotContainer.getNeutroniumAuto());
     chooser.addOption("figure 23 path A Blue", new Figure23PathABlueCommand(RobotContainer.driveSubsystem, null));
+    chooser.addOption("figure 23 path B blue", new Figure23PathBblueCommand(RobotContainer.driveSubsystem, null));
+    chooser.addOption("figure 23 path B Red", new Figure23PathBRedCommand(RobotContainer.driveSubsystem, null));
+    chooser.addOption("figure 23 path A Red", new Figure23PathARedCommand(RobotContainer.driveSubsystem, null));
+    
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 

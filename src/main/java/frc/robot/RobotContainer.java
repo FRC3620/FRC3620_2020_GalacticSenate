@@ -505,6 +505,13 @@ public class RobotContainer {
     return new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem);
   }
 
+public Command getFigure23PathBRedCommand(){
+   return new Figure23PathBRedCommand(driveSubsystem, intakeSubsystem);
+}
+
+public Command getFigure23PathARedCommand(){
+  return new Figure23PathARedCommand(driveSubsystem, intakeSubsystem);
+}
 
   public Command getMeanMachineAuto(){
     return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
@@ -517,6 +524,11 @@ public class RobotContainer {
   public Command getWaitAndSchootAuto(){
     return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
   }
+
+public Command getFigure23PathBblueCommand(){
+  return new Figure23PathBblueCommand(driveSubsystem, intakeSubsystem);
+}
+
 
   /**
    * Determine if this robot is a completition robot. It is if
