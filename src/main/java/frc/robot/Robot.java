@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
     chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
     chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
-    chooser.addOption("Slalom 2-5", new Slalom25Command(RobotContainer.driveSubsystem));
+    chooser.addOption("Slalom 2-5", new Slalom25Command(RobotContainer.driveSubsystem)); // maybe not best method not using m_robotContainer
     chooser.addOption("Slalom 2-6", new Slalom26Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-7", new Slalom27Command(RobotContainer.driveSubsystem));
     chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));

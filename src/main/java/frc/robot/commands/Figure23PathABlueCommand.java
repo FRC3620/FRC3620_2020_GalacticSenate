@@ -14,14 +14,17 @@ public class Figure23PathABlueCommand extends SlalomCommandGroup {
                 ,
                  new WaitCommand(.2)
                  ,
-                new AutoDriveCommand(3 * 12, 90, 75, 180, driveSubsystem),
-                new AutoDriveCommand(7 * 12, 50, 75, 180, driveSubsystem),
-                new AutoDriveCommand(2 * 12, 90, 75, 180, driveSubsystem),
-                new AutoDriveCommand(2 * 12, 160, 75, 180, driveSubsystem),
-                new AutoDriveCommand(5 * 12, 230, 75, 180, driveSubsystem),
-                new AutoDriveCommand(2 * 12, 150, 75, 180, driveSubsystem),
-                new AutoDriveCommand(2 * 12, 90, 75, 180, driveSubsystem),
-                new AutoDriveCommand(4 * 12, 60, 75, 180, driveSubsystem));
+                new AutoDriveCommand(3.62 * 12, 90, 90, 180, driveSubsystem),
+                new AutoDriveCommand(6.25 * 12, 45, 90, 180, driveSubsystem),
+                new AutoDriveCommand(2 * 12, 90, 90, 180, driveSubsystem),
+                new AutoDriveCommand(2.41 * 12, 160, 90, 180, driveSubsystem),
+                new AutoDriveCommand(3.75* 12, 230, 90, 180, driveSubsystem), //4 to 3
+                new AutoDriveCommand(2.5 * 12, 150, 90, 180, driveSubsystem), // going back leg
+                new AutoDriveCommand(2 * 12, 90, 90, 180, driveSubsystem),
+                new AutoDriveCommand(7 * 12, 40, 90, 180, driveSubsystem)
+                ,
+                new AutoDriveCommand(4 * 12, 100, 90, 180, driveSubsystem)
+        );
     }
 
     
