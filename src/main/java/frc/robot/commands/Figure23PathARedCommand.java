@@ -21,7 +21,7 @@ public class Figure23PathARedCommand extends SlalomCommandGroup {
                   ,
                   new AutoDriveCommand(2.41*12,160,90,180, driveSubsystem)
                   ,
-                  new AutoDriveCommand(4.5*12,230,90,180, driveSubsystem)
+                  new AutoDriveCommand(4*12,230,90,180, driveSubsystem)
                   ,
                   new AutoDriveCommand(2.41*12,150,90,180, driveSubsystem)
                   ,
