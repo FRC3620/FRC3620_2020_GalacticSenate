@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Slalom 2-4 Red", new Figure24PathBRedCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
     chooser.addOption("Slalom 2-4 Blue", new Figure24PathBBlueCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
     chooser.addOption("Galactic Search", new GalacticSearchCommand(RobotContainer.pixySubsystem, RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
-    chooser.addOption("QuarterTurnTest", new QuarterTurnTestCommand(m_robotContainer.driveSubsystem));
+    //chooser.addOption("QuarterTurnTest", new QuarterTurnTestCommand(m_robotContainer.driveSubsystem));
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 
