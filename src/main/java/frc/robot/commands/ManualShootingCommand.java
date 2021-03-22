@@ -23,7 +23,7 @@ import java.text.DecimalFormat;
 public class ManualShootingCommand extends CommandBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  boolean shouldDoDataLogging = false;
+  boolean shouldDoDataLogging = true;
 
   IFastDataLogger dataLogger;
 
