@@ -66,9 +66,9 @@ public class AutoSteerCommand extends CommandBase {
             autonomousLogger.setCurrentDrivePositions(initialPositionLeftFront, initialPositionRightFront, initialPositionLeftBack, initialPositionRightBack);
             autonomousLogger.setElapsed(0.0);
             autonomousLogger.doLog();
-            timer.reset();
-            timer.start();
         }
+        timer.reset();
+        timer.start();
         driveSubsystem.setAutoSpinMode();
         //driveSubsystem.setTargetHeading(desiredHeading);
     }

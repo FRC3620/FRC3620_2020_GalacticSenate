@@ -85,11 +85,27 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
     // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
-	private double RIGHT_FRONT_ABSOLUTE_OFFSET = -162.9;
-	private double LEFT_FRONT_ABSOLUTE_OFFSET = 51.9;
-	private double LEFT_BACK_ABSOLUTE_OFFSET = 76.0;
-	private double RIGHT_BACK_ABSOLUTE_OFFSET = -61.2;
 	
+	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -162.9;
+	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = 51.9;
+	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = 76;
+	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = -61.2;
+	
+	
+	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
+	// PRACTICE BOT!!!!!!!!!
+	private double PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET = -122.5;
+	private double PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET = -116.2;
+	private double PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET = 8.78;
+	private double PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET = -107.36;
+
+	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
+	// PRACTICE BOT!!!!!!!!!
+	private double RIGHT_FRONT_ABSOLUTE_OFFSET;
+	private double LEFT_FRONT_ABSOLUTE_OFFSET;
+	private double LEFT_BACK_ABSOLUTE_OFFSET;
+	private double RIGHT_BACK_ABSOLUTE_OFFSET;
+
 	private double kPositionP = 0.005;
 	private double kPositionI = 0.00000;
 	private double kPositionD = .0;
@@ -129,6 +145,21 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors oldVectors;
 
   public DriveSubsystem() {
+	  String MacAddress = RobotContainer.identifyRoboRIO();
+	  logger.info("ETHERNET MAC address: {}", MacAddress);
+	  if (MacAddress.equals("00-80-2F-18-5C-5F")) {
+		  logger.info("I THINK IM A PRACTICE BOT");
+		RIGHT_FRONT_ABSOLUTE_OFFSET = PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
+		LEFT_FRONT_ABSOLUTE_OFFSET = PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
+		RIGHT_BACK_ABSOLUTE_OFFSET = PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
+		LEFT_BACK_ABSOLUTE_OFFSET = PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+	  } else {
+		logger.info("I THINK IM A COMPETITION BOT");
+		  RIGHT_BACK_ABSOLUTE_OFFSET = COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
+		  LEFT_BACK_ABSOLUTE_OFFSET = COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
+		  RIGHT_FRONT_ABSOLUTE_OFFSET = COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
+		  LEFT_FRONT_ABSOLUTE_OFFSET = COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+	  }
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
 		rightFrontPositionPID = rightFrontAzimuth.getPIDController();

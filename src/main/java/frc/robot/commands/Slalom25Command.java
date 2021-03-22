@@ -1,48 +1,46 @@
 
 package frc.robot.commands;
 
-
-import frc.robot.commands.AutoDriveCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class Slalom25Command extends SlalomCommandGroup {
-    private static final double SPEED = 0.25;
-    
-    public  Slalom25Command(DriveSubsystem driveSubsystem) {
-       // command for slalom 25 - Barrel Race Challenge
-       super(driveSubsystem);
-       
-       addCommands(
-                // new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem)
-               
 
-               // new AutoSteerCommand(90, driveSubsystem),
-               // new AutoSemiElipseCommand(6 * 4, 3, SPEED, driveSubsystem)
-                
-                new AutoSteerCommand(90, driveSubsystem), // angle wheels
-                new AutoDriveCommand(7.5 * 12, 90, SPEED, 180, driveSubsystem, "alpha", this), // Straight
-                
-                new AutoDriveCommand(3 * 12, 0, SPEED, 180, driveSubsystem, "beta", this), //right
-                
-                new AutoDriveCommand(3 * 12, -90, SPEED, 180, driveSubsystem, "charlie", this), //straight
-                
-                new AutoDriveCommand(6 * 12, 180, SPEED, 180, driveSubsystem, "delta", this), //left
-                //new barrel
-                new AutoDriveCommand(8 * 12, 90, SPEED, 180, driveSubsystem, "ehco", this), //foward
-               
-                new AutoDriveCommand(5 * 12, 180, SPEED, 180, driveSubsystem, "foxtrot", this), //left
-             
-                new AutoDriveCommand(5 * 12, -90, SPEED, 180, driveSubsystem, "gamma", this), //back
-                
-                new AutoDriveCommand(10 * 12, 0, SPEED, 180, driveSubsystem,"hotel", this), //right
-                //new barrel
-                new AutoDriveCommand(10 * 12, 90, SPEED, 180, driveSubsystem, "india", this), //foward
-               
-                new AutoDriveCommand(5 * 12, 180, SPEED, 180, driveSubsystem, "juliet", this), //left
-            
-                new AutoDriveCommand(22 * 14, -90, SPEED, 180, driveSubsystem, "kilo", this) //return
-            
-                
-        );
-    }
+public class Slalom25Command extends SequentialCommandGroup {
+ 
+  public Slalom25Command(DriveSubsystem driveSubsystem) {
+  
+
+
+    super();
+    //AutoSemiElipseCommand(double a, double b, double speed, DriveSubsystem driveSubsystem)
+      //-180 left, 0 right, 90 foward, -90 back
+    addCommands (
+     // new AutoSemiElipseCommand(5, 3, 0, driveSubsystem),
+
+      
+     // Direction test
+     /*
+     new AutoDriveCommand(3 * 12, 0, .15, 180, driveSubsystem),
+      new AutoDriveCommand(3 * 12, -90, .15, 180, driveSubsystem),
+      new AutoDriveCommand(3 * 12, 180, .15, 180, driveSubsystem),
+      new AutoDriveCommand(3 * 12, 90, .15, 180, driveSubsystem),
+      new AutoSemiElipseCommand(5, 3, 0.01, driveSubsystem)
+      */
+      
+      new AutoSteerCommand(90, driveSubsystem),
+      new AutoDriveCommand (10.5*12, 90, .40, 180, driveSubsystem), //foward new barrel
+      new AutoDriveCommand(4.1*12, 0, .35, 180, driveSubsystem),    //right
+      new AutoDriveCommand (4.3*12, -90, .35, 180, driveSubsystem), //back
+      new AutoDriveCommand (4.25*12, -180, .30, 180, driveSubsystem), //left
+      new AutoDriveCommand (12*12, 90, .45, 180, driveSubsystem), //foward new barrel
+      new AutoDriveCommand (4.5*12, -180, .40, 180, driveSubsystem), // left
+      new AutoDriveCommand (6.5*12, -90, .40, 180, driveSubsystem), // back
+      new AutoDriveCommand(3*12, 0, .35, 180, driveSubsystem), //right
+      new AutoSteerCommand(45, driveSubsystem), //steer 45
+      new AutoDriveCommand(8*12, 45, .45, 180, driveSubsystem), // diagnol
+      new AutoDriveCommand(5*12, 90, .35, 180, driveSubsystem), //foward
+      new AutoDriveCommand (3.4*12, -180, .35, 180, driveSubsystem), //left
+      new AutoDriveCommand (21*12, -90, .70, 180, driveSubsystem) //return back
+    );
+  }
 }
