@@ -23,19 +23,25 @@ public class AutoSteerCommand extends CommandBase {
     private double initialPositionLeftBack;
 
     private Timer timer;
+    private double delay;
 
     private IAutonomousLogger autonomousLogger;
     private String legName;
 
     public AutoSteerCommand(double strafeAngle, DriveSubsystem driveSubsystem) {
-        this(strafeAngle, driveSubsystem, null, null);
+        this(strafeAngle, 0.5, driveSubsystem, null, null);
     }
 
     public AutoSteerCommand(double strafeAngle, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+        this(strafeAngle, 0.5, driveSubsystem, legName, autonomousLogger);
+    }
+
+    public AutoSteerCommand(double strafeAngle, double delay, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
 
         this.strafeAngle = strafeAngle;
+        this.delay = delay;
 
         this.legName = legName;
         this.autonomousLogger = autonomousLogger;
@@ -103,6 +109,6 @@ public class AutoSteerCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return timer.get() > 0.5;
+        return timer.hasElapsed(delay);
     }
 }

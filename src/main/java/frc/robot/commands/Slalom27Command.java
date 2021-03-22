@@ -31,14 +31,14 @@ public class Slalom27Command extends SlalomCommandGroup {
                 new AutoDriveCommand(4.4 * 12, 90, SPEED, 180, driveSubsystem, "foxtrot", this), // forward
 
                  new AutoSteerCommand(180, driveSubsystem, "-golf-", this),
-                new AutoDriveCommand(8.2 * 12, 180, SPEED, 180, driveSubsystem, "golf", this), // left
+                new AutoDriveCommand(8.5 * 12, 180, SPEED, 180, driveSubsystem, "golf", this), // left
                 new AutoDriveCommand(7.5 * 12, 0, SPEED, 180, driveSubsystem, "hotel", this), // right
 
                 new AutoSteerCommand(90, driveSubsystem, "-india-", this),
                 new AutoDriveCommand(7.00 * 12, 90, SPEED, 180, driveSubsystem, "india", this), // forrard
 
                 new AutoSteerCommand(180, driveSubsystem, "-juliet-", this),
-                new AutoDriveCommand(8.2 * 12, 180, SPEED, 180, driveSubsystem, "juliet", this), // left to hit
+                new AutoDriveCommand(8.5 * 12, 180, SPEED, 180, driveSubsystem, "juliet", this), // left to hit
                 new AutoDriveCommand(3.2 * 12, 0, SPEED, 180, driveSubsystem, "kilo", this), // back to center
      
                 new AutoSteerCommand(90, driveSubsystem, "-lima-", this),
