@@ -169,10 +169,16 @@ public class EventLogging {
 						rootLogger.addHandler(h);
 					}
 
-					h = new MyFileHandler(logDirectory);
-					h.setFormatter(new FormatterForFileHandler());
-					h.setLevel(Level.DEBUG.julLevel);
-					rootLogger.addHandler(h);
+                    // System.getProperties().list(System.out);
+					String osArch = System.getProperty("os.arch");
+					if (osArch.equals("arm")) {
+                        h = new MyFileHandler(logDirectory);
+                        h.setFormatter(new FormatterForFileHandler());
+                        h.setLevel(Level.DEBUG.julLevel);
+                        rootLogger.addHandler(h);
+                    } else {
+					    System.out.println ("not logging to file");
+                    }
 
 					setupDone = true;
 				}
@@ -209,9 +215,9 @@ public class EventLogging {
                             File logFile = new File(logDirectory,
                                     timestampString + ".log");
                             try {
-                                fileOutputStream = new FileOutputStream(
-                                        logFile);
+                                fileOutputStream = new FileOutputStream(logFile);
                                 setOutputStream(fileOutputStream);
+                                System.out.println ("event logging to " + logFile.getAbsoluteFile());
                             } catch (IOException ex) {
                                 ex.printStackTrace(System.err);
                             }

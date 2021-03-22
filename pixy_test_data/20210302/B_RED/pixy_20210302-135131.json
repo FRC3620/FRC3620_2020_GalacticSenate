@@ -1,0 +1,59 @@
+{
+  "blocks": [
+    {
+      "block": {
+        "signature": 1,
+        "x": 66,
+        "y": 144,
+        "width": 28,
+        "height": 15,
+        "angle": 0,
+        "index": 13,
+        "age": 255
+      },
+      "aspectRatio": 1.8666666666666667,
+      "area": 420,
+      "bottom": 151.5,
+      "tags": [
+        "low",
+        "decider"
+      ]
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 220,
+        "y": 13,
+        "width": 12,
+        "height": 8,
+        "angle": 0,
+        "index": 216,
+        "age": 255
+      },
+      "aspectRatio": 1.5,
+      "area": 96,
+      "bottom": 17.0,
+      "tags": []
+    },
+    {
+      "block": {
+        "signature": 1,
+        "x": 225,
+        "y": 115,
+        "width": 14,
+        "height": 6,
+        "angle": 0,
+        "index": 155,
+        "age": 255
+      },
+      "aspectRatio": 2.3333333333333335,
+      "area": 84,
+      "bottom": 118.0,
+      "tags": [
+        "low"
+      ]
+    }
+  ],
+  "path": "B_RED",
+  "when": "20210302-135131"
+}

@@ -125,6 +125,8 @@ public class RobotContainer {
   public static VisionSubsystem visionSubsystem;
   public static BeltSubsystem beltSubsystem;
 
+  public static PixySubsystem pixySubsystem;
+
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -319,7 +321,7 @@ public class RobotContainer {
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
     beltSubsystem = new BeltSubsystem();
-
+    pixySubsystem = new PixySubsystem();
   }
 
   void setupSmartDashboardCommands() {
@@ -329,6 +331,8 @@ public class RobotContainer {
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
     SmartDashboard.putData(new SetHoodPositionCommand());
 
+    SmartDashboard.putData(new PixyTestCommand(pixySubsystem));
+    
     SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
     SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
     SmartDashboard.putData("Auto Drive North Command", new AutoDriveCommand(22*12, 90, 0, 180, driveSubsystem));
@@ -527,7 +531,7 @@ public Command getFigure23PathARedCommand(){
   }
 
 public Command getFigure23PathBblueCommand(){
-  return new Figure23PathBblueCommand(driveSubsystem, intakeSubsystem);
+  return new Figure24PathBBlueCommand(driveSubsystem, intakeSubsystem);
 }
 
 

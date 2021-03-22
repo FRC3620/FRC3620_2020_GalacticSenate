@@ -13,7 +13,7 @@ public class Figure23PathBRedCommand extends SlalomCommandGroup {
                 ,
                  new WaitCommand(.2)
                  ,
-                new AutoDriveCommand(1.5 * 12, 135, 1, 180, driveSubsystem),
+                new AutoDriveCommand(1.5* 12, 135, 1, 180, driveSubsystem),
                 new AutoDriveCommand(2 * 12, 90, 1, 180, driveSubsystem),
                 new AutoDriveCommand(4.5 * 12, 30, 1, 180, driveSubsystem),
                 new AutoDriveCommand(2 * 12, 90, 1, 180, driveSubsystem),

@@ -9,6 +9,7 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
+import frc.robot.commands.*;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -22,12 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpiutil.net.PortForwarder;
-
-
-import frc.robot.commands.Slalom25Command;
-import frc.robot.commands.Slalom26Command;
-import frc.robot.commands.Slalom27Command;
-import frc.robot.commands.Slalom28Command;
 
 import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -103,6 +98,12 @@ public class Robot extends TimedRobot {
     chooser.addOption("figure 23 path A Red", m_robotContainer.getFigure23PathARedCommand());
     
     
+    //chooser.addOption("Slalom 2-3 Red", new Figure23PathARedCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
+    //chooser.addOption("Slalom 2-3 Blue", new Figure23PathABlueCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
+    //chooser.addOption("Slalom 2-4 Red", new Figure24PathBRedCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
+    //chooser.addOption("Slalom 2-4 Blue", new Figure24PathBBlueCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
+    chooser.addOption("Galactic Search", new GalacticSearchPickerCommand(RobotContainer.pixySubsystem, RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
+    //chooser.addOption("QuarterTurnTest", new QuarterTurnTestCommand(m_robotContainer.driveSubsystem));
     //chooser.addDefaultOption("Autonomous Command", m_robotContainer.getAutonomousCommand());
     SmartDashboard.putData("Auto mode", chooser);
 
