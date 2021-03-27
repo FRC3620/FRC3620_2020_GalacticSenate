@@ -39,6 +39,7 @@ public class ShootingDataLogger {
             dataLogger.addDataProvider("right_supplyVoltage", () -> rightTalonFX.getBusVoltage());
             dataLogger.addDataProvider("right_outputPercent", () -> rightTalonFX.getMotorOutputPercent());
             dataLogger.addDataProvider("right_error", () -> rightTalonFX.getClosedLoopError());
+            dataLogger.addDataProvider("right_integral_accumulator", () -> rightTalonFX.getIntegralAccumulator());
         }
         if (bottomTalonFX != null) {
             dataLogger.addDataProvider("bottom_setpoint", () -> bottomTalonFX.getClosedLoopTarget());

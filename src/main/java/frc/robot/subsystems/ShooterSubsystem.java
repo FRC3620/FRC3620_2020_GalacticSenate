@@ -46,17 +46,18 @@ public class ShooterSubsystem extends SubsystemBase {
   https://docs.google.com/spreadsheets/d/1Ap6Y6N5QLvBdPORXFwbMu-nDgwLP74CkY4iBRznK5PU/edit?usp=sharing
   */
   //top FPID Values
-  private final double tFVelocity = .049; //0.045
-  private final double tPVelocity = .45; //0.60
-  private final double tIVelocity = .0; //0.000003
-  private final double tDVelocity = 7.75; //7.75
-  public double trpm = 4100; //5200
+  private final double tFVelocity = .049; //0.049
+  private final double tPVelocity = .39; //0.40
+  private final double tIVelocity = .00000003; //0.
+  private final int tizoneVelocity = 1500;
+  private final double tDVelocity = 0; //7.75
+  public double trpm = 4700; //4700
 
   //bottom FPID Values
   private final double bFVelocity = 0.0495;//.0456
-  private final double bPVelocity = .1; //.45
-  private final double bIVelocity = 0.00;//0.0000001
-  private final double bDVelocity = 0;//7.5
+  private final double bPVelocity = .05; //.45
+  private final double bIVelocity = 0;//0.0000001
+  private final double bDVelocity = 1;//7.5
   private double brpm = 5000;
 
   //hood PID Values
@@ -100,6 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
       falconTop.config_kF(kVelocitySlotIdx, tFVelocity, kTimeoutMs);
       falconTop.config_kP(kVelocitySlotIdx, tPVelocity, kTimeoutMs);
       falconTop.config_kI(kVelocitySlotIdx, tIVelocity, kTimeoutMs);
+      falconTop.config_IntegralZone(kVelocitySlotIdx, tizoneVelocity, kTimeoutMs);
       falconTop.config_kD(kVelocitySlotIdx, tDVelocity, kTimeoutMs);
     }
 
@@ -147,13 +149,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calcHoodPosition(double cy) {
     double calcHoodPosition;
     if(cy < 224){
-      calcHoodPosition = 6.51705925925762 + 0.00214390996242031*cy +0.0000477394465963482*cy*cy;
+      //calcHoodPosition = 6.51705925925762 + 0.00214390996242031*cy +0.0000477394465963482*cy*cy;
+      calcHoodPosition=6.3;
     } else if(cy < 336){
       calcHoodPosition = 15.5138627911074 + -0.0633941628394439*cy + 0.000161015211419646*cy*cy;
     } else if(cy < 403){
       calcHoodPosition = -18.3265582713066 + 0.150371341332175*cy + -0.00017544301862582*cy*cy;
     } else {
-      calcHoodPosition = -59.0640524886549 + 0.341428588959388*cy + -0.000398697743236198*cy*cy;
+      calcHoodPosition=12.75;
+      //calcHoodPosition = -59.0640524886549 + 0.341428588959388*cy + -0.000398697743236198*cy*cy
     }
     
     
@@ -170,16 +174,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calcTopRPM(double cy) {
     double calcTopRPM = 2650;
     if(cy < 252) {
-      calcTopRPM = 4000;
+      calcTopRPM = 4700;
     } else {
       //calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
       //WORKS calcTopRPM = 698.02383 + 8.1439319*cy - 0.0288023*Math.pow((cy-371),2) - 0.0001439*Math.pow((cy-371),3); 
       //M79calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3); 
       //works most of the time calcTopRPM = 1.3333*(913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3));
       //workds completely calcTopRPM = 2314.525 - 9.81 *cy + 0.08563*cy*cy - 0.00010841*cy*cy*cy;
-      calcTopRPM = 7711.05 + -118.718*cy + 1.45292*cy*cy + -0.00865716*cy*cy*cy + 0.0000264684*cy*cy*cy*cy + -0.0000000393972*cy*cy*cy*cy*cy + 2.25566E-11*cy*cy*cy*cy*cy*cy;
+      // ree uncomment out!!!!!!calcTopRPM = 7711.05 + -118.718*cy + 1.45292*cy*cy + -0.00865716*cy*cy*cy + 0.0000264684*cy*cy*cy*cy + -0.0000000393972*cy*cy*cy*cy*cy + 2.25566E-11*cy*cy*cy*cy*cy*cy;
       //calcTopRPM= 2314.525 - 9.81 *cy + 0.08563*Math.pow((cy),2) - 0.00010841*Math.pow((cy),3);
-      //calcTopRPM=5360;
+      calcTopRPM=4700;
     }
     return calcTopRPM;
   }
