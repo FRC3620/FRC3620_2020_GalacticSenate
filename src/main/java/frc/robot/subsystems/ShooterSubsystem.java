@@ -54,9 +54,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public double trpm = 4700; //4700
 
   //bottom FPID Values
-  private final double bFVelocity = 0.0495;//.0456
-  private final double bPVelocity = .05; //.45
-  private final double bIVelocity = 0;//0.0000001
+  private final double bFVelocity = 0.0456;//.0456
+  private final double bPVelocity = .12; //.45
+  private final double bIVelocity = .000000008;//0.0000001
+  private final int tIzoneVelocity = 1800;
   private final double bDVelocity = 1;//7.5
   private double brpm = 5000;
 
@@ -123,6 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
       falconBottom.config_kP(kVelocitySlotIdx, bPVelocity, kTimeoutMs);
       falconBottom.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
       falconBottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
+      falconBottom.config_IntegralZone(kVelocitySlotIdx, tIzoneVelocity, kTimeoutMs);
     }
 
     if (hoodMotor != null) {
@@ -149,16 +151,18 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calcHoodPosition(double cy) {
     double calcHoodPosition;
     if(cy < 224){
-      //calcHoodPosition = 6.51705925925762 + 0.00214390996242031*cy +0.0000477394465963482*cy*cy;
-      calcHoodPosition=6.3;
+      calcHoodPosition = 3.73187317480733 + 0.0327847309136473*cy +-0.0000114726741759497*cy*cy;
+      calcHoodPosition = calcHoodPosition + SmartDashboard.getNumber("manualHoodPosition", 5);
     } else if(cy < 336){
-      calcHoodPosition = 15.5138627911074 + -0.0633941628394439*cy + 0.000161015211419646*cy*cy;
-    } else if(cy < 403){
-      calcHoodPosition = -18.3265582713066 + 0.150371341332175*cy + -0.00017544301862582*cy*cy;
+      calcHoodPosition = 3.85000000000 + 0.0369791667*cy + -0.0000325521*cy*cy;
+    }else if(cy < 403){
+      calcHoodPosition = -28.1396700696 + 0.2136292223*cy + -0.0002749411*cy*cy;
     } else {
-      calcHoodPosition=12.75;
-      //calcHoodPosition = -59.0640524886549 + 0.341428588959388*cy + -0.000398697743236198*cy*cy
-    }
+      calcHoodPosition = -56.8299016952515 + 0.355106208706275*cy + -0.000449346405275719*cy*cy;}
+
+
+    // comment this line out when not testing
+    //calcHoodPosition = SmartDashboard.getNumber("manualHoodPosition", 5);
     
     
     //double calcposition = 4.25 + 0.0252936*cy - 0.0002703*Math.pow((cy-363.778),2) - 0.00000054739*Math.pow((cy-363.778),3) + 0.000000000382*Math.pow((cy-363.778),4);

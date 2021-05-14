@@ -12,9 +12,9 @@ public class Figure23PathABlueCommand extends SlalomCommandGroup {
 
                   new  DeployIntakeCommand(intakeSubsystem)
                 ,
-                 new WaitCommand(.2)
-                 ,
-                new AutoDriveCommand(3.62 * 12, 90, 90, 180, driveSubsystem),
+                 //new WaitCommand(.2)
+                 //,
+                //new AutoDriveCommand(3.62 * 12, 90, 90, 180, driveSubsystem),
                 new AutoDriveCommand(6.25 * 12, 45, 90, 180, driveSubsystem),
                 new AutoDriveCommand(2 * 12, 90, 90, 180, driveSubsystem),
                 new AutoDriveCommand(2.41 * 12, 160, 90, 180, driveSubsystem),

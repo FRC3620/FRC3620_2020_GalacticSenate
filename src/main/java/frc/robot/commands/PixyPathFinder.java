@@ -49,28 +49,28 @@ public class PixyPathFinder {
         
         // will probably need to look at 'Y' to tell differences between red and blue?
         //Tests X and Y cords of balls seen to determine corresponding paths
-        if (x >= 55 && x <= 106) {
-            if(y >= 104 && y <= 144){
+        if (x >= 48 && x <= 88) {
+            if(y >= 169 && y <= 210){
                 return GalacticSearchPath.B_RED;
             }
         }
 
-        if (x >= 200 && x <= 240) {
-            if(y >= 75 && y <= 115) {
+        if (x >= 226 && x <= 266) {
+            if(y >= 90 && y <= 130) {
                 return GalacticSearchPath.B_BLUE;
             } 
         }
 
-        if (x >= 244 && x <= 288) {
-            if(y >= 77 && y <= 117) {
-                return GalacticSearchPath.A_BLUE;
-            }
-        }
 
-        if (x >= 144 && x <= 184) {
-            if(y >= 99 && y <= 139){
+        if (x >= 224 && x <= 264) {
+            if(y >= 163 && y <= 203){
                  return GalacticSearchPath.A_RED;
                 }
+        }
+
+        else{
+                return GalacticSearchPath.A_BLUE;
+            
         }
         
         // nothing matched!

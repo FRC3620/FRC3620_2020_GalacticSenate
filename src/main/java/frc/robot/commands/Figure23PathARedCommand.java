@@ -13,11 +13,11 @@ public class Figure23PathARedCommand extends SlalomCommandGroup {
             ,
             new WaitCommand(.2)
             ,
-                  new AutoDriveCommand(3.61*12,90,90,180, driveSubsystem)
+                  new AutoDriveCommand(1*12,70,90,180, driveSubsystem)
                   ,
-                  new AutoDriveCommand(3*12,35,90,180, driveSubsystem)
+                  new AutoDriveCommand(3*12,45,90,180, driveSubsystem)
                   ,
-                  new AutoDriveCommand(3*12,90,90,180, driveSubsystem)
+                  new AutoDriveCommand(2.5*12,90,90,180, driveSubsystem)
                   ,
                   new AutoDriveCommand(2.41*12,160,90,180, driveSubsystem)
                   ,
@@ -25,7 +25,7 @@ public class Figure23PathARedCommand extends SlalomCommandGroup {
                   ,
                   new AutoDriveCommand(2.41*12,150,90,180, driveSubsystem)
                   ,
-                  new AutoDriveCommand(12.87*12, 85,90,180, driveSubsystem)
+                  new AutoDriveCommand(13*12, 85,90,180, driveSubsystem)
                   ,
                   new AutoIntakeArmUpCommand (intakeSubsystem)
         );

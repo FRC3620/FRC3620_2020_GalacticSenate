@@ -37,8 +37,11 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.DPad;
+import org.usfirst.frc3620.misc.DoubleTriggerButton;
+import org.usfirst.frc3620.misc.TriggerButton;
 import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
+
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -370,7 +373,9 @@ public class RobotContainer {
 
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
-
+    //hi sorry this is Jared. i hope this works
+/*
+//Just in case, here's what it was before i started touching code:
     //Driver Controller
 
     driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
@@ -428,6 +433,65 @@ public class RobotContainer {
 
     JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
     releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
+    */
+    //Alright, let's try this
+    //Jared Controller
+
+    driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
+    driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
+    driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
+    driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
+//No
+    //JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    //zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
+//Right Trigger: Fire (feeder)
+    TriggerButton beltDriver = new TriggerButton(driverJoystick, false);
+    beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
+//Left Bumper: Calculate shooting solution
+    JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem));
+//No
+    //JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
+    //toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
+//Right Bumper: Aimbot
+    JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
+//Y: Toggle vision light
+    JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
+//No
+    //JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
+    //toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
+    //Operator Controller
+//No
+    //operatorDPad.up().whenPressed(new PopupArmCommand()); 
+    //operatorDPad.down().whenPressed(new PopDownArmCommand());
+    //operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
+    //operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
+//A: Spin up shooter
+    JoystickButton shootButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    shootButton.toggleWhenPressed(new ManualShootingCommand(shooterSubsystem));
+//B: Intake
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
+//X: Toggle arm up/down
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
+//No
+    //JoystickButton againtWallShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    //againtWallShoot.toggleWhenPressed(new SetShooterUpForFarWallCommand(shooterSubsystem));
+//No
+    //JoystickButton tenFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    //tenFootShoot.toggleWhenPressed(new SetShooterUpForTenFeetCommand(shooterSubsystem));
+//No
+    //JoystickButton twentyOneFootShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y);
+    //twentyOneFootShoot.toggleWhenPressed(new SetShooterUpForTwentyOneFeetCommand(shooterSubsystem));
+//Start: Reverse intake
+    JoystickButton reverseIntakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START);
+    reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
+//No
+    //JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    //releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
   }
 
   public static double getDriveVerticalJoystick() {
