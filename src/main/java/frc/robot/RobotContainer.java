@@ -468,14 +468,14 @@ public class RobotContainer {
     //operatorDPad.down().whenPressed(new PopDownArmCommand());
     //operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
     //operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
-//A: Spin up shooter
-    JoystickButton shootButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    shootButton.toggleWhenPressed(new ManualShootingCommand(shooterSubsystem));
-//B: Intake
-    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+//Left Trigger: Spin up shooter
+    TriggerButton shootButton = new TriggerButton(driverJoystick, true);
+    shootButton.whileHeld(new ManualShootingCommand(shooterSubsystem));
+//X: Intake
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
-//X: Toggle arm up/down
-    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+//A: Toggle arm up/down
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
 //No
     //JoystickButton againtWallShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
