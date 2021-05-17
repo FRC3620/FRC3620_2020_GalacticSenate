@@ -88,7 +88,7 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -161.8;
 	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = 51.8;
-	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = 75.5;
+	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = -121.5;
 	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = -60.9;
 	
 	
