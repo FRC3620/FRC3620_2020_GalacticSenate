@@ -260,7 +260,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
       intakeSubsystemSparkMax.setInverted(false);
-      intakeSubsystemSparkMax.setSmartCurrentLimit(70);
+      intakeSubsystemSparkMax.setSmartCurrentLimit(50);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
@@ -346,6 +346,11 @@ public class RobotContainer {
     SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
     SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
     SmartDashboard.putData("Figure 23 Path A Blue", new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem));
+    SmartDashboard.putData("six ball auto", new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
+
+
+
+
     
     //SmartDashboard.putData();
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
@@ -374,7 +379,7 @@ public class RobotContainer {
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
     //hi sorry this is Jared. i hope this works
-/*
+
 //Just in case, here's what it was before i started touching code:
     //Driver Controller
 
@@ -407,6 +412,7 @@ public class RobotContainer {
 
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
     operatorDPad.down().whenPressed(new PopDownArmCommand());
+
     operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
     operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
 
@@ -433,7 +439,7 @@ public class RobotContainer {
 
     JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
     releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
-    */
+    /*
     //Alright, let's try this
     //Jared Controller
 
@@ -492,9 +498,10 @@ public class RobotContainer {
 //Start: Reverse feeder
     JoystickButton reverseFeederButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START);
     reverseFeederButton.whileHeld(new reverseFeederCommand(beltSubsystem, shooterSubsystem));
-//No
-    //JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
-    //releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
+//Right joystick down: Manual override
+    JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
+    releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
+    */
   }
 
   public static double getDriveVerticalJoystick() {
@@ -546,7 +553,7 @@ public class RobotContainer {
    */
   public static double getClimbingJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
-    if (axisValue < 0.1 && axisValue > -0.1) { //Since the joystick doesnt stay at zero, make it not give a false value
+    if (axisValue < 0.4 && axisValue > -0.4) { //Since the joystick doesnt stay at zero, make it not give a false value
       return 0;
     }
     return -axisValue;

@@ -7,6 +7,8 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.RobotContainer;
+import org.usfirst.frc3620.misc.LightEffect;
 
 /**
  * @author Noah Dressander (532377)
@@ -35,13 +37,14 @@ import frc.robot.subsystems.IntakeSubsystem;
   @Override
   public void execute() {
     intakeSubsystem.intakeSet(.6); //runs intake INWARD
-  }
+    }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.intakeSet(0);  //runs intake OUTWARD until command runs again
-  }
+    RobotContainer.lightSubsystem.setShot(LightEffect.Color.MAIZE.value, 100, true, 1, 1);
+    }
 
   // Returns true when the command should end.
   @Override

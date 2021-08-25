@@ -39,7 +39,7 @@ public class DriveAndAlignCommand extends CommandBase {
   public void execute() {
 
     double yaw = visionSubsystem.getShootingTargetYaw();
-    double speed = 0.15*(Math.abs(yaw)/yaw);
+    double speed = 0.15*(Math.abs(yaw)/yaw); // drew changed from .15 to .1 did not work 
     
     driveSubsystem.twoWheelRotation(speed);
 

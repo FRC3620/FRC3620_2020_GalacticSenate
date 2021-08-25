@@ -180,14 +180,16 @@ public class ShooterSubsystem extends SubsystemBase {
     if(cy < 252) {
       calcTopRPM = 4700;
     } else {
-      //calcTopRPM =  1575.7776 + 6.0863219*cy - 0.0333833*Math.pow((cy-388.545),2) - 0.0001513*Math.pow((cy-388.545),3) - 0.00000038496*Math.pow((cy-388.545),4);
+      if (cy > 420)
+      calcTopRPM =  72028.1114902496 - 317.401960939169*cy  + 0.374097007406817*cy*cy;
+    
       //WORKS calcTopRPM = 698.02383 + 8.1439319*cy - 0.0288023*Math.pow((cy-371),2) - 0.0001439*Math.pow((cy-371),3); 
       //M79calcTopRPM = 913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3); 
       //works most of the time calcTopRPM = 1.3333*(913.30193 + 7.6260199*cy - 0.0252182*Math.pow((cy-366.75),2) - 9.001e-5*Math.pow((cy-366.75),3));
       //workds completely calcTopRPM = 2314.525 - 9.81 *cy + 0.08563*cy*cy - 0.00010841*cy*cy*cy;
       // ree uncomment out!!!!!!calcTopRPM = 7711.05 + -118.718*cy + 1.45292*cy*cy + -0.00865716*cy*cy*cy + 0.0000264684*cy*cy*cy*cy + -0.0000000393972*cy*cy*cy*cy*cy + 2.25566E-11*cy*cy*cy*cy*cy*cy;
       //calcTopRPM= 2314.525 - 9.81 *cy + 0.08563*Math.pow((cy),2) - 0.00010841*Math.pow((cy),3);
-      calcTopRPM=4700;
+      else calcTopRPM=4700;
     }
     return calcTopRPM;
   }
