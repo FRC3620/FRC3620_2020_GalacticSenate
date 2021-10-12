@@ -13,7 +13,7 @@ import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
 import edu.wpi.first.hal.can.CANJNI;
 
 public class CANDeviceFinder {
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+    Logger logger = EventLogging.getLogger(getClass(), Level.DEBUG);
 
     Set<CANDeviceId> deviceSet = new TreeSet<>();
 

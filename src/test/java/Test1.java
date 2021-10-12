@@ -3,7 +3,6 @@ import static org.junit.Assert.assertFalse;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import frc.robot.subsystems.PixySubsystem;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC;
 import org.junit.Test;
 
