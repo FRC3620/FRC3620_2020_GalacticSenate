@@ -62,11 +62,11 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("Shooter.Feeder.Voltage", () -> f2(RobotContainer.beltSubsystem.getFeederVoltage()));
 		}
 
-		if(RobotContainer.intakeSubsystemSparkMax != null) {
+		/*if(RobotContainer.intakeSubsystemSparkMax != null) {
 			dataLogger.addDataProvider("Intake.CurrentOut", () -> f2(RobotContainer.intakeSubsystem.getIntakeCurrent()));
 			dataLogger.addDataProvider("Intake.PercentOut", () -> f2(RobotContainer.intakeSubsystem.getIntakePercentOut()));
 			dataLogger.addDataProvider("Intake.Voltage", () -> f2(RobotContainer.intakeSubsystem.getIntakeVoltage()));
-		}
+		}*/
 
 		dataLogger.addDataProvider("getTargetHeading", () -> f2(RobotContainer.driveSubsystem.getTargetHeading()));
 	}

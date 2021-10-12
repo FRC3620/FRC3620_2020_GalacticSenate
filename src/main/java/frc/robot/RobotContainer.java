@@ -123,7 +123,6 @@ public class RobotContainer {
   public static LightSubsystem lightSubsystem;
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
-  public static IntakeSubsystem intakeSubsystem;
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static BeltSubsystem beltSubsystem;
@@ -315,7 +314,6 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     armSubsystem = new ArmSubsystem();
     shooterSubsystem = new ShooterSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
     lightSubsystem = new LightSubsystem();
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
@@ -337,14 +335,9 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Drive South Command", new AutoDriveCommand(21.5*12, -90, 0, 180, driveSubsystem));
     SmartDashboard.putData("Snap to Heading 113", new SnapToHeadingCommand(-113, driveSubsystem));
     SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
-    SmartDashboard.putData("Simple Auto Command", new SimpleAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
-    SmartDashboard.putData("Golden Auto Command", new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem));
-    SmartDashboard.putData("Silver Auto Command", new SilverAutoCommand(driveSubsystem));
-    SmartDashboard.putData("Figure 23 Path A Blue", new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem));
-    
+  
     //SmartDashboard.putData();
     SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("Change Set points", new SetShooterUpForWhateverWeWantCommand(shooterSubsystem));
   }
 
   static void resetMaxToKnownState(CANSparkMax x) {
@@ -464,14 +457,8 @@ public class RobotContainer {
     //operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());
     //operatorDPad.right().whenPressed(new SpinControlPanelUntilColor());
 //Left Trigger: Spin up shooter
-    TriggerButton shootButton = new TriggerButton(driverJoystick, true);
-    shootButton.whileHeld(new ManualShootingCommand(shooterSubsystem));
-//X: Intake
-    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    intakeButton.toggleWhenPressed(new IntakeCommand(intakeSubsystem));
-//A: Toggle arm up/down
-    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    intakeArmButton.toggleWhenPressed(new IntakeArmFireCommand(intakeSubsystem));
+    //TriggerButton shootButton = new TriggerButton(driverJoystick, true);
+    //shootButton.whileHeld(new ManualShootingCommand(shooterSubsystem));
 //No
     //JoystickButton againtWallShoot = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     //againtWallShoot.toggleWhenPressed(new SetShooterUpForFarWallCommand(shooterSubsystem));
@@ -562,39 +549,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+  return null;
   }
-  public Command getTrenchAuto(){
-    return new AutoSixBallCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-  }
-
-  public Command getFigure23PathABlue(){
-    return new Figure23PathABlueCommand(driveSubsystem, intakeSubsystem);
-  }
-
-public Command getFigure23PathBRedCommand(){
-   return new Figure23PathBRedCommand(driveSubsystem, intakeSubsystem);
-}
-
-public Command getFigure23PathARedCommand(){
-  return new Figure23PathARedCommand(driveSubsystem, intakeSubsystem);
-}
-
-  public Command getMeanMachineAuto(){
-    return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-  }
-
-  public Command getNeutroniumAuto() {
-    return new NeutroniumAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-  }
-
-  public Command getWaitAndSchootAuto(){
-    return new AutoWaitAndShootCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-  }
-
-public Command getFigure23PathBblueCommand(){
-  return new Figure24PathBBlueCommand(driveSubsystem, intakeSubsystem);
-}
 
 
   /**

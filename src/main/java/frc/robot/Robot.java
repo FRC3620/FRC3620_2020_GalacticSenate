@@ -83,20 +83,8 @@ public class Robot extends TimedRobot {
       }
     });
     
-    chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
-    chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto());
-    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
-    chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
-    chooser.addOption("Slalom 2-5", new Slalom25Command(RobotContainer.driveSubsystem)); // maybe not best method not using m_robotContainer
-    chooser.addOption("Slalom 2-6", new Slalom26Command(RobotContainer.driveSubsystem));
-    chooser.addOption("Slalom 2-7", new Slalom27Command(RobotContainer.driveSubsystem));
-    chooser.addOption("Slalom 2-8", new Slalom28Command(RobotContainer.driveSubsystem));
-    chooser.addOption("Neutronium Auto", m_robotContainer.getNeutroniumAuto());
-    chooser.addOption("figure 23 path A Blue", m_robotContainer.getFigure23PathABlue()); // don't null
-    chooser.addOption("figure 23 path B blue", m_robotContainer.getFigure23PathBblueCommand()); // for method drew did with the new command " get _" must do m_robotContainer
-    chooser.addOption("figure 23 path B Red", m_robotContainer.getFigure23PathBRedCommand()); // don't need to import through m_robotContainer
-    chooser.addOption("figure 23 path A Red", m_robotContainer.getFigure23PathARedCommand());
-    
+ 
+   
     
     //chooser.addOption("Slalom 2-3 Red", new Figure23PathARedCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
     //chooser.addOption("Slalom 2-3 Blue", new Figure23PathABlueCommand(RobotContainer.driveSubsystem, RobotContainer.intakeSubsystem));
