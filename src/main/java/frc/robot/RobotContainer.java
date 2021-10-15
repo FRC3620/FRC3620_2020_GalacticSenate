@@ -118,14 +118,11 @@ public class RobotContainer {
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
-  public static ArmSubsystem armSubsystem;
-  public static ShooterSubsystem shooterSubsystem;
   public static LightSubsystem lightSubsystem;
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static LiftSubsystem liftSubsystem;
   public static VisionSubsystem visionSubsystem;
-  public static BeltSubsystem beltSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -312,14 +309,11 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
-    armSubsystem = new ArmSubsystem();
-    shooterSubsystem = new ShooterSubsystem();
     lightSubsystem = new LightSubsystem();
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
     visionSubsystem = new VisionSubsystem();
-    beltSubsystem = new BeltSubsystem();
   }
 
   void setupSmartDashboardCommands() {
@@ -327,7 +321,6 @@ public class RobotContainer {
     SmartDashboard.putData(new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData(new LoggingTestCommand(null));
     SmartDashboard.putData(new TestTargetHeadingCommand(driveSubsystem));
-    SmartDashboard.putData(new SetHoodPositionCommand());
     
     SmartDashboard.putData("Auto Drive West Command", new AutoDriveCommand(4.3*12, 180, 180, 0, driveSubsystem));
     SmartDashboard.putData("Auto Drive East Command", new AutoDriveCommand(4.3*12, 0, 0, 180, driveSubsystem));
@@ -337,8 +330,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Semicircle Command", new AutoSemiElipseCommand(5.5, 1.5, 0.5, driveSubsystem));
   
     //SmartDashboard.putData();
-    SmartDashboard.putData("Two Wheel Spin", new TimedTwoWheelSpinCommand(driveSubsystem, visionSubsystem));
-  }
+    }
 
   static void resetMaxToKnownState(CANSparkMax x) {
     x.setInverted(false);
@@ -433,11 +425,11 @@ public class RobotContainer {
     //JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     //zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 //Right Trigger: Fire (feeder)
-    TriggerButton beltDriver = new TriggerButton(driverJoystick, false);
-    beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
+    //TriggerButton beltDriver = new TriggerButton(driverJoystick, false);
+    //beltDriver.whileHeld(new BeltDriverCommand(beltSubsystem, shooterSubsystem));
 //Left Bumper: Calculate shooting solution
-    JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem));
+    //JoystickButton calcButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    //calcButton.whenPressed(new CreateShootingSolutionCommand(shooterSubsystem, visionSubsystem));
 //No
     //JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     //toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
@@ -472,8 +464,8 @@ public class RobotContainer {
     //JoystickButton reverseIntakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START);
     //reverseIntakeButton.whileHeld(new reverseIntakeCommand(intakeSubsystem));
 //Start: Reverse feeder
-    JoystickButton reverseFeederButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START);
-    reverseFeederButton.whileHeld(new reverseFeederCommand(beltSubsystem, shooterSubsystem));
+    //JoystickButton reverseFeederButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START);
+    //reverseFeederButton.whileHeld(new reverseFeederCommand(beltSubsystem, shooterSubsystem));
 //No
     //JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
     //releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
