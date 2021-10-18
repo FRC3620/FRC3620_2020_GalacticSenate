@@ -122,7 +122,6 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static LiftSubsystem liftSubsystem;
-  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -313,7 +312,6 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
-    visionSubsystem = new VisionSubsystem();
   }
 
   void setupSmartDashboardCommands() {
@@ -434,11 +432,11 @@ public class RobotContainer {
     //JoystickButton toggleFieldRelative = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_START); 
     //toggleFieldRelative.whenPressed(new ToggleFieldRelativeCommand(driveSubsystem));
 //Right Bumper: Aimbot
-    JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
+    //JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    //driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
 //Y: Toggle vision light
-    JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
-    toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
+    //JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    //toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
 //No
     //JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
     //toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
