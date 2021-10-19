@@ -92,6 +92,9 @@ public class RobotContainer {
   public static CANEncoder driveSubsystemRightBackDriveEncoder;
   public static CANEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
+
+  public static CANSparkMax turntableSubsystemTurntableSpinner;
+  public static CANEncoder turntableSubsystemTurntableEncoder;
   
   public static WPI_TalonSRX m_armMotor;
   public static WPI_TalonFX shooterSubsystemFalcon1;
@@ -122,6 +125,7 @@ public class RobotContainer {
   public static RumbleSubsystem rumbleSubsystemDriver;
   public static RumbleSubsystem rumbleSubsystemOperator;
   public static LiftSubsystem liftSubsystem;
+  public static TurntableSubsystem turntableSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -256,6 +260,15 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setSmartCurrentLimit(70);
     }
 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "Turntable") || iAmACompetitionRobot){
+      turntableSubsystemTurntableSpinner = new CANSparkMax(20, MotorType.kBrushless);
+      resetMaxToKnownState(turntableSubsystemTurntableSpinner);
+      turntableSubsystemTurntableSpinner.setIdleMode(IdleMode.kCoast);
+      turntableSubsystemTurntableSpinner.setInverted(true);
+      turntableSubsystemTurntableSpinner.setSmartCurrentLimit(10);
+      turntableSubsystemTurntableEncoder = turntableSubsystemTurntableSpinner.getEncoder();
+    }
+
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
       liftSubsystemWinch = new CANSparkMax(10, MotorType.kBrushless);
       liftEncoder = liftSubsystemWinch.getEncoder();
@@ -312,6 +325,7 @@ public class RobotContainer {
     rumbleSubsystemDriver = new RumbleSubsystem(DRIVER_JOYSTICK_PORT);
     rumbleSubsystemOperator = new RumbleSubsystem(OPERATOR_JOYSTICK_PORT);
     liftSubsystem = new LiftSubsystem();
+    turntableSubsystem = new TurntableSubsystem();
   }
 
   void setupSmartDashboardCommands() {
