@@ -7,11 +7,14 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Time;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -21,6 +24,7 @@ public class TurntableSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
   CANSparkMax turntableDrive = RobotContainer.turntableSubsystemTurntableSpinner;
   CANEncoder turntableEncoder = RobotContainer.turntableSubsystemTurntableEncoder;
+  Timer calibrationTimer;
   /**
    * Creates a new TurntableSubsystem.
    */
@@ -39,10 +43,19 @@ public class TurntableSubsystem extends SubsystemBase {
       if (!encoderIsValid) {
         turnTurntable(-0.05);
 
-        if (Math.abs(turntableCurrent) > 2) {
-          encoderIsValid = true;
-          turnTurntable(0.0);
-          turntableEncoder.setPosition(0.0);
+        if (calibrationTimer == null) {
+          calibrationTimer = new Timer();
+          calibrationTimer.reset();
+          calibrationTimer.start();
+         } else {
+          if (calibrationTimer.get() > 0.5){
+            if (Math.abs(turntableSpeed) < 20) {
+              encoderIsValid = true;
+              turnTurntable(0.0);
+              turntableEncoder.setPosition(0.0);
+            }
+          
+          }
         }
       }
     }
