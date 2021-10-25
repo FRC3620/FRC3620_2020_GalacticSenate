@@ -9,8 +9,11 @@ package frc.robot.subsystems;
 
 import java.sql.Time;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -24,12 +27,17 @@ public class TurntableSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
   CANSparkMax turntableDrive = RobotContainer.turntableSubsystemTurntableSpinner;
   CANEncoder turntableEncoder = RobotContainer.turntableSubsystemTurntableEncoder;
+  CANPIDController turntablePID = RobotContainer.turntableSubsystemTurntableSpinner.getPIDController();
   Timer calibrationTimer;
   /**
    * Creates a new TurntableSubsystem.
    */
   public TurntableSubsystem() {
+    turntableEncoder.setPositionConversionFactor(90/7.8);
 
+    // set up PID for turntablePID here
+  turntablePID.setP(1.0/150.0);
+//turntablePID.setI()
   }
 
   @Override
@@ -41,7 +49,7 @@ public class TurntableSubsystem extends SubsystemBase {
     double turntableCurrent = turntableDrive.getOutputCurrent();
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if (!encoderIsValid) {
-        turnTurntable(-0.05);
+        turnTurntable(-0.10);
 
         if (calibrationTimer == null) {
           calibrationTimer = new Timer();
@@ -72,5 +80,9 @@ public class TurntableSubsystem extends SubsystemBase {
    */
   public void turnTurntable(double speed) {
     turntableDrive.set(speed);
+  }
+
+  public void setTurntablePosition (double angle) {
+    turntablePID.setReference(angle, ControlType.kPosition);
   }
 }

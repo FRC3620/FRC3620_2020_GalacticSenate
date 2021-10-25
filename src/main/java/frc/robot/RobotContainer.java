@@ -434,7 +434,13 @@ public class RobotContainer {
     driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
     driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
 //No
-    //JoystickButton zeroDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    JoystickButton turntable135Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    turntable135Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 135));
+
+    JoystickButton turntable136Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    turntable136Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 225));
+
+
     //zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
 //Right Trigger: Fire (feeder)
     //TriggerButton beltDriver = new TriggerButton(driverJoystick, false);
@@ -537,7 +543,7 @@ public class RobotContainer {
     }
     return -axisValue;
   }
-
+public static double get;
   public static double getColorJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X); //Grabs the joystick value
     if (axisValue < 0.2 && axisValue > -0.2) { //Since the joystick doesnt stay at zero, make it not give a false value
@@ -608,4 +614,4 @@ public class RobotContainer {
 
 
 
-//timer stuff 
+ 
