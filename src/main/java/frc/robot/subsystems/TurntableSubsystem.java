@@ -37,10 +37,10 @@ public class TurntableSubsystem extends SubsystemBase {
 
     // set up PID for turntablePID here
   turntablePID.setP(1.0/150.0);
-  turntablePID.setI(0.0);
+  turntablePID.setI(1.0/400000.0);
   turntablePID.setD(0.0);
   turntablePID.setFF(0.0);
-//turntablePID.setI(1.0/10000000000.0);
+
   }
 
   @Override
@@ -52,7 +52,7 @@ public class TurntableSubsystem extends SubsystemBase {
     double turntableCurrent = turntableDrive.getOutputCurrent();
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if (!encoderIsValid) {
-        turnTurntable(-0.07);
+        turnTurntable(-0.045);
 
         if (calibrationTimer == null) {
           calibrationTimer = new Timer();
