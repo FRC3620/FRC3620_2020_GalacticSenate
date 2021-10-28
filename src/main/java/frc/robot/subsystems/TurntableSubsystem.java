@@ -36,9 +36,9 @@ public class TurntableSubsystem extends SubsystemBase {
     turntableEncoder.setPositionConversionFactor(90/7.8);
 
     // set up PID for turntablePID here
-  turntablePID.setP(1.0/150.0);
-  turntablePID.setI(1.0/400000.0);
-  turntablePID.setD(0.0);
+  turntablePID.setP(0.0175);
+  turntablePID.setI(0.0);
+  turntablePID.setD(7.5);
   turntablePID.setFF(0.0);
 
   }

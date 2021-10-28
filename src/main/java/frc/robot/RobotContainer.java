@@ -435,10 +435,10 @@ public class RobotContainer {
     driverDPad.left().whenPressed(new SnapToHeadingCommand(90, driveSubsystem));
 //No
     JoystickButton turntable135Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    turntable135Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 135));
+    turntable135Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 90));
 
     JoystickButton turntable136Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    turntable136Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 225));
+    turntable136Button.whenPressed(new MoveTurntableCommand(turntableSubsystem, 180));
 
 
     //zeroDriveButton.whenPressed(new ZeroDriveEncodersCommand(driveSubsystem));
