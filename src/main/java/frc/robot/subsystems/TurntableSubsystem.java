@@ -34,6 +34,7 @@ public class TurntableSubsystem extends SubsystemBase {
    */
   public TurntableSubsystem() {
     turntableEncoder.setPositionConversionFactor(90/7.8);
+    turntableEncoder.setVelocityConversionFactor(90/7.8);
 
     // set up PID for turntablePID here
   turntablePID.setP(0.0175);
@@ -50,6 +51,7 @@ public class TurntableSubsystem extends SubsystemBase {
     double turntableSpeed = turntableEncoder.getVelocity();
     double turntablePosition = turntableEncoder.getPosition();
     double turntableCurrent = turntableDrive.getOutputCurrent();
+    double turntablePower = turntableDrive.getAppliedOutput();
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if (!encoderIsValid) {
         turnTurntable(-0.045);
@@ -75,6 +77,8 @@ public class TurntableSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("turntableposition", turntablePosition);
     SmartDashboard.putNumber("turntableCurrent", turntableCurrent);
     SmartDashboard.putBoolean("turntableEncoderValid", encoderIsValid);
+    SmartDashboard.putNumber("turntablePower", turntablePower);
+    SmartDashboard.putNumber("turntableVelocityConversionFactor", turntableEncoder.getVelocityConversionFactor());
   }
 
   /**
