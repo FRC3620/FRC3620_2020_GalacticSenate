@@ -375,14 +375,15 @@ public class RobotContainer {
 
     JoystickButton driveAndAlignButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     driveAndAlignButton.whileHeld(new DriveAndAlignCommand(driveSubsystem, visionSubsystem));
-
-    JoystickButton toggleGreenLight = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
-    toggleGreenLight.toggleWhenPressed(new ToggleVisionLightCommand(visionSubsystem));
-
+    */
+    
+    JoystickButton accelerationTest = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    accelerationTest.whenPressed(new AccelerationTestLoggerCommand(driveSubsystem));
+    /*
     JoystickButton toggleForceManualSteering = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_STICK);
     toggleForceManualSteering.toggleWhenPressed(new ForceManualRotationCommand(driveSubsystem));
     //Operator Controller
-
+9
     operatorDPad.up().whenPressed(new PopupArmCommand()); 
     operatorDPad.down().whenPressed(new PopDownArmCommand());
     operatorDPad.left().whenPressed(new SpinControlPanel4TimesCommand());

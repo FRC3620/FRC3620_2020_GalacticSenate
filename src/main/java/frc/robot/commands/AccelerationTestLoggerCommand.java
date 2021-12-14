@@ -9,23 +9,24 @@ package frc.robot.commands;
 
 import java.util.Date;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class AccelerationTestLoggerCommand extends CommandBase {
   IFastDataLogger accelerationTestLogger;
   CommandScheduler commandScheduler;
-  TalonFX talonFX;
   /**
    * Creates a new AccelerationTestLoggerCommand.
+ * @param driveSubsystem
    */
-  public AccelerationTestLoggerCommand() {
+  public AccelerationTestLoggerCommand(DriveSubsystem driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -35,9 +36,13 @@ public class AccelerationTestLoggerCommand extends CommandBase {
     accelerationTestLogger = new FastDataLoggerCollections();
     accelerationTestLogger.setInterval(0.001);
     accelerationTestLogger.setMaxLength(10.0);
-    if (talonFX != null) {
-      accelerationTestLogger.addDataProvider("wheelVelocity", () -> talonFX.getSupplyCurrent());
-      accelerationTestLogger.addDataProvider("encoderVelocity", () -> talonFX.getSupplyCurrent());
+    if (RobotContainer.driveSubsystemRightBackDriveEncoder != null) {
+      accelerationTestLogger.addDataProvider("rightFrontWheelVelocity", () -> RobotContainer.driveSubsystemRightFrontDriveEncoder.getVelocity());
+      accelerationTestLogger.addDataProvider("leftFrontWheelVelocity", () -> RobotContainer.driveSubsystemLeftFrontDriveEncoder.getVelocity());
+      accelerationTestLogger.addDataProvider("leftBackWheelVelocity", () -> RobotContainer.driveSubsystemLeftBackDriveEncoder.getVelocity());
+      accelerationTestLogger.addDataProvider("rightBackWheelVelocity", () -> RobotContainer.driveSubsystemRightBackDriveEncoder.getVelocity());
+      //odometers need to be declared in robot container once they are installed
+      //accelerationTestLogger.addDataProvider("odometerVelocity", () -> odometerEncoder.getVelocity());
     } else {
       accelerationTestLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
     }
@@ -56,9 +61,6 @@ public class AccelerationTestLoggerCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
   accelerationTestLogger.done();
-  }
-
-  private void done() {
   }
 
   // Returns true when the command should end.
