@@ -32,12 +32,6 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("compressorCurrent", () -> f2(RobotContainer.theCompressor.getCompressorCurrent()));
 		}
 
-		if (RobotContainer.liftSubsystemWinch != null){
-			dataLogger.addDataProvider("Lift.Winch.CurrentOut", () -> f2(RobotContainer.liftSubsystem.getLiftCurrent()));
-			dataLogger.addDataProvider("Lift.Winch.PercentOut", () -> f2(RobotContainer.liftSubsystem.getLiftPercentOut()));
-			dataLogger.addDataProvider("Lift.Winch.Voltage", () -> f2(RobotContainer.liftSubsystem.getLiftVoltage()));
-		}
-
 		if(RobotContainer.shooterSubsystemFalcon1 != null){
 		}
 
