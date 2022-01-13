@@ -201,6 +201,9 @@ public class ShooterSubsystem extends SubsystemBase {
     //trpm = SmartDashboard.getNumber("Top Velocity", 4100);
     //brpm = SmartDashboard.getNumber("Bottom Velocity", 4000);
     //hoodPosition = SmartDashboard.getNumber("Hood Position", 0);
+    anyRPM = SmartDashboard.getNumber("anyRPM", anyRPM);
+    anyPosition = SmartDashboard.getNumber("anyPosition", anyPosition);
+
     if(falconTop != null){
       hoodCurrent = hoodMotor.getOutputCurrent();
       hoodPercentOut = hoodMotor.getAppliedOutput();

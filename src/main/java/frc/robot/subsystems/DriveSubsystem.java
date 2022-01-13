@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.TeleOpDriveCommand;
+import frc.robot.commands.StayStillDriveCommand;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
@@ -234,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
-	this.setDefaultCommand(new TeleOpDriveCommand(this));
+	this.setDefaultCommand(new StayStillDriveCommand(this));
 	
 	spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
 	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
