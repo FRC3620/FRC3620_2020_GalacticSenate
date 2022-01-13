@@ -38,6 +38,7 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.DoubleTriggerButton;
+import org.usfirst.frc3620.misc.LightEffect;
 import org.usfirst.frc3620.misc.TriggerButton;
 import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
@@ -260,7 +261,7 @@ public class RobotContainer {
       intakeSubsystemSparkMax.setOpenLoopRampRate(.3);
       intakeSubsystemSparkMax.setClosedLoopRampRate(.3);
       intakeSubsystemSparkMax.setInverted(false);
-      intakeSubsystemSparkMax.setSmartCurrentLimit(50);
+      intakeSubsystemSparkMax.setSmartCurrentLimit(60);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "lift") || iAmACompetitionRobot) {
@@ -382,7 +383,7 @@ public class RobotContainer {
 
 //Just in case, here's what it was before i started touching code:
     //Driver Controller
-
+/*
     driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
     driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
     driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
@@ -439,10 +440,10 @@ public class RobotContainer {
 
     JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
     releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
-    /*
+    
     //Alright, let's try this
     //Jared Controller
-
+*/
     driverDPad.up().whenPressed(new SnapToHeadingCommand(180, driveSubsystem));
     driverDPad.down().whenPressed(new SnapToHeadingCommand(0, driveSubsystem));
     driverDPad.right().whenPressed(new SnapToHeadingCommand(-90, driveSubsystem));
@@ -501,7 +502,7 @@ public class RobotContainer {
 //Right joystick down: Manual override
     JoystickButton releaseLiftButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK);
     releaseLiftButton.toggleWhenPressed(new LiftReleaseCommand());
-    */
+    
   }
 
   public static double getDriveVerticalJoystick() {

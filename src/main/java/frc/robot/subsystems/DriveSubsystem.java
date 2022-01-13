@@ -86,10 +86,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	
-	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = -161.8;
-	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = 51.8;
-	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = -121.5;
-	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = -60.9;
+	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = 36.8;
+	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = -92.1;
+	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = -122.9;
+	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = -62.4;
 	
 	
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)

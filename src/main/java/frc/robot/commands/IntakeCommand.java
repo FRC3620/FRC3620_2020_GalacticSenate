@@ -43,7 +43,6 @@ import org.usfirst.frc3620.misc.LightEffect;
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.intakeSet(0);  //runs intake OUTWARD until command runs again
-    RobotContainer.lightSubsystem.setShot(LightEffect.Color.MAIZE.value, 100, true, 1, 1);
     }
 
   // Returns true when the command should end.

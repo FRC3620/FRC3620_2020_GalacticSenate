@@ -120,9 +120,12 @@ public class LightSubsystem extends SubsystemBase {
         setShot(new Color8Bit[] {LightEffect.Color.BLUE.value, LightEffect.Color.MAIZE.value}, 7500, false, 10, 2, false);
         break;
       case TELEOP:
-        if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 1800, true, 350);}
+        if (DriverStation.getInstance().getAlliance() == Alliance.Red) {setBlink(new Color8Bit(255, 0, 0), 1800, true, 350);
+          //setTwinkle(new Color8Bit(180, 0, 0), 0, false, false);}
+          setShot(new Color8Bit(255, 0, 0), 150000, false, 10, 2);}
         else {setBlink(new Color8Bit(0, 0, 255), 1800, false, 350);}
-        setTwinkle(new Color8Bit(0, 180, 0), 0, false, false);
+          //setTwinkle(new Color8Bit(0, 0, 180), 0, false, false);
+        //setTwinkle(new Color8Bit(0, 180, 0), 0, false, false);
         break;
       case AUTO:
         setShot(new Color8Bit[] {new Color8Bit(0, 255, 0)}, 0, false, 4, 3, false);

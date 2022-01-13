@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
     
     chooser.addOption("Default Auto", m_robotContainer.getAutonomousCommand()); // add auto modes to selector here
     chooser.addOption("Trench Auto", m_robotContainer.getTrenchAuto()); // 6 ball auto
-    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());
+    chooser.addOption("Mean Machine Auto", m_robotContainer.getMeanMachineAuto());  //golden auto 
     chooser.addOption("Wait And Shoot Auto", m_robotContainer.getWaitAndSchootAuto());
     chooser.addOption("Slalom 2-5", new Slalom25Command(RobotContainer.driveSubsystem)); // maybe not best method not using m_robotContainer
     chooser.addOption("Slalom 2-6", new Slalom26Command(RobotContainer.driveSubsystem));

@@ -36,7 +36,7 @@ public class GoldenAutoCommand extends SequentialCommandGroup {
       // new AutoSteerCommand(90, driveSubsystem),
       new DeployIntakeCommand(intakeSubsystem),
       new WaitCommand(.2),
-      new AutoDriveCommand(7.3*12, -90, 0.5, 0, driveSubsystem),
+      new AutoDriveCommand(7.9*12, -90, 0.5, 0, driveSubsystem),
       new WaitCommand(0.3),
       new AutoIntakeArmUpCommand(intakeSubsystem),
       new AutoDriveCommand(1.5*12, 90, .30, 0, driveSubsystem), // added back command to reach white line for accuracy
