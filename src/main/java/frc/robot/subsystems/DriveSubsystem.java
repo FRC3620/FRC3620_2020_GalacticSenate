@@ -235,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
 	SmartDashboard.putNumber("Azimuth Test Heading", 0);
 	SmartDashboard.putBoolean("Change Test Heading", false);
 
-	this.setDefaultCommand(new StayStillDriveCommand(this));
+	this.setDefaultCommand(new TeleOpDriveCommand(this));
 	
 	spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
 	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
